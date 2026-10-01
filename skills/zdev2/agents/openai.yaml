@@ -1,0 +1,4 @@
+interface:
+  display_name: "zdev2"
+  short_description: "Implement in Work or persist resources"
+  default_prompt: "Use $zdev2 for this development task."

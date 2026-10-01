@@ -1,0 +1,4 @@
+interface:
+  display_name: "zplan"
+  short_description: "Create an implementation-ready plan"
+  default_prompt: "Use $zplan for this development task."

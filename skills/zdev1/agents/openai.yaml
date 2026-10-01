@@ -1,0 +1,4 @@
+interface:
+  display_name: "zdev1"
+  short_description: "Plan, prototype, and prepare a handoff"
+  default_prompt: "Use $zdev1 for this development task."

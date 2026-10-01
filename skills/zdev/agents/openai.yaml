@@ -1,0 +1,4 @@
+interface:
+  display_name: "zdev"
+  short_description: "Choose the development workflow"
+  default_prompt: "Use $zdev for this development task."

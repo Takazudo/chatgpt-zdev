@@ -1,0 +1,21 @@
+{
+  "interface": {
+    "displayName": "Z Dev Flow",
+    "shortDescription": "Plan → Work → Codex",
+    "longDescription": "Plan and polish prototypes in Chat, then open Work for bounded implementation or resource-only handoff to Codex. Includes six focused workflow skills: zdev, zdev1, zdev2, zplan, zproto, zgh.",
+    "developerName": "Takazudo",
+    "category": "Productivity",
+    "defaultPrompt": "Use zdev to help me plan and implement a development task.",
+    "logo": "./assets/logo.svg",
+    "composerIcon": "./assets/logo.svg",
+    "capabilities": []
+  },
+  "name": "z-dev-flow",
+  "version": "0.3.0",
+  "description": "Takazudo Chat planning and Work implementation workflow with explicit Codex handoffs",
+  "author": {
+    "name": "Takazudo"
+  },
+  "keywords": [],
+  "skills": "./skills"
+}

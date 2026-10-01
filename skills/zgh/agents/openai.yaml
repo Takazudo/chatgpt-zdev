@@ -1,0 +1,4 @@
+interface:
+  display_name: "zgh"
+  short_description: "Manage GitHub workflow evidence"
+  default_prompt: "Use $zgh for this development task."

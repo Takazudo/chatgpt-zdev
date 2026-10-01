@@ -1,0 +1,4 @@
+interface:
+  display_name: "zproto"
+  short_description: "Polish UI prototypes in Chat"
+  default_prompt: "Use $zproto for this development task."
