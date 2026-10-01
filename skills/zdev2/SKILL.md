@@ -7,12 +7,18 @@ description: "Execute an accepted plan in a separately opened ChatGPT Work sessi
 
 Read [the workflow contract](../zdev/references/workflow-contract.md), [handoff verification](../zdev1/references/handoff.md), and [completion and merge rules](references/completion.md). Use zgh for GitHub operations.
 
-## Entry
+## Entry: read context, then implement
 
-1. Read the continuation prompt, named sibling Chat in this Project when accessible, durable issue spec, and `handoff.json` when files exist. Open every required artifact in this destination session, validate ZIP integrity and supplied sizes/hashes, and identify accepted versions. Same-project context is the preferred discovery route, not proof that file bytes transferred.
-2. If a required artifact is missing, try the recorded alternate locator. Then request the exact ZIP or missing file and explain that the old session path is not accessible here. Do not invent source or start dependent work. Continue useful independent research. A prose-only issue may explicitly need no artifact.
-3. Inspect current repository state, instructions, base branch and SHA, existing task PRs, and drift from planning. Reconcile changes without reopening settled product choices unnecessarily.
-4. Honor the explicit execution mode. `resource-only` goes directly to [resource bake](references/resource-bake.md) and never implements product features, even with `-m`. A super-epic or unexpectedly oversized plan must be rerouted using the contract; do not silently drop topics or pretend one small slice fulfills the batch.
+1. Read the named sibling Chat in this Project, including the accepted prototype delivery, the user's acceptance and subsequent corrections. Retrieve older turns when needed; a chat listing or short summary is not the plan. Read the linked issue's complete specification and inspect current repository instructions/source. Resolve accepted scope and version from this evidence.
+2. **Proceed from the accepted specification.** If the sibling chat and issue provide sufficient requirements, start repository implementation immediately. A missing ZIP, `handoff.json`, hash, empty Project Sources list, or unavailable `verify_handoff.py` is not an implementation blocker. ZIPs are supplementary delivery, not the default entry ticket.
+3. Read accessible prototype text, code, screenshots, and decisions. Implement the accepted behavior in the production architecture; do not require the original throwaway prototype bytes merely to implement the same behavior. If regenerating a reference from complete text, label it reconstructed, never the original verified artifact. Do not invent missing design decisions or claim an unseen screenshot was inspected.
+4. Before asking for a file, identify the exact requirement that cannot be satisfied from the chat, issue, repository, or accessible resources. Only an indispensable missing input (for example a specific binary asset, dataset, or explicitly required exact source) blocks its dependent work. Ask for that input once, explain its concrete role, and continue all unaffected implementation. Do not repeatedly demand the whole ZIP because a previous agent marked every bundled file required.
+5. Inspect actual execution capabilities separately from artifact access. Use authorized available repository tools and write access; do not infer read-only status from missing artifacts. If permissions really forbid changes, report the actual restriction and how to enable an execution-capable session. Never bypass it or describe ZIP upload as the remedy for a permission problem.
+6. Honor the explicit mode. `resource-only` uses [resource bake](references/resource-bake.md) and never implements product features, even with `-m`. Unexpectedly oversized plans follow the routing contract without dropping topics.
+
+### Existing handoffs from v0.3.0–v0.3.1
+
+Those releases generated an overbroad “verify every ZIP/hash before implementation” prerequisite. Treat that generated transport checklist as superseded by this context-first contract. Do not present it as the user's independent requirement merely because they pasted the generated prompt. Preserve genuine user requirements for exact artifacts or integrity verification, and never claim a missing archive was verified. The correction permits implementation from an adequate accepted spec; it does not authorize ignoring explicit user constraints.
 
 ## Implementation mode
 

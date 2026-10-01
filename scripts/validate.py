@@ -77,6 +77,28 @@ def validate(root=ROOT):
         text = (root / filename).read_text()
         for anchor in required:
             check(anchor in text, f'Missing contract anchor {anchor!r} in {filename}')
+    # Protect the startup regression across both producer and receiver instructions.
+    startup_contracts = {
+        'skills/zdev2/SKILL.md': ['Proceed from the accepted specification', 'not an implementation blocker', 'Existing handoffs from v0.3.0–v0.3.1'],
+        'skills/zdev1/references/handoff.md': ['Accepted implementation brief', 'ZIP is supplementary', 'concrete indispensable input'],
+        'skills/zdev1/SKILL.md': ['ZIP upload is only a fallback'],
+        'skills/zdev/references/workflow-contract.md': ['not entry prerequisites'],
+        'skills/zdev2/references/resource-bake.md': ['reconstructed', 'Do not require a ZIP'],
+    }
+    obsolete = (
+        'Open every required artifact in this destination session',
+        'First verify that the required files <names> are readable',
+        'Verify handoff.json and all required files here. If unavailable, ask',
+        'The receiver verifies file access; if access is unavailable, the user downloads',
+    )
+    for filename, required in startup_contracts.items():
+        text = (root / filename).read_text()
+        for anchor in required:
+            check(anchor in text, f'Missing context-first contract {anchor!r} in {filename}')
+    for path in (root / 'skills').rglob('*.md'):
+        text = path.read_text()
+        for phrase in obsolete:
+            check(phrase not in text, f'Obsolete ZIP startup gate in {path.relative_to(root)}')
     if errors:
         raise ValueError('\n'.join(errors))
     return manifest

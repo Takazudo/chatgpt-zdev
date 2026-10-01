@@ -10,9 +10,9 @@ Keep planning in ordinary Chat. Do not imply Chat can transform itself into Work
 
 ## Handoff default
 
-Keep the source Chat and new Work chat in the same ChatGPT Project. Explicitly reference the source chat's exact visible title (and URL/ID when known), task, accepted artifact filename/version, and entry paths. The Work receiver reads the source context and verifies the required files. If unavailable, the user downloads the ZIP and attaches it in Work. A shared Project can carry context; it does not prove that any particular generated file is readable. Never use only “the previous chat,” a `/mnt/data` path, or a sandbox link as the next session's technical specification.
+Keep the source Chat and new Work chat in the same ChatGPT Project. Explicitly reference the source chat's exact visible title (and URL/ID when known), task, accepted artifact filename/version, and entry paths. The Work receiver reads the accepted source-chat context and full issue, then proceeds from a sufficient specification. The ZIP, manifest, hashes, and generated verification scripts are not entry prerequisites. Request a file only when a concrete indispensable input cannot be recovered from available context; continue all unaffected implementation. A shared Project can carry context; it does not prove that any particular generated file is readable. Never use only “the previous chat,” a `/mnt/data` path, or a sandbox link as the next session's technical specification.
 
-Every finalized zdev1 response supplies a copyable fenced prompt and artifacts when they exist. Durable GitHub issues carry enough requirements to survive missing conversation history. A no-artifact handoff explicitly says none are required. After zdev2, Codex prompts rely on GitHub and durable files, not access to ChatGPT sibling chats.
+Every finalized zdev1 response supplies a copyable fenced prompt and artifacts when they exist. Durable GitHub issues carry enough requirements to survive missing conversation history. The accepted specification and prototype decisions must be readable without downloading the ZIP. A no-artifact handoff explicitly says none are required. After zdev2, Codex prompts rely on GitHub and durable files, not access to ChatGPT sibling chats.
 
 ## Size routing at zdev1 finalization
 
@@ -21,7 +21,7 @@ Assess coupling, independent workstreams, dependency waves, integration risk, ne
 | Size | Implementer-needed artifacts | Destination | Required instruction |
 |---|---|---|---|
 | Bounded | No | zdev2 implementation | Read the full issue spec, implement, verify, create PR. |
-| Bounded | Yes | zdev2 implementation | Read sibling Chat, verify ZIP/source, implement, verify, create PR. |
+| Bounded | Yes | zdev2 implementation | Read accepted sibling Chat/issue context, use accessible references, implement, verify, create PR. |
 | Oversized | Yes | zdev2 resource-only | Persist accepted resources to `_temp-resource/` on a reusable base PR; skip product implementation; hand off to Codex. |
 | Oversized | No | Direct Codex | Skip Work; use the complete issue hierarchy and explicit implementation order. |
 

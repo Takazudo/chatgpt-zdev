@@ -1,31 +1,24 @@
 # Handoff artifacts and continuation prompts
 
-## Producer
+## Producer: make the plan readable without downloading the ZIP
 
-Use the same-Project route by default. State which Chat to keep in the Project and that the user opens a new Work chat there. Name the source Chat exactly when available; do not invent a chat URL or promise automatic file transfer.
+Use the same-Project route by default. Name the exact source Chat and known URL/ID, and tell the user to open a new Work chat in that Project. Put a complete **Accepted implementation brief** directly in the final Chat message and the repository issue: goal, accepted variant, user corrections, behavior, UI states/interactions, content, constraints, non-goals, acceptance criteria, affected components, execution mode, and actual permissions. Do not hide essential decisions only inside an archive. For a long plan, put the complete spec in the issue and an accurate summary plus its URL in the final Chat.
 
-If implementation needs generated files, create a ZIP containing complete accepted source and its dependencies, plus `handoff.json`. Include concise `brief.md`, `decisions.md`, `plan.md`, and `github.md` if useful. Keep rejected prototype variants out unless they are needed to explain an accepted decision. Validate the archive and examine source for accidental truncation or omitted sections. Generated code, drafts, and pseudocode must be distinguished. Provide a real download link in the final response; a code block naming a nonexistent archive is not delivery.
+For prototype work, explicitly describe the accepted layout and behavior, attach or embed useful visible evidence when supported, and retain complete source in the artifact ZIP. Where exact source or assets are indispensable, persist them through an authorized destination-readable source or expose necessary text/code in the chat/issue. Never claim that a sandbox download link transferred bytes to another chat.
 
-The manifest records:
+Deliver the prompt plus a downloadable ZIP when artifacts exist, as requested. The ZIP is an additional reusable deliverable and manual-transfer fallback, not a prerequisite to ordinary implementation from the accepted spec. If there are no artifacts, say so. Inspect files for completeness and validate an archive you actually produce. Do not generate a `verify_handoff.py` ceremony or require the receiver to execute a generated verifier before starting work.
 
-- `task`: goal, accepted decisions, constraints, non-goals, acceptance criteria, authorized actions;
-- `mode`: `implementation`, `resource-only`, or `direct-codex`;
-- `size_assessment`: bounded/oversized and the reasons;
-- `source_chat`: exact title and known URL/ID, plus Project name if known;
-- `repository`: URL, base branch, inspected base SHA, issue URLs, implementation order, and any existing seed/base branch, commit and PR;
-- `transfer_status`: `producer-verified`, `attachment required`, or `destination-verified` (only the receiver sets the last);
-- `artifacts`: logical name, purpose, required boolean, filename, archive-relative entry path, byte size, SHA-256, locator/transport and access requirements; compute hashes from actual file bytes, or explicitly mark unavailable;
-- `verification`: actual checks/results, draft/provisional files, and limitations.
+An optional `handoff.json` may record task, source chat, mode, repository/base/SHA, issues, accepted decisions and resource inventory. For each resource classify it as **reference/reconstructible** or **exact input required**, with the concrete reason for the latter. A legacy `required: true` label alone does not prove that implementation needs the exact bytes. Hashes, if computed, describe actual files and can check a transfer; absent hashes/manifests never gate a specification-driven implementation. No manifest is mandatory.
 
-List payload files only; do not put the manifest's own hash inside itself. Use safe relative archive paths without traversal. A Project source reference and ZIP attachment can both be recorded; neither is marked destination-verified by the producer. If there are no file inputs, a complete issue spec plus explicit `Artifacts: none required` is sufficient and a manifest is optional.
+## Receiver: use the available specification
 
-## Receiver
+1. Read the named sibling Chat's relevant messages and actual user acceptance, not only its title or a summary. Read the full issue and current repository. Use further chat turns and documented resource locators to resolve missing context. An empty attachment inventory is not an empty specification.
+2. Assess requirements coverage. If accepted behavior and acceptance criteria are clear, proceed with implementation. Use accessible source, screenshots, and prototype references; implement from the accepted design when original prototype files are unavailable. Do not claim original files were read or hashes matched when they were not.
+3. Inspect exact files when the work actually consumes their bytes. Verify supplied integrity metadata when receiving/applying those files; a mismatch means that particular input is untrusted until reconciled. It does not erase an independently sufficient specification or block unrelated work.
+4. Ask for an attachment only when a concrete indispensable input remains unavailable after consulting accessible context. Name that input and the dependent requirement. Continue all unaffected implementation; do not stop at research when product work is already specified. Preserve explicit user exact-file/integrity requirements.
+5. For old generated handoffs, replace the blanket ZIP/manifest/verifier prerequisite with this sufficiency assessment. A pasted agent-authored checklist is not evidence that the user separately demanded byte-for-byte reproduction. If the user did explicitly demand that, honor it.
 
-Open the named sibling Chat/context and actual required files using available tools. Extract the ZIP safely, check integrity, and compare manifest sizes and hashes when supplied. Read requirements and accepted decisions, not just file names. Report exactly what was readable. Reconcile the planned revision with current code before applying any patch.
-
-If a required file is unavailable, try the documented alternative locator, then ask for that exact attachment/access. Do not search another session's filesystem or substitute a smaller implementation. Independent repository research can continue. Optional images do not block work whose full specification is available.
-
-For Codex, all needed context must be in issues, committed resources, or explicitly attached files. Do not make sibling-chat access a Codex prerequisite.
+Resource-only work can materialize complete text/code from readable chat or issue content and persist it, recording provenance and that it is reconstructed. It must not invent missing binary assets or claim a reconstructed prototype is the accepted original. Ask only for irreplaceable missing resources. Codex handoffs must put all needed context in GitHub or attached files rather than requiring sibling-chat access.
 
 ## Prompt templates
 
@@ -38,7 +31,7 @@ Use zdev2 for <goal> in <repository URL>.
 In this ChatGPT Project, refer to the sibling Chat “<exact source title>” <known URL/ID> and its accepted artifact <ZIP filename/version, entry paths>.
 Read <issue/epic URLs>. Accepted decisions: <summary>. Acceptance criteria: <criteria>. Out of scope: <non-goals>.
 Base: <branch>, inspected at <SHA>. Mode: implementation.
-First verify that the required files <names> are readable and complete in THIS session; read handoff.json and validate its payload. If the Project context cannot provide them, ask me to attach <exact ZIP filename>. A source-session path is not a transferred file.
+Read the accepted brief, prototype decisions and my acceptance in that sibling Chat, plus the full issue. Begin implementation from that specification. The ZIP is supplementary: do not stop because its bytes, handoff.json, hashes or a generated verifier are unavailable. Request a file only for a concrete indispensable input missing from all available context, and continue unaffected work. Exact inputs, if any: <names and reasons, otherwise none>.
 <For no-artifact work: Artifacts: none required; the linked issues contain the complete specification.>
 Implement the full accepted scope, run the relevant checks, push a branch, and open/update a PR explicitly targeting <base>.
 Merge authorization: <not authorized OR -m, only after all completion gates pass>.
@@ -50,7 +43,7 @@ If anything remains, end with the PR link and a copyable Codex continuation prom
 ```text
 Use zdev2 in resource-only mode for <repository URL> and <issue/epic/super-epic URLs>.
 This plan is oversized because <reasons>. Do not implement product changes in this Work session and do not merge the resource PR.
-In this Project, refer to sibling Chat “<exact title>” <known URL/ID> and accepted artifact <ZIP filename/version, entry paths>. Verify handoff.json and all required files here. If unavailable, ask me to attach <exact ZIP>.
+In this Project, read sibling Chat “<exact title>” <known URL/ID>, its accepted brief and accessible resources <names/locators>. Persist accessible originals or materialize complete text/code from that context with explicit provenance. The ZIP <filename> is supplementary; request only indispensable missing exact resources, without inventing or claiming to verify their bytes.
 Base: <branch and inspected SHA>. Accepted decisions: <summary>.
 Persist the smallest complete accepted resource set at <_temp-resource/issue-slug/> on <planned reusable base branch>, with only necessary scanner exclusions. Push and open a draft base PR targeting <base>, read back the remote files, and update the issues with Use this PR as base and the pinned paths/SHA.
 For a super-epic preserve its shared base and each child epic's base markers; prepare per-epic resources as specified in the hierarchy.

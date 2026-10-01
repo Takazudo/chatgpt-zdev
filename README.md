@@ -13,9 +13,9 @@ Use zdev1 -isask for <repository URL>.
 
 `zdev1` finishes with durable GitHub issues, a copyable continuation prompt, and an artifact ZIP when there are generated files the implementer needs. There is no mandatory production-code “first dev” stage.
 
-Keep the planning Chat in a ChatGPT Project. Open a **new Work chat in the same Project** and paste the generated prompt. It explicitly names the source Chat and artifacts. Work checks it can actually read the files; if it cannot, download the ZIP from the planning Chat and attach it in Work. A source-session `/mnt/data` path is not a transferable file.
+Keep the planning Chat in a ChatGPT Project. Open a **new Work chat in the same Project** and paste the generated prompt. It explicitly names the source Chat and artifacts. Work reads the accepted chat/issue specification and starts implementation. The ZIP is supplementary; upload is requested only for an indispensable exact input that the available context cannot supply. Missing manifests, hashes, or generated verification scripts do not block implementation. A source-session `/mnt/data` path is not a transferable file.
 
-[OpenAI's Projects documentation](https://learn.chatgpt.com/docs/projects) describes shared project context and Chat/Work chats in one Project. It does not establish guaranteed access to every prior generated attachment; the receiver check is part of this workflow.
+[OpenAI's Projects documentation](https://learn.chatgpt.com/docs/projects) describes shared project context and Chat/Work chats in one Project. It does not establish guaranteed access to every prior generated attachment; this workflow uses the readable specification without pretending inaccessible files were transferred.
 
 | Planned work | Generated inputs to transfer | Next step |
 |---|---|---|
@@ -58,7 +58,7 @@ Python 3.9+ standard library only:
 ```sh
 python3 scripts/validate.py
 python3 -m unittest discover -s scripts -p 'test_*.py'
-python3 scripts/package.py --output /absolute/output/directory/zudo-dev-flow-0.3.1.zip
+python3 scripts/package.py --output /absolute/output/directory/zudo-dev-flow-0.3.2.zip
 ```
 
 The ZIP contains one `z-dev-flow/` directory with the skills, manifests, assets, and linked documentation. Repository scripts, tests, and caches are excluded. Generated archives remain local and ignored; Git LFS is never used.

@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.3.2 — 2026-10-02
+
+- Fix the mandatory ZIP/manifest/hash/verifier gate that blocked same-Project zdev2 startup despite a readable accepted spec.
+- Require zdev1 to expose accepted requirements and prototype decisions in readable chat/issue text.
+- Make zdev2 implement from sufficient context, including old generated handoffs; request only indispensable exact inputs and continue unaffected work.
+- Let resource-only Work persist accessible or explicitly reconstructed source with provenance, without claiming missing original bytes were verified.
+- Separate real environment permission restrictions from artifact access; preserve all merge and acceptance gates.
+
 ## 0.3.1 — 2026-10-02
 
 - Rename the displayed plugin to `zudo-dev-flow`, preserving the existing package identity and six skills.

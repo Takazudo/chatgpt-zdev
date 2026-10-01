@@ -13,8 +13,14 @@ These are manual contract-review cases, not proof of executed ChatGPT host behav
 | One tiny batch only | One epic and focused subs; no artificial super-epic | issue-sweep |
 | Replacement creation or coverage fails | Original seed stays open; exact blocker reported; independent plans completed | zgh, issue-sweep |
 | All source requirements replaced and read back | Seed closes as superseded; new implementation issues stay open | issue-sweep |
-| Bounded work with accepted prototype | Same-Project zdev2 implementation; verify artifact first | handoff |
-| Work cannot read a required Project artifact | Ask for exact ZIP; no invented source or dependent implementation | handoff, zdev2 |
+| Bounded work with accepted prototype | Read accepted sibling-chat/issue decisions and implement from that spec; use available references | handoff |
+| Full accepted spec is readable but ZIP is unavailable | Begin implementation; no request for ZIP/manifest/hash/verifier merely to pass a transport checklist | handoff, zdev2 |
+| Project Sources and attachment arrays are empty, sibling Chat has acceptance and full issue | Treat readable spec as usable; empty file inventory does not mean missing requirements | handoff, zdev2 |
+| Legacy generated prompt marks every artifact required | Assess actual dependencies; generated blanket prerequisite is superseded, explicit user exact-byte constraints remain | handoff, zdev2 |
+| Essential binary asset unavailable everywhere | Ask once for that asset and identify dependent work; finish unaffected implementation | handoff, zdev2 |
+| Resource-only mode with complete readable source but unavailable ZIP | Materialize source, label provenance/reconstruction, persist and read back; no product implementation | resource-bake |
+| Exact source required by the user, or received hashes mismatch | Preserve exact-input requirement; do not fabricate verification; block only affected work | handoff |
+| Actual environment is read-only | Report permission restriction separately; do not suggest ZIP upload solves write access | zdev2 |
 | Oversized with artifacts | Work resource-only; draft reusable PR; Codex prompt; no product code | resource-bake |
 | Oversized without artifacts | Direct Codex prompt rooted in complete issues; skip Work | workflow-contract |
 | Resources already durably baked | Direct Codex may adopt the existing base PR and pinned paths | workflow-contract |

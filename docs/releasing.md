@@ -31,3 +31,7 @@ If a host provides full replacement, preserve the existing plugin's identity, ow
 ## Account state confirmed for v0.3.1
 
 The account plugin was successfully replaced with v0.3.0 outside the initial source-release step. A fresh source read confirmed exactly the six intended skill directories and no retired ones. v0.3.1 changes only the display name and related documentation; it preserves the internal `z-dev-flow` identifier and existing account plugin ID. This update requires no file deletion and can use the guarded overlay updater.
+
+## v0.3.2 handoff correction
+
+The previous generated prompts made ZIP integrity verification an unconditional startup gate. v0.3.2 supersedes that generated transport checklist: a sufficient accepted sibling-chat/issue specification is the implementation input. Explicit user demands for exact files remain authoritative. Existing chats may retain an older skill snapshot; to resume one, tell it to use v0.3.2 and proceed from the accepted readable specification, requesting only indispensable unavailable inputs. Do not claim inaccessible ZIP bytes were verified.

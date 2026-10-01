@@ -11,7 +11,7 @@
     "capabilities": []
   },
   "name": "z-dev-flow",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "Takazudo Chat planning and Work implementation workflow with explicit Codex handoffs",
   "author": {
     "name": "Takazudo"

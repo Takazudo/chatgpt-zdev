@@ -51,6 +51,29 @@ class ValidationTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'Missing contract anchor'):
             validate(self.root)
 
+    def test_blanket_zip_gate_is_rejected_in_generated_prompt(self):
+        path = self.root / 'skills/zdev1/references/handoff.md'
+        path.write_text(path.read_text() + '\nFirst verify that the required files <names> are readable before any implementation.\n')
+        with self.assertRaisesRegex(ValueError, 'Obsolete ZIP startup gate'):
+            validate(self.root)
+
+    def test_context_first_rules_survive_all_entry_points(self):
+        cases = {
+            'skills/zdev2/SKILL.md': 'not an implementation blocker',
+            'skills/zdev1/SKILL.md': 'ZIP upload is only a fallback',
+            'skills/zdev1/references/handoff.md': 'Accepted implementation brief',
+            'skills/zdev/references/workflow-contract.md': 'not entry prerequisites',
+            'skills/zdev2/references/resource-bake.md': 'Do not require a ZIP',
+        }
+        for filename, phrase in cases.items():
+            with self.subTest(filename=filename):
+                path = self.root / filename
+                original = path.read_text()
+                path.write_text(original.replace(phrase, 'REMOVED'))
+                with self.assertRaisesRegex(ValueError, 'Missing context-first contract'):
+                    validate(self.root)
+                path.write_text(original)
+
 
 if __name__ == '__main__':
     unittest.main()
