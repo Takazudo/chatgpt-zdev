@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.3.3 — 2026-10-02
+
+- Make all Codex-bound handoffs independent of plugin/private skill availability, including resource-only and blocked/no-change passthrough.
+- Require concrete ordered PR/issue actions, dependency gates, explicit permissions, resource cleanup and conditional child-to-parent issue closure.
+- Distinguish updating, merging and closing a superseded PR; preserve unrelated prerequisite work and unfinished issues.
+
 ## 0.3.2 — 2026-10-02
 
 - Fix the mandatory ZIP/manifest/hash/verifier gate that blocked same-Project zdev2 startup despite a readable accepted spec.

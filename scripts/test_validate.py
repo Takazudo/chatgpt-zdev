@@ -4,7 +4,7 @@ import shutil
 import tempfile
 import unittest
 from pathlib import Path
-from validate import ROOT, validate
+from validate import ROOT, validate, validate_codex_prompt
 
 
 class ValidationTests(unittest.TestCase):
@@ -73,6 +73,21 @@ class ValidationTests(unittest.TestCase):
                 with self.assertRaisesRegex(ValueError, 'Missing context-first contract'):
                     validate(self.root)
                 path.write_text(original)
+
+    def test_codex_prompt_rejects_private_skills(self):
+        for invocation in ('Use $z-dev-flow:zdev2', 'Use zdev2', 'Use zgh', 'Run x-wt-teams', 'Run /prc', 'Install plugin://example'):
+            with self.subTest(invocation=invocation):
+                with self.assertRaisesRegex(ValueError, 'Nonportable skill'):
+                    validate_codex_prompt(invocation + ' to finish the PR.')
+
+    def test_codex_prompt_accepts_explicit_actions(self):
+        validate_codex_prompt('Refresh the prerequisite PR. After it lands, update the feature PR, run required checks, merge only if authorized, then close satisfied issues.')
+
+    def test_codex_template_cannot_regress_to_incoming_work_prompt(self):
+        path = self.root / 'skills/zdev2/references/completion.md'
+        path.write_text(path.read_text().replace('Implement/finish <goal>', 'Use $z-dev-flow:zdev2 to implement <goal>'))
+        with self.assertRaisesRegex(ValueError, 'Nonportable skill'):
+            validate(self.root)
 
 
 if __name__ == '__main__':

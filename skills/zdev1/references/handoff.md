@@ -56,8 +56,11 @@ Leave all implementation issues open. End with the base PR link(s) and a self-co
 Implement <goal> in <repository URL> from <issue/epic/super-epic URLs>.
 Skip ChatGPT Work; this plan is oversized because <reasons> and needs no Chat-generated file artifacts.
 Read the full issue hierarchy and implementation order. Accepted decisions: <summary>. Acceptance criteria: <criteria>. Base: <branch and inspected SHA>.
-<If the receiving Codex has the user's x-wt-teams skill: use x-wt-teams with the real epic entry and authorized flags. Otherwise execute the same dependency graph using the self-contained issues.>
+Execute the dependency graph from the issue specifications: complete prerequisites before dependent tasks, integrate each completed topic into its documented base, and verify integration before starting dependent work. No private workflow skills or plugin installation are needed.
 For a super-epic, verify or create the documented shared base from the intended parent, preserve child markers, complete each epic in order, and open the final PR to <parent>. Explicitly honor the stated authorization for intermediate merges into the staging base; absent that permission, prepare the PR topology and request it before merging.
 Run applicable checks, review the result, and keep unfinished issues open. Merge authorization: <actual permission>; deployment is not included.
-The specification must be executable from GitHub without access to ChatGPT history.
+After authorized verified delivery, close completed sub-issues, then their fully completed epic, then the super-epic only when all children are complete. If merge is not authorized, leave the ready PR and delivery issues open. Explicitly name any PR to reuse/update, preserve, merge, or close as superseded, with its URL and condition; do not close an unmerged PR merely because planning is complete.
+The specification must be executable from GitHub without access to ChatGPT history or private plugin skills.
 ```
+
+All Codex-bound prompts follow [the portable Codex handoff contract](../../zdev2/references/completion.md), including direct oversized routing. The two Work-bound prompts above may invoke the Work skill; rewrite them when the destination is Codex.

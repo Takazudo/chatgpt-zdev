@@ -36,3 +36,7 @@ A request to use this workflow authorizes its ordinary in-scope planning issues 
 Follow the repository's conventions and execution constraints. Keep generated oversized files local/ignored; never use Git LFS. Preserve privacy. Do not infer permission to send messages outside the requested GitHub workflow.
 
 When a requirement is blocked, finish independent work, name what remains, preserve its issue/PR state, and provide a concrete continuation. Never silently shrink a requested batch.
+
+## Destination-specific prompts
+
+A Work-bound prompt may invoke the installed Work skill. Every Codex-bound prompt must instead contain self-contained actions and no plugin/private-skill invocation. This applies even when Work made no changes or only persisted resources. Use the [portable Codex handoff contract](../../zdev2/references/completion.md): enumerate actual issue/PR URLs, dependency gates, PR reuse/update/merge-versus-close decisions, permissions, cleanup and conditional child-to-parent issue closure.

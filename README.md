@@ -58,9 +58,11 @@ Python 3.9+ standard library only:
 ```sh
 python3 scripts/validate.py
 python3 -m unittest discover -s scripts -p 'test_*.py'
-python3 scripts/package.py --output /absolute/output/directory/zudo-dev-flow-0.3.2.zip
+python3 scripts/package.py --output /absolute/output/directory/zudo-dev-flow-0.3.3.zip
 ```
 
 The ZIP contains one `z-dev-flow/` directory with the skills, manifests, assets, and linked documentation. Repository scripts, tests, and caches are excluded. Generated archives remain local and ignored; Git LFS is never used.
 
 See [behavior acceptance cases](docs/acceptance-cases.md), [source provenance](docs/provenance.md), and [release/migration notes](docs/releasing.md). Static validation checks packaging and contract consistency; an actual Chat/Work run is still needed to validate host behavior.
+
+Codex handoffs are portable: they never ask the receiver to invoke this plugin or another private skill. Even a no-change or resource-only passthrough includes ordered implementation steps, actual PR/issue URLs, dependency gates, precise PR update/merge/closure actions and conditional issue closure.

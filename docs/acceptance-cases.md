@@ -37,6 +37,17 @@ These are manual contract-review cases, not proof of executed ChatGPT host behav
 | Resource cleanup unfinished | Do not merge; Codex must migrate durable files and remove temporary payload | completion |
 | Fresh package inventory | Exactly zdev, zdev1, zdev2, zplan, zproto, zgh | scripts/validate.py |
 
+## Portable Codex prompt cases
+
+- No-change passthrough: no plugin invocation; state no feature PR exists, refresh dependency gates, then conditionally create the feature PR.
+- Resource-only: adopt/update the resource base PR, implement, remove exact temporary paths, verify, merge only if authorized, then close satisfied issues.
+- Existing feature PR: reuse/update its actual URL, not a new duplicate; specify checks and remaining delivery actions.
+- Unmerged migration outside scope: preserve its branch/PR and issue; refresh state and enforce the gate without inventing authorization to merge it.
+- Superseded PR: close only after verifying its replacement and authorization; distinguish this from merging the implementation PR.
+- Multi-epic: close verified completed child issues before their epic and close the super-epic only after all children complete.
+- Merge not authorized: leave ready PR and delivery issues open; no instruction quietly grants merge permission.
+- Work-bound prompt: may retain the Work skill invocation. Codex-bound prompt: no plugin/private-skill invocation, even if the input prompt used one.
+
 ## Validation boundary
 
 The validator checks manifests, skill inventory/frontmatter, local reference links, required contract anchors, text completeness, and package hygiene. Packaging checks ZIP integrity and byte-for-byte payload equivalence. These checks cannot prove a model will follow the instructions, a Work chat can retrieve a specific Project artifact, or the installed account plugin has refreshed. Those require host execution and read-back.
