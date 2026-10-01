@@ -20,7 +20,7 @@ def validate(root=ROOT):
     check(not {'skills', 'mcpServers', 'apps', 'interface'} & manifest.keys(), 'Nonportable root fields')
     interface = manifest['extensions']['com.openai']['interface']
     check(len(interface['shortDescription']) <= 30, 'Listing subtitle exceeds 30 characters')
-    check(interface['displayName'] == 'Z Dev Flow', 'Display identity changed')
+    check(interface['displayName'] == 'zudo-dev-flow', 'Display identity changed')
     check(interface['defaultPrompt'] == 'Use zdev to help me plan and implement a development task.', 'Stale or unexpected default prompt')
     for key in ('name', 'version', 'description', 'author'):
         check(manifest[key] == legacy[key], f'Overlay {key} drift')

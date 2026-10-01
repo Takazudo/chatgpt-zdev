@@ -1,4 +1,4 @@
-# Z Dev Flow
+# zudo-dev-flow
 
 A personal ChatGPT plugin for planning in Chat, implementing bounded work in a new Work chat, and handing oversized or unfinished work to Codex cloud or local.
 
@@ -36,7 +36,7 @@ Super-epics are conservatively oversized. This is a workflow judgment, not a doc
 | `zproto` | Prototype feedback loop until explicit acceptance |
 | `zgh` | GitHub operations and evidence |
 
-There is no `zdev3`, `z-local`, or `z-skill`. Maintain this plugin in this repository. The package identity remains `z-dev-flow` and display name remains **Z Dev Flow**; skill names have no hyphens.
+There is no `zdev3`, `z-local`, or `z-skill`. Maintain this plugin in this repository. The package identity remains `z-dev-flow` and display name is **zudo-dev-flow**; skill names have no hyphens.
 
 ## Flags
 
@@ -58,7 +58,7 @@ Python 3.9+ standard library only:
 ```sh
 python3 scripts/validate.py
 python3 -m unittest discover -s scripts -p 'test_*.py'
-python3 scripts/package.py --output /absolute/output/directory/z-dev-flow-0.3.0.zip
+python3 scripts/package.py --output /absolute/output/directory/zudo-dev-flow-0.3.1.zip
 ```
 
 The ZIP contains one `z-dev-flow/` directory with the skills, manifests, assets, and linked documentation. Repository scripts, tests, and caches are excluded. Generated archives remain local and ignored; Git LFS is never used.

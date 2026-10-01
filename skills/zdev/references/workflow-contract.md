@@ -1,4 +1,4 @@
-# Z Dev Flow contract
+# zudo-dev-flow contract
 
 ## Two ChatGPT stages, then ordinary Codex when needed
 

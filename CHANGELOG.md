@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.3.1 — 2026-10-02
+
+- Rename the displayed plugin to `zudo-dev-flow`, preserving the existing package identity and six skills.
+- Confirm the account plugin successfully contains the clean v0.3.0 six-skill release before applying this metadata update.
+
 ## 0.3.0 — 2026-10-02
 
 - Replace eight hyphenated skill entries with zdev, zdev1, zdev2, zplan, zproto, and zgh.
