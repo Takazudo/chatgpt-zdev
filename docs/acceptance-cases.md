@@ -52,7 +52,7 @@ These are manual contract-review cases, not proof of executed ChatGPT host behav
 
 The validator checks manifests, skill inventory/frontmatter, local reference links, required contract anchors, text completeness, and package hygiene. Packaging checks ZIP integrity and byte-for-byte payload equivalence. These checks cannot prove a model will follow the instructions, a Work chat can retrieve a specific Project artifact, or the installed account plugin has refreshed. Those require host execution and read-back.
 
-## Connected-computer observation (0.4.0)
+## Connected-computer observation (0.4.1)
 
 These are behavioral acceptance scenarios for a supervised host run. Static contract checks and the snapshot helper tests do not prove live agent classification, delegated notifications or input delivery.
 
@@ -73,8 +73,13 @@ These are behavioral acceptance scenarios for a supervised host run. Static cont
 | Delivery timeout or unchanged interruption after a send | Mark unknown/failed; no duplicate send. One per interruption, two per run, three per watch and 60-second cooldown remain binding. |
 | Same question/output appears each cycle | Deduplicate by pane/run/event; report materially changed questions or new runs. |
 | Connection disappears | Suspend inputs; one notice, at most three bounded read-only reconnect checks; reconcile fresh state and do not replay input. |
-| Stop/cancel, deadline or execution capability ends | End this watch, discard pending actions, preserve agents; report last observation and no background claim. |
-| All current runs complete but new session starts within window | Keep discovery active until deadline unless user requested early stop. |
+| User stop/cancel or explicit duration expires | End this watch, discard pending actions, preserve agents; report last observation. |
+| Connection, authorization or verified execution capability blocks the watch | Retain unresolved blocked task with reason, last observation and resumable ledger; no completion or background claim. |
+| All current runs complete but new session starts later | Keep discovery active for the user-requested lifetime unless user requested early stop. |
+| Ongoing watch reaches 30 minutes with host execution still available | Continue observing; no invented deadline or completion. |
+| Unchanged cycles reach five minutes | Stay quiet by default; no routine heartbeat. |
+| User asks for a 10-minute watch or a specific stop condition | Honor that bound instead of the ongoing default. |
+| Resume after a blocked interval | Reconcile fresh identities, preserve deduplication and recovery budgets, never replay queued input. |
 | No host delegation or continuous execution route | Explain limitation and offer actual snapshot/continuation; no invented tools, daemon or unattended promise. |
 
 Automated evidence: `test_snapshot.py` covers discovery, linked-pane deduplication, failed inventories, disappeared/restarted panes, untrusted target rows and an isolated real tmux inventory. `test_validate.py` protects mandatory safety/discovery contract anchors. Full live ChatGPT/agent interaction remains a release smoke check and must be reported separately.

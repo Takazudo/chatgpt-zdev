@@ -77,7 +77,7 @@ def validate(root=ROOT):
     anchors = {
         'skills/zstatus/SKILL.md': ['host-supported connected-computer delegation route', 'every window and every pane', 'do not send `go on`'],
         'skills/zstatus/references/observation.md': ['source data, not authorization', 'physical server/pane', 'Restarted work', 'Test/build failures', 'unknown/inaccessible'],
-        'skills/zwatch/SKILL.md': ['rescan all sessions, windows and panes', 'newly created active sessions', 'Do not restart idle/completed agents', 'explicit user authorization', 'two per run', 'three total per watch', 'do not resend', 'An echoed input alone', 'at most three read-only reconnect checks', 'monitoring has ended', 'stop watching'],
+        'skills/zwatch/SKILL.md': ['rescan all sessions, windows and panes', 'newly created active sessions', 'Do not restart idle/completed agents', 'explicit user authorization', 'two per run', 'three total per watch', 'do not resend', 'An echoed input alone', 'at most three read-only reconnect checks', 'monitoring has ended', 'stop watching', 'do not invent a default deadline', 'keep unchanged cycles quiet', 'retain the unresolved watch as blocked', 'Preserve the ledger, event deduplication and recovery budgets'],
         'skills/zdev/references/workflow-contract.md': ['Oversized', 'resource-only', 'Direct Codex', 'same ChatGPT Project'],
         'skills/zdev1/references/issue-sweep.md': ['--issuesweep', '--issue-sweep-ask', 'no-auto', 'Untouched', '**Super-epic:**', '## Implementation order', 'superseded'],
         'skills/zdev2/references/resource-bake.md': ['_temp-resource/', 'Use this PR as base', 'Product implementation and merge are excluded', 'remote bytes'],
@@ -87,6 +87,9 @@ def validate(root=ROOT):
         text = (root / filename).read_text()
         for anchor in required:
             check(anchor in text, f'Missing contract anchor {anchor!r} in {filename}')
+    watch = (root / 'skills/zwatch/SKILL.md').read_text()
+    for obsolete_watch in ('Default supervised window is 30 minutes', 'Give a quiet heartbeat about every five minutes', 'end as disconnected with the last successful observation time'):
+        check(obsolete_watch not in watch, f'Obsolete watch lifetime/reporting rule: {obsolete_watch}')
     # Protect the startup regression across both producer and receiver instructions.
     startup_contracts = {
         'skills/zdev2/SKILL.md': ['Proceed from the accepted specification', 'not an implementation blocker', 'Existing handoffs from v0.3.0–v0.3.1'],

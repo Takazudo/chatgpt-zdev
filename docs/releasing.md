@@ -39,3 +39,9 @@ The previous generated prompts made ZIP integrity verification an unconditional 
 ## v0.4.0 observation skills
 
 This additive release has eight skills and retains the same identity, assets, visibility and default prompt. Both manifests are synchronized. Update the existing account plugin using its verified ID and current-release guard; do not install a second identity. Apply both changed and new source files, preserve unchanged files, and verify the release version and eight-skill inventory. Start a fresh chat to load the new skill snapshot. Repository push and ZIP validation do not prove account publication or live host monitoring.
+
+## v0.4.1 ongoing-watch correction
+
+The existing account plugin `plugins_6abd41174f9081919dbf23cd406e1750` received v0.4.0 as release `pluginrel_6abf6116753c8191942c2531ecbd558b` (confirmed by the coordinating parent session). The source PR remains unmerged. Apply v0.4.1 as a guarded update of that same identity, preserving permissions and unchanged assets; source push alone does not apply this patch to the account.
+
+This patch removes the invented 30-minute watch deadline and routine five-minute heartbeats. Ongoing watches honor user stopping conditions and available host execution; blocked connection/authorization/execution retains an unresolved resumable task. This does not add a permanent daemon or bypass host limits.

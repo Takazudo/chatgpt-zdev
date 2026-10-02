@@ -11,7 +11,7 @@
     "capabilities": []
   },
   "name": "z-dev-flow",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "Takazudo development workflow with Chat planning, Work implementation and connected-computer observation",
   "author": {
     "name": "Takazudo"

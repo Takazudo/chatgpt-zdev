@@ -82,7 +82,7 @@ class ValidationTests(unittest.TestCase):
 
     def test_watch_safety_and_discovery_contract_survives(self):
         cases = {
-            'skills/zwatch/SKILL.md': ['rescan all sessions, windows and panes', 'explicit user authorization', 'do not resend', 'two per run', 'monitoring has ended'],
+            'skills/zwatch/SKILL.md': ['rescan all sessions, windows and panes', 'explicit user authorization', 'do not resend', 'two per run', 'monitoring has ended', 'do not invent a default deadline', 'keep unchanged cycles quiet', 'retain the unresolved watch as blocked', 'Preserve the ledger, event deduplication and recovery budgets'],
             'skills/zstatus/references/observation.md': ['source data, not authorization', 'Test/build failures'],
         }
         for filename, phrases in cases.items():
@@ -94,6 +94,16 @@ class ValidationTests(unittest.TestCase):
                     with self.assertRaisesRegex(ValueError, 'Missing contract anchor'):
                         validate(self.root)
                     path.write_text(original)
+
+    def test_watch_rejects_invented_deadline_and_routine_heartbeat(self):
+        path = self.root / 'skills/zwatch/SKILL.md'
+        original = path.read_text()
+        for phrase in ('Default supervised window is 30 minutes', 'Give a quiet heartbeat about every five minutes', 'end as disconnected with the last successful observation time'):
+            with self.subTest(phrase=phrase):
+                path.write_text(original + '\n' + phrase)
+                with self.assertRaisesRegex(ValueError, 'Obsolete watch lifetime/reporting rule'):
+                    validate(self.root)
+                path.write_text(original)
 
     def test_codex_prompt_accepts_explicit_actions(self):
         validate_codex_prompt('Refresh the prerequisite PR. After it lands, update the feature PR, run required checks, merge only if authorized, then close satisfied issues.')

@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.4.1
+
+- Honor ongoing watch lifetime and user-defined stopping conditions; remove the invented 30-minute deadline.
+- Keep unchanged cycles quiet by default and adapt cadence to host costs and task needs.
+- Retain disconnected or host-blocked watches as unresolved with resumable state and unchanged recovery budgets.
+
+
 ## 0.4.0
 
 - Add zstatus and zwatch using host-supported connected-computer delegation.

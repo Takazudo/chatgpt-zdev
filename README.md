@@ -60,7 +60,7 @@ Python 3.9+ standard library only:
 ```sh
 python3 scripts/validate.py
 python3 -m unittest discover -s scripts -p 'test_*.py'
-python3 scripts/package.py --output /absolute/output/directory/zudo-dev-flow-0.4.0.zip
+python3 scripts/package.py --output /absolute/output/directory/zudo-dev-flow-0.4.1.zip
 ```
 
 The ZIP contains one `z-dev-flow/` directory with the skills, manifests, assets, and linked documentation. Repository scripts, tests, and caches are excluded. Generated archives remain local and ignored; Git LFS is never used.
@@ -73,10 +73,10 @@ Codex handoffs are portable: they never ask the receiver to invoke this plugin o
 
 ```text
 Use zstatus on my selected connected computer.
-Use zwatch on x0x for 30 minutes. Include newly created active sessions.
+Use zwatch on x0x until I stop it. Include newly created active sessions.
 Stop watching.
 ```
 
-The watch rescans all accessible tmux sessions, windows and panes each cycle, including detached sessions and new runs in existing panes. Default cadence is 30 seconds, backing off to 60 seconds during quiet periods, within a 30-minute supervised window. It reports completion and brings detailed questions to you; it does not restart idle/completed agents or answer on your behalf. Recovery needs explicit authorization and is bounded to verified, stopped transient API interruptions. Test failures, quota/auth/security prompts and destructive actions never qualify.
+The watch rescans all accessible tmux sessions, windows and panes each cycle, including detached sessions and new runs in existing panes. Cadence adapts to host costs and task needs, starting around 30 seconds where supported and slowing during quiet periods. Honor user-specified duration or stop conditions; an ongoing watch has no invented default deadline. Unchanged cycles stay quiet by default, with updates for meaningful changes, completions, decisions and errors. It reports completion and brings detailed questions to you; it does not restart idle/completed agents or answer on your behalf. Recovery needs explicit authorization and is bounded to verified, stopped transient API interruptions. Test failures, quota/auth/security prompts and destructive actions never qualify.
 
-Computer access and continued execution depend on the host-supported delegation route. When unavailable, the skill reports the limitation and supplies a snapshot/continuation state instead of claiming background monitoring. Stop ends observation without stopping your agents. See the [observation contract](skills/zstatus/references/observation.md) and [watch lifecycle](skills/zwatch/SKILL.md).
+Computer access and continued execution depend on the host-supported delegation route. When access or continued execution is unavailable, the skill reports the verified limitation and retains the unresolved watch as blocked with a resumable ledger, without claiming background monitoring. Stop ends observation without stopping your agents. See the [observation contract](skills/zstatus/references/observation.md) and [watch lifecycle](skills/zwatch/SKILL.md).
