@@ -13,7 +13,8 @@ def build(output):
     manifest = validate()
     output = output.resolve()
     selected = [ROOT / x for x in ('plugin.json', '.codex-plugin/plugin.json', 'README.md', 'CHANGELOG.md')]
-    selected += [p for folder in ('skills', 'assets', 'docs') for p in (ROOT / folder).rglob('*') if p.is_file()]
+    selected += [p for folder in ('skills', 'assets', 'docs') for p in (ROOT / folder).rglob('*')
+                 if p.is_file() and '__pycache__' not in p.parts and p.suffix != '.pyc']
     # docs are linked from README, so ship them as user-facing references too.
     selected = sorted(selected)
     for path in selected:

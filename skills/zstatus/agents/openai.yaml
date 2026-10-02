@@ -1,0 +1,4 @@
+interface:
+  display_name: "zstatus"
+  short_description: "Inspect current tmux work"
+  default_prompt: "Use $zstatus for this development task."
