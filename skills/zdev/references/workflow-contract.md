@@ -40,3 +40,7 @@ When a requirement is blocked, finish independent work, name what remains, prese
 ## Destination-specific prompts
 
 A Work-bound prompt may invoke the installed Work skill. Every Codex-bound prompt must instead contain self-contained actions and no plugin/private-skill invocation. This applies even when Work made no changes or only persisted resources. Use the [portable Codex handoff contract](../../zdev2/references/completion.md): enumerate actual issue/PR URLs, dependency gates, PR reuse/update/merge-versus-close decisions, permissions, cleanup and conditional child-to-parent issue closure.
+
+## Connected-computer observation
+
+`zstatus` is one read-only inventory; `zwatch` observes active Codex/Claude Code runs within a declared supervised window. These are independent observation routes, not new development stages. Follow the [observation contract](../../zstatus/references/observation.md) and [watch lifecycle](../../zwatch/SKILL.md). Rescan every cycle to include newly created sessions and restarted work. A watch request grants no authority to answer questions or resume agents. Host-supported computer delegation and permissions remain authoritative; no direct-access or permanent-daemon claim is implied.

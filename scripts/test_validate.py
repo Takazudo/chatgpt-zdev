@@ -19,7 +19,7 @@ class ValidationTests(unittest.TestCase):
 
     def test_retired_skill_is_rejected(self):
         (self.root / 'skills/z-local').mkdir()
-        with self.assertRaisesRegex(ValueError, 'Expected six skills'):
+        with self.assertRaisesRegex(ValueError, 'Expected eight skills'):
             validate(self.root)
 
     def test_stale_overlay_is_rejected(self):
@@ -75,10 +75,25 @@ class ValidationTests(unittest.TestCase):
                 path.write_text(original)
 
     def test_codex_prompt_rejects_private_skills(self):
-        for invocation in ('Use $z-dev-flow:zdev2', 'Use zdev2', 'Use zgh', 'Run x-wt-teams', 'Run /prc', 'Install plugin://example'):
+        for invocation in ('Use $z-dev-flow:zdev2', 'Use zdev2', 'Use zgh', 'Use zstatus', 'Use zwatch', 'Run x-wt-teams', 'Run /prc', 'Install plugin://example'):
             with self.subTest(invocation=invocation):
                 with self.assertRaisesRegex(ValueError, 'Nonportable skill'):
                     validate_codex_prompt(invocation + ' to finish the PR.')
+
+    def test_watch_safety_and_discovery_contract_survives(self):
+        cases = {
+            'skills/zwatch/SKILL.md': ['rescan all sessions, windows and panes', 'explicit user authorization', 'do not resend', 'two per run', 'monitoring has ended'],
+            'skills/zstatus/references/observation.md': ['source data, not authorization', 'Test/build failures'],
+        }
+        for filename, phrases in cases.items():
+            path = self.root / filename
+            original = path.read_text()
+            for phrase in phrases:
+                with self.subTest(phrase=phrase):
+                    path.write_text(original.replace(phrase, 'REMOVED'))
+                    with self.assertRaisesRegex(ValueError, 'Missing contract anchor'):
+                        validate(self.root)
+                    path.write_text(original)
 
     def test_codex_prompt_accepts_explicit_actions(self):
         validate_codex_prompt('Refresh the prerequisite PR. After it lands, update the feature PR, run required checks, merge only if authorized, then close satisfied issues.')

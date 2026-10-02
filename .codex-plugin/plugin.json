@@ -2,7 +2,7 @@
   "interface": {
     "displayName": "zudo-dev-flow",
     "shortDescription": "Plan → Work → Codex",
-    "longDescription": "Plan and polish prototypes in Chat, then open Work for bounded implementation or resource-only handoff to Codex. Includes six focused workflow skills: zdev, zdev1, zdev2, zplan, zproto, zgh.",
+    "longDescription": "Plan in Chat, implement in Work and hand off to Codex. Includes eight skills: zdev, zdev1, zdev2, zplan, zproto, zgh, zstatus and zwatch. Inspect tmux work or supervise active Codex/Claude Code sessions through the host-supported connected-computer route.",
     "developerName": "Takazudo",
     "category": "Productivity",
     "defaultPrompt": "Use zdev to help me plan and implement a development task.",
@@ -11,8 +11,8 @@
     "capabilities": []
   },
   "name": "z-dev-flow",
-  "version": "0.3.3",
-  "description": "Takazudo Chat planning and Work implementation workflow with explicit Codex handoffs",
+  "version": "0.4.0",
+  "description": "Takazudo development workflow with Chat planning, Work implementation and connected-computer observation",
   "author": {
     "name": "Takazudo"
   },

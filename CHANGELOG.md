@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.4.0
+
+- Add zstatus and zwatch using host-supported connected-computer delegation.
+- Rescan sessions/windows/panes every cycle and track newly active/restarted work.
+- Report completion and detailed decisions; bound authorized API recovery and handle cancellation, duplicates, stale output and connection loss.
+- Add a read-only snapshot helper and regression coverage; preserve plugin identity, default prompt and development routes.
+
 ## 0.3.3 — 2026-10-02
 
 - Make all Codex-bound handoffs independent of plugin/private skill availability, including resource-only and blocked/no-change passthrough.

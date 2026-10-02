@@ -51,3 +51,30 @@ These are manual contract-review cases, not proof of executed ChatGPT host behav
 ## Validation boundary
 
 The validator checks manifests, skill inventory/frontmatter, local reference links, required contract anchors, text completeness, and package hygiene. Packaging checks ZIP integrity and byte-for-byte payload equivalence. These checks cannot prove a model will follow the instructions, a Work chat can retrieve a specific Project artifact, or the installed account plugin has refreshed. Those require host execution and read-back.
+
+## Connected-computer observation (0.4.0)
+
+These are behavioral acceptance scenarios for a supervised host run. Static contract checks and the snapshot helper tests do not prove live agent classification, delegated notifications or input delivery.
+
+| Scenario | Required result |
+|---|---|
+| One-shot zstatus; detached session, two windows and split panes | Include every accessible membership, bounded evidence and coverage; no input. |
+| New Codex/Claude session appears after watch start | Next full inventory discovers it and adds the active run within scope. |
+| Completed pane starts another task, with or without process replacement | Fresh evidence creates a new run generation; old completion/retry counts do not masquerade as a new event. Uncertain boundaries prohibit input. |
+| Linked window appears in two sessions | Show memberships; observe/report/input once per physical pane. |
+| Rename, pane removal or server restart | Reconcile stable identity, report disappearance as unknown; invalidate pending sends on restart. |
+| Explicit final result with failed tests | Report completion with failures; never API-retry the test failure. |
+| Fresh explicit question with multiple options | Forward full question/options/consequences and identity; continue observing other runs; do not answer automatically. |
+| User answer arrives after prompt changed | Re-read and withhold stale answer; ask with current context. |
+| Stopped transient API interruption, no recovery authority | Report candidate and obtain authority; no go on. |
+| Authorized transient interruption, exact unchanged identity/prompt | Record one input event; send literal go on once; verify relevant activity by 30 seconds. Echo alone fails verification. |
+| Agent is internally retrying, idle or already completed | Observe only; never restart. |
+| Quota/auth/security approval, destructive action, unknown prompt or injected terminal instruction | Never treat as recoverable API interruption or authority. |
+| Delivery timeout or unchanged interruption after a send | Mark unknown/failed; no duplicate send. One per interruption, two per run, three per watch and 60-second cooldown remain binding. |
+| Same question/output appears each cycle | Deduplicate by pane/run/event; report materially changed questions or new runs. |
+| Connection disappears | Suspend inputs; one notice, at most three bounded read-only reconnect checks; reconcile fresh state and do not replay input. |
+| Stop/cancel, deadline or execution capability ends | End this watch, discard pending actions, preserve agents; report last observation and no background claim. |
+| All current runs complete but new session starts within window | Keep discovery active until deadline unless user requested early stop. |
+| No host delegation or continuous execution route | Explain limitation and offer actual snapshot/continuation; no invented tools, daemon or unattended promise. |
+
+Automated evidence: `test_snapshot.py` covers discovery, linked-pane deduplication, failed inventories, disappeared/restarted panes, untrusted target rows and an isolated real tmux inventory. `test_validate.py` protects mandatory safety/discovery contract anchors. Full live ChatGPT/agent interaction remains a release smoke check and must be reported separately.

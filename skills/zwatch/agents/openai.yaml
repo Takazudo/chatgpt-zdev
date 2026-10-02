@@ -1,0 +1,4 @@
+interface:
+  display_name: "zwatch"
+  short_description: "Observe active terminal agents"
+  default_prompt: "Use $zwatch for this development task."

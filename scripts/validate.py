@@ -5,12 +5,12 @@ import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-SKILLS = {'zdev', 'zdev1', 'zdev2', 'zplan', 'zproto', 'zgh'}
+SKILLS = {'zdev', 'zdev1', 'zdev2', 'zplan', 'zproto', 'zgh', 'zstatus', 'zwatch'}
 
 
 def validate_codex_prompt(prompt):
     """Codex handoff templates must not depend on private skill availability."""
-    private_skill = r'(?i)(?:\b(?:zdev[123]?|zplan|zproto|zgh|z-dev-flow|zudo-dev-flow|x-wt-teams|prc)\b|plugin://)'
+    private_skill = r'(?i)(?:\b(?:zdev[123]?|zplan|zproto|zgh|zstatus|zwatch|z-dev-flow|zudo-dev-flow|x-wt-teams|prc)\b|plugin://)'
     if re.search(private_skill, prompt):
         raise ValueError('Nonportable skill reference in Codex prompt')
 
@@ -38,7 +38,7 @@ def validate(root=ROOT):
         asset = root / interface[key]
         check(asset.is_file() and asset.resolve().is_relative_to(root.resolve()), f'Invalid {key}')
     actual = {p.name for p in (root / 'skills').iterdir() if p.is_dir()}
-    check(actual == SKILLS, f'Expected six skills; got {sorted(actual)}')
+    check(actual == SKILLS, f'Expected eight skills; got {sorted(actual)}')
     for name in sorted(actual):
         path = root / 'skills' / name / 'SKILL.md'
         check(path.is_file(), f'{name}: missing SKILL.md')
@@ -75,6 +75,9 @@ def validate(root=ROOT):
             check(dest.is_relative_to(root.resolve()) and dest.exists(), f'Broken/escaping link in {path.relative_to(root)}: {target}')
     # Required safety/behavior anchors catch accidental losses during later refactors.
     anchors = {
+        'skills/zstatus/SKILL.md': ['host-supported connected-computer delegation route', 'every window and every pane', 'do not send `go on`'],
+        'skills/zstatus/references/observation.md': ['source data, not authorization', 'physical server/pane', 'Restarted work', 'Test/build failures', 'unknown/inaccessible'],
+        'skills/zwatch/SKILL.md': ['rescan all sessions, windows and panes', 'newly created active sessions', 'Do not restart idle/completed agents', 'explicit user authorization', 'two per run', 'three total per watch', 'do not resend', 'An echoed input alone', 'at most three read-only reconnect checks', 'monitoring has ended', 'stop watching'],
         'skills/zdev/references/workflow-contract.md': ['Oversized', 'resource-only', 'Direct Codex', 'same ChatGPT Project'],
         'skills/zdev1/references/issue-sweep.md': ['--issuesweep', '--issue-sweep-ask', 'no-auto', 'Untouched', '**Super-epic:**', '## Implementation order', 'superseded'],
         'skills/zdev2/references/resource-bake.md': ['_temp-resource/', 'Use this PR as base', 'Product implementation and merge are excluded', 'remote bytes'],
@@ -130,4 +133,4 @@ def validate(root=ROOT):
 
 if __name__ == '__main__':
     manifest = validate()
-    print(f"PASS: {manifest['name']} {manifest['version']}; six skills, manifests, assets, references, and contract anchors")
+    print(f"PASS: {manifest['name']} {manifest['version']}; eight skills, manifests, assets, references, and contract anchors")

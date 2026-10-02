@@ -22,7 +22,7 @@ The plugin default prompt changes only the invoked skill name from `z-dev` to `z
 1. Edit source here. Keep both manifests synchronized and bump their strict semantic version.
 2. Run `python3 scripts/validate.py`, review the behavioral cases, and build an archive with `scripts/package.py`. Keep generated archives outside tracked source.
 3. Push validated source to the repository. A GitHub push alone does not update an installed personal plugin.
-4. Use a supported full-package replacement or repository-backed installation that discovers only the six new skill directories. Validate the resulting skill inventory in a fresh chat before claiming the installed copy is updated.
+4. Use a supported full-package replacement or repository-backed installation that discovers the intended release skill directories. Validate the resulting skill inventory in a fresh chat before claiming the installed copy is updated.
 
 During the initial v0.3.0 migration, the available account updater only overlaid files and could not delete retired skill directories. The source release therefore supplied a clean package instead of applying that overlay. The account was subsequently updated successfully; the verified current state is recorded below. Future skill deletion still requires a supported full replacement rather than assuming omitted files are removed.
 
@@ -35,3 +35,7 @@ The account plugin was successfully replaced with v0.3.0 outside the initial sou
 ## v0.3.2 handoff correction
 
 The previous generated prompts made ZIP integrity verification an unconditional startup gate. v0.3.2 supersedes that generated transport checklist: a sufficient accepted sibling-chat/issue specification is the implementation input. Explicit user demands for exact files remain authoritative. Existing chats may retain an older skill snapshot; to resume one, tell it to use v0.3.2 and proceed from the accepted readable specification, requesting only indispensable unavailable inputs. Do not claim inaccessible ZIP bytes were verified.
+
+## v0.4.0 observation skills
+
+This additive release has eight skills and retains the same identity, assets, visibility and default prompt. Both manifests are synchronized. Update the existing account plugin using its verified ID and current-release guard; do not install a second identity. Apply both changed and new source files, preserve unchanged files, and verify the release version and eight-skill inventory. Start a fresh chat to load the new skill snapshot. Repository push and ZIP validation do not prove account publication or live host monitoring.
