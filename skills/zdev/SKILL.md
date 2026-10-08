@@ -1,12 +1,13 @@
 ---
 name: zdev
-description: "Route Takazudo development requests through Chat planning (zdev1) and a separately opened ChatGPT Work session (zdev2). Use for zdev, rough development requests, planning, prototyping, or continuing this workflow."
+description: "Route Takazudo development requests through Chat planning (zdev1) and a separately opened ChatGPT Work session (zdev2). Use for zdev, rough development requests, planning, prototyping, continuing this workflow, or connected-computer status and observation."
 ---
 
 # zdev
 
 Read [the workflow contract](references/workflow-contract.md).
 
+- `zstatus` or a one-shot terminal-work inventory uses [zstatus](../zstatus/SKILL.md). `zwatch` or ongoing observation of Codex/Claude Code uses [zwatch](../zwatch/SKILL.md). These routes use the selected connected computer through host-supported delegation; they do not start planning or implementation.
 - A rough request, question about a proposed change, plan, prototype, or explicit issue sweep starts `zdev1` in the current Chat session.
 - An explicit `zdev2` or Work implementation request uses `zdev2` in a Work session. In ordinary Chat, prepare its prompt and artifacts and tell the user to open Work.
 - “Chain to zdev2” means finalize the handoff: a copyable prompt plus available artifacts. Do not claim to switch this chat to Work or silently create another session.
