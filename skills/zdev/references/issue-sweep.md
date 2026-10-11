@@ -1,6 +1,6 @@
 # Issue sweep in zdev
 
-Adapted from big-plan's issue-sweep workflow. This Chat planning stage stops after verified plans and a direct Codex Cloud handoff. zdev1 follows it as an alias.
+Adapted from big-plan's issue-sweep workflow. This Chat planning stage stops after verified plans and a direct Codex Cloud handoff.
 
 ## Flags and intake
 
@@ -9,7 +9,7 @@ Adapted from big-plan's issue-sweep workflow. This Chat planning stage stops aft
 - `-f` / `--filter`: repeated or comma-separated include labels, AND semantics. `-ex` / `--exclude`: exclude any matching label. No implicit filter.
 - `-re` / `--refresh-epic`: replace the human-check dashboard after preserving all open entries and reasons.
 - `-pr` / `--prototype`: after triage, run zproto only for handled topics that need an unsettled UI decision.
-- `-po` / `--plan-only` is redundant here: zdev1 is always plan-only. Do not forward planner-only flags to Codex. No auto flag bypasses the intentional interview or prototype feedback.
+- `-po` / `--plan-only` is redundant here: zdev is always plan-only. Do not forward planner-only flags to Codex. No auto flag bypasses the intentional interview or prototype feedback.
 
 Resolve repository and intended parent (default branch unless explicitly specified); inspect its revision. Snapshot **all** open issues with pagination and exclude PRs. Apply filters to that complete snapshot. Read full issue bodies, relevant comments, and available attachments for candidates; validate stale technical assertions. If new problem reports accompany the sweep, create ordinary seed issues for them and retake the snapshot; general sweep guidance is not a new problem report.
 

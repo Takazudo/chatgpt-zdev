@@ -15,13 +15,18 @@ class ValidationTests(unittest.TestCase):
         shutil.copytree(ROOT, self.root, ignore=shutil.ignore_patterns('.git', '__pycache__', 'dist'))
 
     def test_valid_source_and_inventory(self):
-        self.assertEqual(validate(self.root)['version'], '0.5.0')
+        self.assertEqual(validate(self.root)['version'], '0.5.1')
         self.assertFalse((self.root / 'skills/zdev2').exists())
+        self.assertFalse((self.root / 'skills/zdev1').exists())
 
     def test_retired_skill_is_rejected(self):
-        (self.root / 'skills/zdev2').mkdir()
-        with self.assertRaisesRegex(ValueError, 'Expected seven skills'):
-            validate(self.root)
+        for retired in ('zdev1', 'zdev2'):
+            with self.subTest(retired=retired):
+                path = self.root / 'skills' / retired
+                path.mkdir()
+                with self.assertRaisesRegex(ValueError, 'Expected six skills'):
+                    validate(self.root)
+                path.rmdir()
 
     def test_stale_overlay_is_rejected(self):
         path = self.root / '.codex-plugin/plugin.json'
@@ -37,14 +42,13 @@ class ValidationTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'Broken/escaping link'):
             validate(self.root)
 
-    def test_legacy_alias_routes_all_flags(self):
-        alias = (self.root / 'skills/zdev1/SKILL.md').read_text()
+    def test_zdev_is_sole_planning_entry_point(self):
+        self.assertFalse((self.root / 'skills/zdev1').exists())
+        self.assertFalse((self.root / 'skills/zdev2').exists())
         facade = (self.root / 'skills/zdev/SKILL.md').read_text()
-        self.assertIn('[zdev](../zdev/SKILL.md)', alias)
-        self.assertIn('zdev1 -m -is for https://github.com/zudolab/zudo-text', alias)
+        self.assertIn('sole planning entry point', facade)
         for flag in ('-m', '-pr', '-is', '-isask'):
             self.assertIn(flag, facade)
-        self.assertIn('retired zdev2', alias)
 
     def test_flag_combinations_and_issue_lifecycle(self):
         contract = (self.root / 'skills/zdev/references/workflow-contract.md').read_text()
@@ -53,7 +57,7 @@ class ValidationTests(unittest.TestCase):
                 self.assertIn(phrase, contract)
 
     def test_handoff_instructions_cover_both_merge_modes_and_partial_multi_pr(self):
-        handoff = (self.root / 'skills/zdev1/references/handoff.md').read_text()
+        handoff = (self.root / 'skills/zdev/references/handoff.md').read_text()
         for phrase in ('PR plan:', 'each actual or planned PR, target, merge/hold decision', 'Without -m:', 'With -m:', 'intentionally held or incomplete PRs open', 'Do not deploy', 'Do not report a check as passed unless observed', 'do not create a duplicate'):
             with self.subTest(phrase=phrase):
                 self.assertIn(phrase, handoff)

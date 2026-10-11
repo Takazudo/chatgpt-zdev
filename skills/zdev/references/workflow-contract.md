@@ -2,11 +2,11 @@
 
 ## Chat plan to Codex Cloud
 
-Plan in the current Chat with `zdev`; `zdev1` is a thin compatibility alias. Inspect current repository instructions, source, issues, PRs and base SHA. Resolve ordinary choices and record assumptions, dependencies, acceptance criteria, review and verification in durable issues. A focused task can use one issue; a decomposed task uses an epic and child issues. Choose a fitting workflow; big-plan and x-wt-teams are inspiration, not mandatory orchestration. Simple cases need no artificial multi-PR topology. Explain consequential deviations briefly. Task-specific user constraints override generic flag defaults. The user opens a Codex Cloud implementation session with the final prompt. Chat does not claim to start or transform that session.
+Plan in the current Chat with `zdev`; Inspect current repository instructions, source, issues, PRs and base SHA. Resolve ordinary choices and record assumptions, dependencies, acceptance criteria, review and verification in durable issues. A focused task can use one issue; a decomposed task uses an epic and child issues. Choose a fitting workflow; big-plan and x-wt-teams are inspiration, not mandatory orchestration. Simple cases need no artificial multi-PR topology. Explain consequential deviations briefly. Task-specific user constraints override generic flag defaults. The user opens a Codex Cloud implementation session with the final prompt. Chat does not claim to start or transform that session.
 
 Use `-pr` for a UI prototype and feedback loop. Show working variants when appropriate, preserve rounds, and wait for explicit acceptance before finalizing a direction. Put accepted behavior in readable issue and Chat text. Supply a validated ZIP with complete accepted source/assets when these files exist. A ZIP supplements the specification; it is not an entry prerequisite unless the user requires exact bytes. Identify any truly indispensable missing input and continue independent work.
 
-Use `-is` only for an explicit issue sweep; use `-isask` for the per-candidate interview, including previously postponed issues. When both appear, `-isask` wins. Follow [the sweep procedure](../../zdev1/references/issue-sweep.md). Neither `-m` nor routine autonomy skips the sweep checkpoint or prototype acceptance.
+Use `-is` only for an explicit issue sweep; use `-isask` for the per-candidate interview, including previously postponed issues. When both appear, `-isask` wins. Follow [the sweep procedure](issue-sweep.md). Neither `-m` nor routine autonomy skips the sweep checkpoint or prototype acceptance.
 
 ## Flag and lifecycle contract
 
@@ -18,7 +18,7 @@ Use `-is` only for an explicit issue sweep; use `-isask` for the per-candidate i
 | `-isask` / `--issue-sweep-ask` | Revisit postponed candidates with the interview checkpoint; wins over `-is`. | Same implementation lifecycle for accepted scope only. |
 | `-pr` / `--prototype` | Iterate in Chat until the user accepts a UI direction; record decisions and artifacts. | Implement accepted direction using repository architecture and verify UI states. |
 
-Combinations compose: `zdev1 -m -is for https://github.com/zudolab/zudo-text` routes to `zdev` with a bulk sweep and conditional merge instruction; `-isask -m -pr` interviews first, prototypes selected UI topics, then hands the accepted scope to Codex with merge conditions. Flags are recorded as normalized intent, not as private commands for Codex. Do not pass `-po`, `-a`, or other unsupported big-plan flags through as if they work here.
+Combinations compose: `zdev -m -is for https://github.com/zudolab/zudo-text` performs a bulk sweep and conditional merge instruction; `-isask -m -pr` interviews first, prototypes selected UI topics, then hands the accepted scope to Codex with merge conditions. Flags are recorded as normalized intent, not as private commands for Codex. Do not pass `-po`, `-a`, or other unsupported big-plan flags through as if they work here.
 
 The final prompt must include actual repository and issue URLs, target branch and inspected SHA, accepted scope and non-goals, dependency order, relevant existing PRs and whether to reuse them, artifact locations and exact-input needs, checks and current evidence, and the authorized lifecycle. Codex receives plain-language actions, never plugin skill invocations. If GitHub writing is unavailable, deliver complete issue drafts and identify publication as blocked; never invent URLs or state that a plan was published.
 
