@@ -1,3 +1,10 @@
+## 0.5.0
+
+- Make zdev the Chat planning facade and retain zdev1 as a thin alias.
+- Replace mandatory Work execution with a direct, self-contained Codex Cloud handoff; remove zdev2.
+- Carry -m, -is, -isask and -pr through issues and prompt with explicit PR and issue lifecycle rules.
+- Preserve UI prototype artifacts and independent zstatus/zwatch behavior.
+
 # Changelog
 
 ## 0.4.1

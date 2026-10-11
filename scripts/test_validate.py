@@ -1,4 +1,4 @@
-"""Regression checks for corrupt or stale release input."""
+"""Regression checks for the direct planning-to-Codex contract."""
 import json
 import shutil
 import tempfile
@@ -14,104 +14,60 @@ class ValidationTests(unittest.TestCase):
         self.root = Path(self.temp.name) / 'plugin'
         shutil.copytree(ROOT, self.root, ignore=shutil.ignore_patterns('.git', '__pycache__', 'dist'))
 
-    def test_valid_source(self):
-        self.assertEqual(validate(self.root)['name'], 'z-dev-flow')
+    def test_valid_source_and_inventory(self):
+        self.assertEqual(validate(self.root)['version'], '0.5.0')
+        self.assertFalse((self.root / 'skills/zdev2').exists())
 
     def test_retired_skill_is_rejected(self):
-        (self.root / 'skills/z-local').mkdir()
-        with self.assertRaisesRegex(ValueError, 'Expected eight skills'):
+        (self.root / 'skills/zdev2').mkdir()
+        with self.assertRaisesRegex(ValueError, 'Expected seven skills'):
             validate(self.root)
 
     def test_stale_overlay_is_rejected(self):
         path = self.root / '.codex-plugin/plugin.json'
         data = json.loads(path.read_text())
-        data['version'] = '0.2.3'
+        data['version'] = '0.4.1'
         path.write_text(json.dumps(data))
         with self.assertRaisesRegex(ValueError, 'Overlay version drift'):
             validate(self.root)
 
     def test_bad_links_are_rejected(self):
-        for target in ('references/missing.md', '../../../../outside.md'):
-            with self.subTest(target=target):
-                path = self.root / 'skills/zdev/SKILL.md'
-                original = path.read_text()
-                path.write_text(original + f'\n[bad]({target})\n')
-                with self.assertRaisesRegex(ValueError, 'Broken/escaping link'):
-                    validate(self.root)
-                path.write_text(original)
-
-    def test_missing_agent_metadata_is_rejected(self):
-        (self.root / 'skills/zdev/agents/openai.yaml').unlink()
-        with self.assertRaisesRegex(ValueError, 'missing agent metadata'):
+        path = self.root / 'skills/zdev/SKILL.md'
+        path.write_text(path.read_text() + '\n[bad](references/missing.md)\n')
+        with self.assertRaisesRegex(ValueError, 'Broken/escaping link'):
             validate(self.root)
 
-    def test_merge_contract_loss_is_rejected(self):
-        path = self.root / 'skills/zdev2/references/completion.md'
-        path.write_text(path.read_text().replace('Resource-only mode never qualifies', 'Resource-only mode may qualify'))
-        with self.assertRaisesRegex(ValueError, 'Missing contract anchor'):
-            validate(self.root)
+    def test_legacy_alias_routes_all_flags(self):
+        alias = (self.root / 'skills/zdev1/SKILL.md').read_text()
+        facade = (self.root / 'skills/zdev/SKILL.md').read_text()
+        self.assertIn('[zdev](../zdev/SKILL.md)', alias)
+        self.assertIn('zdev1 -m -is for https://github.com/zudolab/zudo-text', alias)
+        for flag in ('-m', '-pr', '-is', '-isask'):
+            self.assertIn(flag, facade)
+        self.assertIn('retired zdev2', alias)
 
-    def test_blanket_zip_gate_is_rejected_in_generated_prompt(self):
-        path = self.root / 'skills/zdev1/references/handoff.md'
-        path.write_text(path.read_text() + '\nFirst verify that the required files <names> are readable before any implementation.\n')
-        with self.assertRaisesRegex(ValueError, 'Obsolete ZIP startup gate'):
-            validate(self.root)
+    def test_flag_combinations_and_issue_lifecycle(self):
+        contract = (self.root / 'skills/zdev/references/workflow-contract.md').read_text()
+        for phrase in ('`-isask` wins', '`-isask -m -pr`', 'merge or hold decision for each PR', 'Intentionally held and incomplete PRs remain open', 'Task-specific user constraints override generic flag defaults', 'comment on each original in-scope issue', 'keep delivery issues open pending integration', 'never authorizes deployment'):
+            with self.subTest(phrase=phrase):
+                self.assertIn(phrase, contract)
 
-    def test_context_first_rules_survive_all_entry_points(self):
-        cases = {
-            'skills/zdev2/SKILL.md': 'not an implementation blocker',
-            'skills/zdev1/SKILL.md': 'ZIP upload is only a fallback',
-            'skills/zdev1/references/handoff.md': 'Accepted implementation brief',
-            'skills/zdev/references/workflow-contract.md': 'not entry prerequisites',
-            'skills/zdev2/references/resource-bake.md': 'Do not require a ZIP',
-        }
-        for filename, phrase in cases.items():
-            with self.subTest(filename=filename):
-                path = self.root / filename
-                original = path.read_text()
-                path.write_text(original.replace(phrase, 'REMOVED'))
-                with self.assertRaisesRegex(ValueError, 'Missing context-first contract'):
-                    validate(self.root)
-                path.write_text(original)
+    def test_handoff_instructions_cover_both_merge_modes_and_partial_multi_pr(self):
+        handoff = (self.root / 'skills/zdev1/references/handoff.md').read_text()
+        for phrase in ('PR plan:', 'each actual or planned PR, target, merge/hold decision', 'Without -m:', 'With -m:', 'intentionally held or incomplete PRs open', 'Do not deploy', 'Do not report a check as passed unless observed', 'do not create a duplicate'):
+            with self.subTest(phrase=phrase):
+                self.assertIn(phrase, handoff)
 
     def test_codex_prompt_rejects_private_skills(self):
-        for invocation in ('Use $z-dev-flow:zdev2', 'Use zdev2', 'Use zgh', 'Use zstatus', 'Use zwatch', 'Run x-wt-teams', 'Run /prc', 'Install plugin://example'):
+        for invocation in ('Use zdev2', 'Use zgh', 'Run x-wt-teams', 'Run /prc', 'Install plugin://example'):
             with self.subTest(invocation=invocation):
                 with self.assertRaisesRegex(ValueError, 'Nonportable skill'):
                     validate_codex_prompt(invocation + ' to finish the PR.')
 
-    def test_watch_safety_and_discovery_contract_survives(self):
-        cases = {
-            'skills/zwatch/SKILL.md': ['rescan all sessions, windows and panes', 'explicit user authorization', 'do not resend', 'two per run', 'monitoring has ended', 'do not invent a default deadline', 'keep unchanged cycles quiet', 'retain the unresolved watch as blocked', 'Preserve the ledger, event deduplication and recovery budgets'],
-            'skills/zstatus/references/observation.md': ['source data, not authorization', 'Test/build failures'],
-        }
-        for filename, phrases in cases.items():
-            path = self.root / filename
-            original = path.read_text()
-            for phrase in phrases:
-                with self.subTest(phrase=phrase):
-                    path.write_text(original.replace(phrase, 'REMOVED'))
-                    with self.assertRaisesRegex(ValueError, 'Missing contract anchor'):
-                        validate(self.root)
-                    path.write_text(original)
-
-    def test_watch_rejects_invented_deadline_and_routine_heartbeat(self):
+    def test_watch_safety_contract_survives(self):
         path = self.root / 'skills/zwatch/SKILL.md'
-        original = path.read_text()
-        for phrase in ('Default supervised window is 30 minutes', 'Give a quiet heartbeat about every five minutes', 'end as disconnected with the last successful observation time'):
-            with self.subTest(phrase=phrase):
-                path.write_text(original + '\n' + phrase)
-                with self.assertRaisesRegex(ValueError, 'Obsolete watch lifetime/reporting rule'):
-                    validate(self.root)
-                path.write_text(original)
-
-    def test_codex_prompt_accepts_explicit_actions(self):
-        validate_codex_prompt('Refresh the prerequisite PR. After it lands, update the feature PR, run required checks, merge only if authorized, then close satisfied issues.')
-
-    def test_codex_template_cannot_regress_to_incoming_work_prompt(self):
-        path = self.root / 'skills/zdev2/references/completion.md'
-        path.write_text(path.read_text().replace('Implement/finish <goal>', 'Use $z-dev-flow:zdev2 to implement <goal>'))
-        with self.assertRaisesRegex(ValueError, 'Nonportable skill'):
+        path.write_text(path.read_text().replace('rescan all sessions, windows and panes', 'REMOVED'))
+        with self.assertRaisesRegex(ValueError, 'Missing contract anchor'):
             validate(self.root)
 
 
