@@ -1,4 +1,4 @@
 interface:
   display_name: "zdev1"
-  short_description: "Plan, prototype, and prepare a handoff"
+  short_description: "Compatibility alias for zdev"
   default_prompt: "Use $zdev1 for this development task."

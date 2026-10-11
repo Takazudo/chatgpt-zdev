@@ -1,66 +1,27 @@
-# Handoff artifacts and continuation prompts
+# Codex Cloud handoff
 
-## Producer: make the plan readable without downloading the ZIP
+## Producer checklist
 
-Use the same-Project route by default. Name the exact source Chat and known URL/ID, and tell the user to open a new Work chat in that Project. Put a complete **Accepted implementation brief** directly in the final Chat message and the repository issue: goal, accepted variant, user corrections, behavior, UI states/interactions, content, constraints, non-goals, acceptance criteria, affected components, execution mode, and actual permissions. Do not hide essential decisions only inside an archive. For a long plan, put the complete spec in the issue and an accurate summary plus its URL in the final Chat.
+Complete the accepted implementation brief in readable Chat and issue text: goal, accepted UI and corrections, behavior/states, constraints and non-goals, acceptance criteria, components, dependency order, verification and actual permissions. Read back published issue bodies. A ZIP is supplementary and contains real implementer-needed prototype source/assets/fixtures when they exist; inspect and validate the archive. If none exist, say `Artifacts: none required`. Never claim that a source Chat's sandbox path or attachment bytes automatically transfer to Codex Cloud. If exact input bytes are indispensable, identify them and their destination-readable locator, or name the concrete blocker and continue independent planning.
 
-For prototype work, explicitly describe the accepted layout and behavior, attach or embed useful visible evidence when supported, and retain complete source in the artifact ZIP. Where exact source or assets are indispensable, persist them through an authorized destination-readable source or expose necessary text/code in the chat/issue. Never claim that a sandbox download link transferred bytes to another chat.
+Read current GitHub state before writing the prompt. Record actual issue and PR URLs, target branch and SHA, existing bases/resources, checks already observed, and what is merely planned. Determine whether to reuse/update a matching task PR or create a branch and draft PR. For multiple topics, give dependency order, integration checkpoints, and explicit per-PR merge/hold decisions. Choose the simplest fitting implementation workflow; explain any consequential deviation from the plan. The prompt must be self-contained and use no plugin or private skill names.
 
-Deliver the prompt plus a downloadable ZIP when artifacts exist, as requested. The ZIP is an additional reusable deliverable and manual-transfer fallback, not a prerequisite to ordinary implementation from the accepted spec. If there are no artifacts, say so. Inspect files for completeness and validate an archive you actually produce. Do not generate a `verify_handoff.py` ceremony or require the receiver to execute a generated verifier before starting work.
+Carry normalized flags into issues and prompt: `-pr` means the accepted UI direction; `-is` means only the accepted bulk sweep scope; `-isask` means only the accepted interview scope; `-m` means conditional merge after verified delivery. If both sweep flags were supplied, record `-isask` as effective. Do not convert a planning permission into release/deployment authority.
 
-An optional `handoff.json` may record task, source chat, mode, repository/base/SHA, issues, accepted decisions and resource inventory. For each resource classify it as **reference/reconstructible** or **exact input required**, with the concrete reason for the latter. A legacy `required: true` label alone does not prove that implementation needs the exact bytes. Hashes, if computed, describe actual files and can check a transfer; absent hashes/manifests never gate a specification-driven implementation. No manifest is mandatory.
+## Copyable prompt template
 
-## Receiver: use the available specification
-
-1. Read the named sibling Chat's relevant messages and actual user acceptance, not only its title or a summary. Read the full issue and current repository. Use further chat turns and documented resource locators to resolve missing context. An empty attachment inventory is not an empty specification.
-2. Assess requirements coverage. If accepted behavior and acceptance criteria are clear, proceed with implementation. Use accessible source, screenshots, and prototype references; implement from the accepted design when original prototype files are unavailable. Do not claim original files were read or hashes matched when they were not.
-3. Inspect exact files when the work actually consumes their bytes. Verify supplied integrity metadata when receiving/applying those files; a mismatch means that particular input is untrusted until reconciled. It does not erase an independently sufficient specification or block unrelated work.
-4. Ask for an attachment only when a concrete indispensable input remains unavailable after consulting accessible context. Name that input and the dependent requirement. Continue all unaffected implementation; do not stop at research when product work is already specified. Preserve explicit user exact-file/integrity requirements.
-5. For old generated handoffs, replace the blanket ZIP/manifest/verifier prerequisite with this sufficiency assessment. A pasted agent-authored checklist is not evidence that the user separately demanded byte-for-byte reproduction. If the user did explicitly demand that, honor it.
-
-Resource-only work can materialize complete text/code from readable chat or issue content and persist it, recording provenance and that it is reconstructed. It must not invent missing binary assets or claim a reconstructed prototype is the accepted original. Ask only for irreplaceable missing resources. Codex handoffs must put all needed context in GitHub or attached files rather than requiring sibling-chat access.
-
-## Prompt templates
-
-Replace every angle-bracket field with actual values before delivery, omit inapplicable lines, and never fabricate identifiers. Include a short accepted-spec summary even when linking issues. Each final prompt is one fenced text block, not only a prose offer to continue. Carry `-m` only when explicitly authorized.
-
-### Bounded implementation in a new Work chat
+Replace every placeholder with actual information and omit inapplicable lines. Include the prompt in one fenced text block in the final Chat response; link any artifact ZIP separately. This is a template, not a claim that the listed work already happened.
 
 ```text
-Use zdev2 for <goal> in <repository URL>.
-In this ChatGPT Project, refer to the sibling Chat “<exact source title>” <known URL/ID> and its accepted artifact <ZIP filename/version, entry paths>.
-Read <issue/epic URLs>. Accepted decisions: <summary>. Acceptance criteria: <criteria>. Out of scope: <non-goals>.
-Base: <branch>, inspected at <SHA>. Mode: implementation.
-Read the accepted brief, prototype decisions and my acceptance in that sibling Chat, plus the full issue. Begin implementation from that specification. The ZIP is supplementary: do not stop because its bytes, handoff.json, hashes or a generated verifier are unavailable. Request a file only for a concrete indispensable input missing from all available context, and continue unaffected work. Exact inputs, if any: <names and reasons, otherwise none>.
-<For no-artifact work: Artifacts: none required; the linked issues contain the complete specification.>
-Implement the full accepted scope, run the relevant checks, push a branch, and open/update a PR explicitly targeting <base>.
-Merge authorization: <not authorized OR -m, only after all completion gates pass>.
-If anything remains, end with the PR link and a copyable Codex continuation prompt that includes that link, exact remaining steps, evidence, and permissions.
+Implement <accepted goal> in <repository URL> in Codex Cloud.
+Read repository instructions, <full original and planning issue URLs>, relevant comments, and current source. Base: <branch>, last inspected at <SHA>. Refresh all state before changes.
+Accepted scope: <requirements and accepted prototype decisions>. Non-goals: <explicit exclusions>. Acceptance criteria: <observable results>.
+Planning flags and scope: <normalized -is or -isask scope, -pr direction if applicable; -m authorization or no merge authorization>. Follow only accepted in-scope issues; preserve unrelated issues.
+Dependency order: <prerequisites and integration checkpoints>. Suggested execution/model policy: <simple direct implementation or justified delegated topics with difficulty hints; manager stays on the session model and user overrides prevail>. PR plan: <each actual or planned PR, target, merge/hold decision, gate, and issue effect>. Existing PRs/branches: <actual URLs, roles, states and SHAs, or none created>. Reuse/update <matching PR URL or none>; do not create a duplicate. Artifacts: <repository paths/attached files and whether exact bytes are required, or none required>.
+Verification already observed: <commands and results, CI revision, unknown/not-run checks>. Do not report a check as passed unless observed.
+Implement the full accepted scope in dependency order, review the diff, run relevant checks and UI verification, fix change-related failures, push a branch, and open or update a draft PR targeting <branch>. Inspect required CI for the current head and obey repository approvals and merge policy. Leave the PR draft while essential work or verification remains.
+<Without -m: Leave the implementation PR open. Comment on each original in-scope issue with the PR URL and actual completion/verification status; keep it open pending integration. Do not merge or close delivery issues.>
+<With -m: For each PR marked eligible to merge, merge only after its accepted work, review, required approvals and current-head required checks pass under repository policy. Leave intentionally held or incomplete PRs open. Confirm each integration, then close only issues whose own criteria are genuinely met, with PR and verification evidence; leave incomplete parents and unrelated issues open. If a gate remains, hold that PR and report it.>
+For each existing dependency/resource PR, state whether to update, preserve, merge when authorized, or close as superseded only after verifying its replacement. Move lasting resources into production paths and remove temporary resource paths before merge. Never treat closing an unmerged PR as delivery.
+Do not deploy, publish a release, or close unrelated issues based on merge authorization. Report actual final PR/issue states, verification, unresolved work and retained resources.
 ```
-
-### Oversized plan with resources: Work only bakes
-
-```text
-Use zdev2 in resource-only mode for <repository URL> and <issue/epic/super-epic URLs>.
-This plan is oversized because <reasons>. Do not implement product changes in this Work session and do not merge the resource PR.
-In this Project, read sibling Chat “<exact title>” <known URL/ID>, its accepted brief and accessible resources <names/locators>. Persist accessible originals or materialize complete text/code from that context with explicit provenance. The ZIP <filename> is supplementary; request only indispensable missing exact resources, without inventing or claiming to verify their bytes.
-Base: <branch and inspected SHA>. Accepted decisions: <summary>.
-Persist the smallest complete accepted resource set at <_temp-resource/issue-slug/> on <planned reusable base branch>, with only necessary scanner exclusions. Push and open a draft base PR targeting <base>, read back the remote files, and update the issues with Use this PR as base and the pinned paths/SHA.
-For a super-epic preserve its shared base and each child epic's base markers; prepare per-epic resources as specified in the hierarchy.
-Leave all implementation issues open. End with the base PR link(s) and a self-contained Codex prompt containing them, implementation order, resource locators, cleanup-before-merge requirement, and <actual merge authorization for the eventual implementation>.
-```
-
-### Oversized plan without artifacts: direct Codex
-
-```text
-Implement <goal> in <repository URL> from <issue/epic/super-epic URLs>.
-Skip ChatGPT Work; this plan is oversized because <reasons> and needs no Chat-generated file artifacts.
-Read the full issue hierarchy and implementation order. Accepted decisions: <summary>. Acceptance criteria: <criteria>. Base: <branch and inspected SHA>.
-Execute the dependency graph from the issue specifications: complete prerequisites before dependent tasks, integrate each completed topic into its documented base, and verify integration before starting dependent work. No private workflow skills or plugin installation are needed.
-For a super-epic, verify or create the documented shared base from the intended parent, preserve child markers, complete each epic in order, and open the final PR to <parent>. Explicitly honor the stated authorization for intermediate merges into the staging base; absent that permission, prepare the PR topology and request it before merging.
-Run applicable checks, review the result, and keep unfinished issues open. Merge authorization: <actual permission>; deployment is not included.
-After authorized verified delivery, close completed sub-issues, then their fully completed epic, then the super-epic only when all children are complete. If merge is not authorized, leave the ready PR and delivery issues open. Explicitly name any PR to reuse/update, preserve, merge, or close as superseded, with its URL and condition; do not close an unmerged PR merely because planning is complete.
-The specification must be executable from GitHub without access to ChatGPT history or private plugin skills.
-```
-
-All Codex-bound prompts follow [the portable Codex handoff contract](../../zdev2/references/completion.md), including direct oversized routing. The two Work-bound prompts above may invoke the Work skill; rewrite them when the destination is Codex.

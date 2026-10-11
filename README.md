@@ -1,82 +1,26 @@
 # zudo-dev-flow
 
-A personal ChatGPT plugin for planning in Chat, implementing bounded work in a new Work chat, and handing oversized or unfinished work to Codex cloud or local.
+A personal ChatGPT plugin for repository-grounded development planning in Chat, optional UI prototyping and issue sweeps, and a self-contained Codex Cloud handoff. `zdev` is the facade; `zdev1` remains a compatibility alias. The former mandatory Chat → Work → Codex route and `zdev2` execution skill are retired.
 
-## Start here
+## Use
 
-```text
-Use zdev1 for <repository URL>. I want <rough outcome>.
-Use zdev1 -pr for <repository URL>. Let's prototype and polish <UI>.
-Use zdev1 -is for <repository URL>.
-Use zdev1 -isask for <repository URL>.
-```
+- `zdev for https://github.com/owner/repo: <goal>` plans the work, creates or updates durable issues when authorized, and returns a copyable Codex Cloud implementation prompt.
+- `zdev -pr ...` iterates UI prototypes in Chat until the user accepts a direction, then plans and packages real artifacts when available.
+- `zdev -is ...` sweeps the requested backlog with one bulk triage checkpoint. `-isask` interviews candidates, including postponed issues. If both appear, `-isask` wins.
+- `zdev1 -m -is for https://github.com/zudolab/zudo-text` uses the alias, sweeps issues, and tells the later Codex session to merge only after complete implementation and verification under repository policy.
 
-`zdev1` finishes with durable GitHub issues, a copyable continuation prompt, and an artifact ZIP when there are generated files the implementer needs. There is no mandatory production-code “first dev” stage.
+All flag combinations carry their effective meaning into planning issues and the final prompt. Without `-m`, the implementation PR stays open, original issues get a PR link and honest status comment, and delivery issues stay open pending integration. With `-m`, Codex may merge after required review, approvals and current-head checks pass, then close only fully satisfied in-scope issues. `-m` never authorizes deployment or publication.
 
-Keep the planning Chat in a ChatGPT Project. Open a **new Work chat in the same Project** and paste the generated prompt. It explicitly names the source Chat and artifacts. Work reads the accepted chat/issue specification and starts implementation. The ZIP is supplementary; upload is requested only for an indispensable exact input that the available context cannot supply. Missing manifests, hashes, or generated verification scripts do not block implementation. A source-session `/mnt/data` path is not a transferable file.
+The handoff contains actual repository/issue/PR URLs, accepted scope, dependency order, artifacts, verification evidence and lifecycle instructions. The implementation session need not install this plugin or read the source Chat. A ZIP supplements readable issues when real prototype source/assets/fixtures exist. Missing ZIP bytes are requested only when an exact input is indispensable.
 
-[OpenAI's Projects documentation](https://learn.chatgpt.com/docs/projects) describes shared project context and Chat/Work chats in one Project. It does not establish guaranteed access to every prior generated attachment; this workflow uses the readable specification without pretending inaccessible files were transferred.
+`zstatus` and `zwatch` remain independent connected-computer observation skills.
 
-| Planned work | Generated inputs to transfer | Next step |
-|---|---|---|
-| Bounded | Either | `zdev2`: implement, verify, open PR |
-| Oversized | Yes | `zdev2` resource-only: bake files on a draft base PR, then Codex |
-| Oversized | No | Skip Work and give Codex the issue hierarchy |
+## Source validation and packaging
 
-Super-epics are conservatively oversized. This is a workflow judgment, not a documented Work product limit. Resources already durably baked can be passed directly to Codex.
-
-## Skills
-
-| Skill | Purpose |
-|---|---|
-| `zdev` | Route the request |
-| `zdev1` | Chat planning, prototyping, issue sweep, final handoff |
-| `zdev2` | Work implementation or resource-only persistence |
-| `zplan` | Repository-grounded plans and issue decomposition |
-| `zproto` | Prototype feedback loop until explicit acceptance |
-| `zgh` | GitHub operations and evidence |
-| `zstatus` | One-shot inventory of tmux work on the selected connected computer |
-| `zwatch` | Supervised observation, new-session discovery, completion and decision reports |
-
-There is no `zdev3`, `z-local`, or `z-skill`. Maintain this plugin in this repository. The package identity remains `z-dev-flow` and display name is **zudo-dev-flow**; skill names have no hyphens.
-
-## Flags
-
-- `zdev1 -pr` / `--prototype`: prototype and polish in Chat before final planning.
-- `zdev1 -is` / `--issuesweep` / `--issue-sweep`: bulk issue sweep with one triage checkpoint.
-- `zdev1 -isask` / `--issue-sweep-ask`: revisit postponed issues with an interview; wins over `-is`.
-- Sweep helpers: `-f` / `--filter`, `-ex` / `--exclude`, `-re` / `--refresh-epic`. Include labels use AND; exclusions use ANY.
-- `zdev2 -m` / `--merge`: merge only when full implementation, acceptance, review, required approvals, and current-head checks are complete. Resource-only PRs remain draft and unmerged.
-- No `zdev2 -a` is needed. Routine implementation proceeds without repeated questions. `-a` never grants merge permission.
-
-Sweeps preserve epic/sub-issue decomposition, super-epics for multiple independent epics, dependency markers and ordering, postponed-work dashboards, and seed closure **after verified replacement**, clearly marked superseded. Planning never silently launches implementation.
-
-Work finishes with a PR. If anything remains, including a merge that was not authorized, it also gives a copyable Codex prompt containing the PR URL and exact outstanding work. Fully merged and verified work needs no invented follow-up stage.
-
-## Build and check
-
-Python 3.9+ standard library only:
-
-```sh
+```bash
 python3 scripts/validate.py
 python3 -m unittest discover -s scripts -p 'test_*.py'
-python3 scripts/package.py --output /absolute/output/directory/zudo-dev-flow-0.4.1.zip
+python3 scripts/package.py --output /tmp/zudo-dev-flow-0.5.0.zip
 ```
 
-The ZIP contains one `z-dev-flow/` directory with the skills, manifests, assets, and linked documentation. Repository scripts, tests, and caches are excluded. Generated archives remain local and ignored; Git LFS is never used.
-
-See [behavior acceptance cases](docs/acceptance-cases.md), [source provenance](docs/provenance.md), and [release/migration notes](docs/releasing.md). Static validation checks packaging and contract consistency; an actual Chat/Work run is still needed to validate host behavior.
-
-Codex handoffs are portable: they never ask the receiver to invoke this plugin or another private skill. Even a no-change or resource-only passthrough includes ordered implementation steps, actual PR/issue URLs, dependency gates, precise PR update/merge/closure actions and conditional issue closure.
-
-## Observe terminal work
-
-```text
-Use zstatus on my selected connected computer.
-Use zwatch on x0x until I stop it. Include newly created active sessions.
-Stop watching.
-```
-
-The watch rescans all accessible tmux sessions, windows and panes each cycle, including detached sessions and new runs in existing panes. Cadence adapts to host costs and task needs, starting around 30 seconds where supported and slowing during quiet periods. Honor user-specified duration or stop conditions; an ongoing watch has no invented default deadline. Unchanged cycles stay quiet by default, with updates for meaningful changes, completions, decisions and errors. It reports completion and brings detailed questions to you; it does not restart idle/completed agents or answer on your behalf. Recovery needs explicit authorization and is bounded to verified, stopped transient API interruptions. Test failures, quota/auth/security prompts and destructive actions never qualify.
-
-Computer access and continued execution depend on the host-supported delegation route. When access or continued execution is unavailable, the skill reports the verified limitation and retains the unresolved watch as blocked with a resumable ledger, without claiming background monitoring. Stop ends observation without stopping your agents. See the [observation contract](skills/zstatus/references/observation.md) and [watch lifecycle](skills/zwatch/SKILL.md).
+See [acceptance cases](docs/acceptance-cases.md), [provenance](docs/provenance.md), and [release steps](docs/releasing.md). A source PR does not update the installed account plugin.

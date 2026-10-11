@@ -1,4 +1,4 @@
 interface:
   display_name: "zdev"
-  short_description: "Choose the development workflow"
+  short_description: "Plan and hand off to Codex"
   default_prompt: "Use $zdev for this development task."

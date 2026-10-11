@@ -1,6 +1,6 @@
-# Issue sweep in zdev1
+# Issue sweep in zdev
 
-Adapted from big-plan's issue-sweep workflow. This Chat stage always stops after verified plans and a handoff; it never inherits big-plan's automatic implementation chain.
+Adapted from big-plan's issue-sweep workflow. This Chat planning stage stops after verified plans and a direct Codex Cloud handoff. zdev1 follows it as an alias.
 
 ## Flags and intake
 
@@ -9,7 +9,7 @@ Adapted from big-plan's issue-sweep workflow. This Chat stage always stops after
 - `-f` / `--filter`: repeated or comma-separated include labels, AND semantics. `-ex` / `--exclude`: exclude any matching label. No implicit filter.
 - `-re` / `--refresh-epic`: replace the human-check dashboard after preserving all open entries and reasons.
 - `-pr` / `--prototype`: after triage, run zproto only for handled topics that need an unsettled UI decision.
-- `-po` / `--plan-only` is redundant here: zdev1 is always plan-only. Do not forward planner-only flags to zdev2. No auto flag bypasses the intentional interview or prototype feedback.
+- `-po` / `--plan-only` is redundant here: zdev1 is always plan-only. Do not forward planner-only flags to Codex. No auto flag bypasses the intentional interview or prototype feedback.
 
 Resolve repository and intended parent (default branch unless explicitly specified); inspect its revision. Snapshot **all** open issues with pagination and exclude PRs. Apply filters to that complete snapshot. Read full issue bodies, relevant comments, and available attachments for candidates; validate stale technical assertions. If new problem reports accompany the sweep, create ordinary seed issues for them and retake the snapshot; general sweep guidance is not a new problem report.
 
@@ -33,10 +33,10 @@ Only after this checkpoint apply `no-auto` to confirmed human-gated skips and ad
 
 ## Plan the entire accepted batch
 
-1. Verification-only issues that can actually be settled here: execute the relevant check and close with evidence if resolved; do not invent an empty implementation epic. If the platform prevents verification, leave open and record the limitation.
+1. Verification-only issues that can actually be settled here: execute the relevant check and record evidence. Close only if this planning session truly completed the issue and closure is within the accepted sweep scope; do not invent an empty implementation epic. If the platform prevents verification, leave open and record the limitation.
 2. Tiny topics: one batch epic with one sub-issue per seed topic. Serialize shared-file or resource conflicts. Substantial independent topics: one epic per topic, each with its own self-contained sub-issues. Same-surface work may share an epic. An accepted prototype topic counts as substantial.
 3. Two or more epics require one **super-epic**, labeled `super-epic` (not also `epic`). Keep `## Implementation order` and `## Run the batch` sections. Use one consistent collision-checked slug. The hierarchy is super-epic → epics → sub-issues; a super-epic never replaces decomposition within an epic.
-4. Each sub-issue has the zplan marker block, scope, acceptance, verification, and source links. Resolve scratch dependency names into real sibling issue refs. Review every plan and verify complete coverage against seed issues and accepted prototype changes before closing any seed.
+4. Each sub-issue has the zplan marker block, scope, acceptance, verification, and source links. Resolve scratch dependency names into real sibling issue refs. Review every plan and verify complete coverage against seed issues and accepted prototype changes before marking any seed fully accounted for.
 5. Read current issue bodies before updates, preserve all markers, and read back writes. If one plan fails, report that exact failure and preserve its seeds while finishing independent accepted plans. Do not silently skip it or report the sweep complete.
 
 ### Super-epic topology for Codex
@@ -51,16 +51,16 @@ The super-epic specifies `**Super-epic base branch:**` and `**Parent branch:**`.
 
 Its child PR targets the super base; the final super PR targets the intended parent. Record the exact order, cross-epic interactions, and eventual merge permissions. Verify collisions against existing branches and historical PRs before reusing a name. Reuse only a verified handoff for this same task.
 
-If branch tools are available and the scoped bootstrap is authorized, push the shared base ref from the recorded parent; no artificial commit or empty PR. If not, record `planned, not created` and give the receiving Work resource step or Codex the precise bootstrap instructions. Do not claim a branch exists from an issue marker alone. A super-PR normally does not exist at planning time; state that accurately. Ensure every later issue edit preserves all markers and order. Source/branch tooling limitations do not justify dropping planned topics.
+If branch tools are available and the scoped bootstrap is authorized, push the shared base ref from the recorded parent; no artificial commit or empty PR. If not, record `planned, not created` and give the receiving Codex session the precise bootstrap instructions. Do not claim a branch exists from an issue marker alone. A super-PR normally does not exist at planning time; state that accurately. Ensure every later issue edit preserves all markers and order. Source/branch tooling limitations do not justify dropping planned topics.
 
-## Seed closure and postponed dashboard
+## Original issues and postponed dashboard
 
-Close a handled seed **only after** all replacement issues are created, linked, read back, and its requirements are fully accounted for. Post a superseded-by comment with the actual replacement URLs and use the appropriate superseded/not-planned closure reason when supported. Do not claim implementation is finished. Partial replacement leaves the seed open. Keep new epics/sub-issues/super-epic open for implementation. Already-resolved verification issues may close with their actual evidence.
+Keep original implementation seed issues open during planning, even after replacement issues are linked and read back. Comment on each with the replacement issue URLs and its planning status, never a claim that implementation is complete. The final Codex prompt tells the implementer to update the original with the implementation PR URL and actual completion/verification status. Without `-m`, keep it open pending integration. With `-m`, close it only when its own acceptance criteria are genuinely met after authorized integration; an incomplete or intentionally held PR keeps it open. A verification-only issue truly completed during the sweep may close with direct evidence if closure is within accepted scope. Partial replacement leaves the seed open and records the gap. Never close unrelated issues.
 
 Refresh the open-issue snapshot after labeling. Maintain one date-titled `[Sticky] Human-check central` issue, with `sticky`, containing every still-open `no-auto` issue and its reason, evidence needed, and date. Exclude coordination issues. Use a stable `<!-- human-check-checklist -->` marker and per-topic context; preserve history for the next interview. Pin it if tools support pinning; otherwise report unpinned. Under `-re`, create and verify the replacement before closing the old dashboard as superseded. Do not close deferred source issues. If there are no candidates, say so; still refresh the dashboard if explicitly requested.
 
 ## Finalization
 
-Audit created, closed-as-superseded, resolved-by-verification, postponed, untouched, and failed items. Verify the dependency graph is acyclic, references resolve, resource ordering is enforced, and every accepted source requirement has a destination. Report all epic/sub-issue links, super-epic and exact order when present, dashboard, and actual/planned branch states.
+Audit created, linked-original, resolved-by-verification, postponed, untouched, and failed items. Verify the dependency graph is acyclic, references resolve, resource ordering is enforced, and every accepted source requirement has a destination. Report all epic/sub-issue links, super-epic and exact order when present, dashboard, and actual/planned branch states.
 
-Return to zdev1's size routing. Super-epic + artifacts → resource-only zdev2; super-epic without artifacts → direct Codex. Deliver one complete batch entry prompt, with the hierarchy and order discoverable from GitHub. Never start implementation inside the planning sweep.
+Return to zdev's direct handoff. A super-epic goes directly to Codex Cloud with its complete issue hierarchy; supply real artifacts when available. Deliver one complete batch entry prompt, with the hierarchy and order discoverable from GitHub. Never start implementation inside the planning sweep. Carry conditional -m authorization and the effective sweep flag into each relevant issue and final prompt; without -m, leave implementation PRs and original delivery issues open pending integration.

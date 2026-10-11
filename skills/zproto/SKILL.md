@@ -1,6 +1,6 @@
 ---
 name: zproto
-description: "Iterate on UI and interaction prototypes in ordinary Chat for zdev1, especially -pr/--prototype. Preserve feedback rounds and require an accepted direction before implementation planning is finalized."
+description: "Iterate on UI and interaction prototypes in ordinary Chat for zdev, especially -pr/--prototype. Preserve feedback rounds and require an accepted direction before implementation planning is finalized."
 ---
 
 # zproto
@@ -13,5 +13,5 @@ Read [the workflow contract](../zdev/references/workflow-contract.md).
 4. Exercise available interactions and breakpoints, capture screenshots when possible, and inspect actual output. Label unexecuted checks and visual limitations. A screenshot alone does not supply editable source.
 5. Present the result and wait for feedback each round. Iterate until the user explicitly accepts a direction. Never infer acceptance from silence or an iteration count. If no direction is accepted, offer continued iteration or a clearly deferred plan; do not finalize a pretend winner.
 6. Record accepted behavior, content, hierarchy, states, and Added/Removed/Superseded feedback in `decisions.md`. Written accepted requirements outrank incidental prototype CSS. Production must use the repository's existing architecture, tokens, and reusable components.
-7. Pass the accepted direction to zplan. Bundle complete accepted source, required assets, useful screenshots, and a short rationale in zdev1's artifact ZIP. Preserve rejected rounds locally but exclude them from implementer-required resources unless comparison is necessary.
+7. Pass the accepted direction to zplan. Bundle complete accepted source, required assets, useful screenshots, and a short rationale in zdev's artifact ZIP. Preserve rejected rounds locally but exclude them from implementer-required resources unless comparison is necessary.
 8. Write the accepted layout, content, behavior, states and user feedback in readable Chat and issue text so implementation does not depend on downloading the prototype ZIP. Keep truly essential exact assets identified separately. State concrete visual acceptance requirements (breakpoints, interactions, content extremes, and screenshots to compare) in the issue and handoff. A private preview URL supplements the transferable source; it never replaces it.
