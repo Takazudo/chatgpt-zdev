@@ -1,7 +1,7 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "z-dev-flow",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "Takazudo Chat planning and direct Codex Cloud handoff with connected-computer observation",
   "author": {
     "name": "Takazudo"
@@ -11,7 +11,7 @@
       "interface": {
         "displayName": "zudo-dev-flow",
         "shortDescription": "Plan \u2192 Codex Cloud",
-        "longDescription": "Plan in Chat, optionally prototype UI or sweep issues, and hand off a self-contained prompt and available artifacts to Codex Cloud. Seven skills: zdev, zdev1, zplan, zproto, zgh, zstatus and zwatch. Connected-computer observation remains available.",
+        "longDescription": "Plan in Chat, optionally prototype UI or sweep issues, and hand off a self-contained prompt and available artifacts to Codex Cloud. Six skills: zdev, zplan, zproto, zgh, zstatus and zwatch. Connected-computer observation remains available.",
         "developerName": "Takazudo",
         "category": "Productivity",
         "defaultPrompt": "Use zdev to help me plan and implement a development task.",

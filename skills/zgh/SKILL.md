@@ -1,6 +1,6 @@
 ---
 name: zgh
-description: "Research repositories and manage issues, branches, PRs, checks, and durable resources for zdev and its zdev1 alias. Use GitHub connectors or git/gh as available, with explicit evidence of reads and writes."
+description: "Research repositories and manage issues, branches, PRs, checks, and durable resources for zdev. Use GitHub connectors or git/gh as available, with explicit evidence of reads and writes."
 ---
 
 # zgh

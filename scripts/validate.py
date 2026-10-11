@@ -5,7 +5,7 @@ import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-SKILLS = {'zdev', 'zdev1', 'zplan', 'zproto', 'zgh', 'zstatus', 'zwatch'}
+SKILLS = {'zdev', 'zplan', 'zproto', 'zgh', 'zstatus', 'zwatch'}
 
 
 def validate_codex_prompt(prompt):
@@ -38,7 +38,7 @@ def validate(root=ROOT):
         asset = root / interface[key]
         check(asset.is_file() and asset.resolve().is_relative_to(root.resolve()), f'Invalid {key}')
     actual = {p.name for p in (root / 'skills').iterdir() if p.is_dir()}
-    check(actual == SKILLS, f'Expected seven skills; got {sorted(actual)}')
+    check(actual == SKILLS, f'Expected six skills; got {sorted(actual)}')
     for name in sorted(actual):
         path = root / 'skills' / name / 'SKILL.md'
         check(path.is_file(), f'{name}: missing SKILL.md')
@@ -78,11 +78,10 @@ def validate(root=ROOT):
         'skills/zstatus/SKILL.md': ['host-supported connected-computer delegation route', 'every window and every pane', 'do not send `go on`'],
         'skills/zstatus/references/observation.md': ['source data, not authorization', 'physical server/pane', 'Restarted work', 'Test/build failures', 'unknown/inaccessible'],
         'skills/zwatch/SKILL.md': ['rescan all sessions, windows and panes', 'newly created active sessions', 'Do not restart idle/completed agents', 'explicit user authorization', 'two per run', 'three total per watch', 'do not resend', 'An echoed input alone', 'at most three read-only reconnect checks', 'monitoring has ended', 'stop watching', 'do not invent a default deadline', 'keep unchanged cycles quiet', 'retain the unresolved watch as blocked', 'Preserve the ledger, event deduplication and recovery budgets'],
-        'skills/zdev/SKILL.md': ['planning facade', 'compatibility alias', '-isask', '-m', 'Codex Cloud'],
-        'skills/zdev1/SKILL.md': ['thin compatibility alias', 'zdev1 -m -is', 'retired zdev2'],
+        'skills/zdev/SKILL.md': ['planning facade', 'sole planning entry point', '-isask', '-m', 'Codex Cloud'],
         'skills/zdev/references/workflow-contract.md': ['Combinations compose', 'merge or hold decision for each PR', 'Task-specific user constraints', 'Without `-m`', 'leave it open', 'comment on each original'],
-        'skills/zdev1/references/issue-sweep.md': ['--issuesweep', '--issue-sweep-ask', 'no-auto', 'Untouched', '**Super-epic:**', '## Implementation order', 'superseded'],
-        'skills/zdev1/references/handoff.md': ['Copyable prompt template', 'PR plan:', 'intentionally held or incomplete PRs open', 'Do not deploy', 'pending integration'],
+        'skills/zdev/references/issue-sweep.md': ['--issuesweep', '--issue-sweep-ask', 'no-auto', 'Untouched', '**Super-epic:**', '## Implementation order', 'superseded'],
+        'skills/zdev/references/handoff.md': ['Copyable prompt template', 'PR plan:', 'intentionally held or incomplete PRs open', 'Do not deploy', 'pending integration'],
     }
     for filename, required in anchors.items():
         text = (root / filename).read_text()
@@ -95,7 +94,7 @@ def validate(root=ROOT):
         text = path.read_text()
         for phrase in ('First verify that the required files <names> are readable', 'Open every required artifact in this destination session'):
             check(phrase not in text, f'Obsolete ZIP startup gate in {path.relative_to(root)}')
-    handoff = (root / 'skills/zdev1/references/handoff.md').read_text()
+    handoff = (root / 'skills/zdev/references/handoff.md').read_text()
     prompts = re.findall(r'```text\n(.*?)```', handoff, re.S)
     check(bool(prompts), 'Missing Codex prompt template')
     for prompt in prompts:
@@ -103,7 +102,7 @@ def validate(root=ROOT):
             validate_codex_prompt(prompt)
         except ValueError as exc:
             errors.append(str(exc))
-    for filename in ('skills/zdev/SKILL.md', 'skills/zdev/references/workflow-contract.md', 'skills/zdev1/references/handoff.md'):
+    for filename in ('skills/zdev/SKILL.md', 'skills/zdev/references/workflow-contract.md', 'skills/zdev/references/handoff.md'):
         text = (root / filename).read_text()
         check('mandatory Chat → Work → Codex' not in text, f'Obsolete staging in {filename}')
     if errors:
@@ -113,4 +112,4 @@ def validate(root=ROOT):
 
 if __name__ == '__main__':
     manifest = validate()
-    print(f"PASS: {manifest['name']} {manifest['version']}; seven skills, manifests, assets, references, and contract anchors")
+    print(f"PASS: {manifest['name']} {manifest['version']}; six skills, manifests, assets, references, and contract anchors")

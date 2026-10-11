@@ -5,8 +5,7 @@ Static checks protect the contracts; representative host conversations are still
 | Input | Expected result |
 |---|---|
 | `zdev` rough request | Grounded plan, durable issue when possible, complete Codex Cloud prompt; no Work stage. |
-| `zdev1` rough request | Same route and output as `zdev`; no distinct execution stage. |
-| `zdev1 -m -is for https://github.com/zudolab/zudo-text` | Bulk sweep checkpoint; accepted issue hierarchy and prompt carry conditional merge, no deployment or release authority. |
+| `zdev -m -is for https://github.com/zudolab/zudo-text` | Bulk sweep checkpoint; accepted issue hierarchy and prompt carry conditional merge, no deployment or release authority. |
 | `zdev -isask -is -pr -m` | Interview wins, accepted UI topics prototype after triage, all effective intent reaches issues and prompt. |
 | `zdev -pr` | Explicit UI acceptance before plan; readable decisions and validated artifact ZIP when real files exist. |
 | No artifacts | State none required; give direct Codex prompt. |

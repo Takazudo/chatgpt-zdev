@@ -1,3 +1,8 @@
+## 0.5.1
+
+- Remove zdev1, leaving zdev as the sole planning facade.
+- Move handoff and sweep references under zdev; keep the same flags and direct Codex Cloud workflow.
+
 ## 0.5.0
 
 - Make zdev the Chat planning facade and retain zdev1 as a thin alias.
