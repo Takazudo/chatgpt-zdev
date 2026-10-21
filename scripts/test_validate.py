@@ -15,7 +15,7 @@ class ValidationTests(unittest.TestCase):
         shutil.copytree(ROOT, self.root, ignore=shutil.ignore_patterns('.git', '__pycache__', 'dist'))
 
     def test_valid_source_and_inventory(self):
-        self.assertEqual(validate(self.root)['version'], '0.5.1')
+        self.assertEqual(validate(self.root)['version'], '0.6.0')
         self.assertFalse((self.root / 'skills/zdev2').exists())
         self.assertFalse((self.root / 'skills/zdev1').exists())
 
@@ -24,7 +24,7 @@ class ValidationTests(unittest.TestCase):
             with self.subTest(retired=retired):
                 path = self.root / 'skills' / retired
                 path.mkdir()
-                with self.assertRaisesRegex(ValueError, 'Expected six skills'):
+                with self.assertRaisesRegex(ValueError, 'Expected seven skills'):
                     validate(self.root)
                 path.rmdir()
 

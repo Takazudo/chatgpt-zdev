@@ -15,12 +15,14 @@ The handoff contains actual repository/issue/PR URLs, accepted scope, dependency
 
 `zstatus` and `zwatch` remain independent connected-computer observation skills.
 
+`zkicadactions` plans and reviews KiCad native verification on pinned GitHub Actions: artifact-only workflow rules, owned-container cleanup, separate authorities, and receipt review where UNKNOWN is never PASS. Its bundled offline checkers (`check_receipt.py`, `lint_workflow.py`) never dispatch or start KiCad, and its Codex Cloud prompt template carries the same limits. It never dispatches, publishes, merges, adopts outputs, edits CAD or starts manufacturing.
+
 ## Source validation and packaging
 
 ```bash
 python3 scripts/validate.py
 python3 -m unittest discover -s scripts -p 'test_*.py'
-python3 scripts/package.py --output /tmp/zudo-dev-flow-0.5.1.zip
+python3 scripts/package.py --output /tmp/zudo-dev-flow-0.6.0.zip
 ```
 
 See [acceptance cases](docs/acceptance-cases.md), [provenance](docs/provenance.md), and [release steps](docs/releasing.md). A source PR does not update the installed account plugin.
