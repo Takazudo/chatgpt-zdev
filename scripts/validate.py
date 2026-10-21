@@ -5,12 +5,12 @@ import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-SKILLS = {'zdev', 'zplan', 'zproto', 'zgh', 'zstatus', 'zwatch'}
+SKILLS = {'zdev', 'zplan', 'zproto', 'zgh', 'zstatus', 'zwatch', 'zkicadactions'}
 
 
 def validate_codex_prompt(prompt):
     """Codex handoff templates must not depend on private skill availability."""
-    private_skill = r'(?i)(?:\b(?:zdev[123]?|zplan|zproto|zgh|zstatus|zwatch|z-dev-flow|zudo-dev-flow|x-wt-teams|prc)\b|plugin://)'
+    private_skill = r'(?i)(?:\b(?:zdev[123]?|zplan|zproto|zgh|zstatus|zwatch|zkicadactions|z-dev-flow|zudo-dev-flow|x-wt-teams|prc)\b|plugin://)'
     if re.search(private_skill, prompt):
         raise ValueError('Nonportable skill reference in Codex prompt')
 
@@ -38,7 +38,7 @@ def validate(root=ROOT):
         asset = root / interface[key]
         check(asset.is_file() and asset.resolve().is_relative_to(root.resolve()), f'Invalid {key}')
     actual = {p.name for p in (root / 'skills').iterdir() if p.is_dir()}
-    check(actual == SKILLS, f'Expected six skills; got {sorted(actual)}')
+    check(actual == SKILLS, f'Expected seven skills; got {sorted(actual)}')
     for name in sorted(actual):
         path = root / 'skills' / name / 'SKILL.md'
         check(path.is_file(), f'{name}: missing SKILL.md')
@@ -81,6 +81,8 @@ def validate(root=ROOT):
         'skills/zdev/SKILL.md': ['planning facade', 'sole planning entry point', '-isask', '-m', 'Codex Cloud'],
         'skills/zdev/references/workflow-contract.md': ['Combinations compose', 'merge or hold decision for each PR', 'Task-specific user constraints', 'Without `-m`', 'leave it open', 'comment on each original'],
         'skills/zdev/references/issue-sweep.md': ['--issuesweep', '--issue-sweep-ask', 'no-auto', 'Untouched', '**Super-epic:**', '## Implementation order', 'superseded'],
+        'skills/zkicadactions/SKILL.md': ['Never dispatch a workflow', 'UNKNOWN is not PASS', 'not defaults for other repositories', 'Never bypass a denied access'],
+        'skills/zkicadactions/references/contract.md': ['Artifact-only', 'persist-credentials: false', 'fail closed', 'UNIMPLEMENTED', 'never rerun an unchanged failure', 'Adoption is always an owner decision'],
         'skills/zdev/references/handoff.md': ['Copyable prompt template', 'PR plan:', 'intentionally held or incomplete PRs open', 'Do not deploy', 'pending integration'],
     }
     for filename, required in anchors.items():
@@ -97,6 +99,10 @@ def validate(root=ROOT):
     handoff = (root / 'skills/zdev/references/handoff.md').read_text()
     prompts = re.findall(r'```text\n(.*?)```', handoff, re.S)
     check(bool(prompts), 'Missing Codex prompt template')
+    kicad = (root / 'skills/zkicadactions/references/templates.md').read_text()
+    kicad_prompt = kicad.split('## Codex Cloud handoff', 1)[-1]
+    check('```text' in kicad_prompt, 'Missing KiCad Codex prompt template')
+    prompts += re.findall(r'```text\n(.*?)```', kicad_prompt, re.S)
     for prompt in prompts:
         try:
             validate_codex_prompt(prompt)
@@ -112,4 +118,4 @@ def validate(root=ROOT):
 
 if __name__ == '__main__':
     manifest = validate()
-    print(f"PASS: {manifest['name']} {manifest['version']}; six skills, manifests, assets, references, and contract anchors")
+    print(f"PASS: {manifest['name']} {manifest['version']}; seven skills, manifests, assets, references, and contract anchors")

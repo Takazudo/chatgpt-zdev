@@ -18,5 +18,9 @@ Static checks protect the contracts; representative host conversations are still
 | Task-specific user constraint | Honor it over generic flag defaults; choose a fitting workflow without needless orchestration. |
 | Existing feature/resource PR | Refresh and reuse/update it when appropriate; distinguish merge from close-as-superseded. |
 | zstatus/zwatch | Existing one-shot/ongoing observation behavior remains independent of planning. |
+| `zkicadactions` plan request | Plan template filled with UNKNOWN where unestablished; separate authorities; no dispatch. |
+| `zkicadactions` green identity receipt | Identity PASS only; connectivity, DRC, electrical, assembly and manufacturing reported NOT_EVALUATED; adoption left to the owner. |
+| `zkicadactions` artifact download denied | Reported as unread evidence (UNKNOWN); no alternate tool, host or URL. |
+| `zkicadactions` asked to upload a nonpublic candidate or auto-adopt routing | Held as unimplemented with its acceptance criteria; no upload or push. |
 
 `validate.py` checks inventory, manifests, links and handoff anchors. Unit tests exercise flag combinations, alias routing and lifecycle template instructions. Neither static check proves live model behavior or account installation.

@@ -1,0 +1,4 @@
+interface:
+  display_name: "zkicadactions"
+  short_description: "Plan and review KiCad Actions runs"
+  default_prompt: "Use $zkicadactions for this development task."

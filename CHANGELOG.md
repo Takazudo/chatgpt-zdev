@@ -1,3 +1,8 @@
+## 0.6.0
+
+- Add zkicadactions: plan, review and hand off KiCad native verification on pinned GitHub Actions (artifact-only, owned containers, separate authorities, UNKNOWN is not PASS).
+- Bundle offline receipt and workflow checkers with tests; extend validation to seven skills and the KiCad Codex prompt template.
+
 ## 0.5.1
 
 - Remove zdev1, leaving zdev as the sole planning facade.
