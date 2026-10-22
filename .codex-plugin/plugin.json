@@ -11,7 +11,7 @@
     "capabilities": []
   },
   "name": "z-dev-flow",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "Takazudo Chat planning and direct Codex Cloud handoff with connected-computer observation",
   "author": {
     "name": "Takazudo"

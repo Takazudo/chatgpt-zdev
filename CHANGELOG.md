@@ -1,3 +1,8 @@
+# v0.6.1
+
+- Planning returns a self-contained prompt and necessary artifacts, with no GitHub or repository-history writes, including delegated helpers.
+- Preserve sweep checkpoints and downstream conditional merge intent; standalone GitHub management remains explicit.
+
 ## 0.6.0
 
 - Add zkicadactions: plan, review and hand off KiCad native verification on pinned GitHub Actions (artifact-only, owned containers, separate authorities, UNKNOWN is not PASS).

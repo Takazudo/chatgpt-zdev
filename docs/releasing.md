@@ -1,5 +1,9 @@
 # Release and migration
 
+## v0.6.1 prompt and artifacts only
+
+Planning and its delegated helpers perform read-only GitHub research. No planning issues, epics, PRs, labels, comments, branches, commits, pushes or merges. Sweep decisions stay in the handoff; standalone GitHub management and separately authorized implementation remain available. Update the existing private plugin in place, preserving identity and sharing; this source/package build does not publish or install it.
+
 ## v0.6.0 KiCad Actions skill
 
 Adds `skills/zkicadactions/` (SKILL.md, agent metadata, references, offline scripts and config templates). Nothing is retired; an overlay update only adds files. Read back v0.6.0 and the seven-skill inventory in a fresh chat.
@@ -22,7 +26,7 @@ Delete any remaining `zdev2` paths from the actual installed inventory as well. 
 ```bash
 python3 scripts/validate.py
 python3 -m unittest discover -s scripts -p 'test_*.py'
-python3 scripts/package.py --output /tmp/zudo-dev-flow-0.6.0.zip
+python3 scripts/package.py --output /tmp/zudo-dev-flow-0.6.1.zip
 ```
 
 Source PR merge and account-plugin update are separate operations.

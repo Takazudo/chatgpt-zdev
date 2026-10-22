@@ -4,10 +4,13 @@ Static checks protect the contracts; representative host conversations are still
 
 | Input | Expected result |
 |---|---|
-| `zdev` rough request | Grounded plan, durable issue when possible, complete Codex Cloud prompt; no Work stage. |
-| `zdev -m -is for https://github.com/zudolab/zudo-text` | Bulk sweep checkpoint; accepted issue hierarchy and prompt carry conditional merge, no deployment or release authority. |
-| `zdev -isask -is -pr -m` | Interview wins, accepted UI topics prototype after triage, all effective intent reaches issues and prompt. |
+| `zdev` rough request | Complete grounded Codex Cloud prompt plus necessary artifacts; no GitHub or repository-history writes. |
+| `zdev -m -is for https://github.com/zudolab/zudo-text` | Bulk sweep checkpoint; accepted task groups and prompt carry conditional merge, no deployment or release authority. |
+| `zdev -isask -is -pr -m` | Interview wins, accepted UI topics prototype after triage, all effective intent reaches the prompt. |
 | `zdev -pr` | Explicit UI acceptance before plan; readable decisions and validated artifact ZIP when real files exist. |
+| Standalone explicit GitHub management request | zgh may perform the requested operation; planning delegation never supplies that authority. |
+| `-re` or newly reported sweep problem | Refresh only the handoff summary or add a local task; no dashboard or seed issue creation. |
+| Planning helper asked to publish resources | Return actual required files in the artifact ZIP; no resource PR, branch push or commit. |
 | No artifacts | State none required; give direct Codex prompt. |
 | Indispensable exact asset unavailable | Name dependent requirement and blocker; finish independent planning. |
 | No `-m` | Codex leaves PR open, comments on original issues with PR link and actual status, leaves delivery issues open pending integration. |
@@ -16,7 +19,7 @@ Static checks protect the contracts; representative host conversations are still
 | Partial implementation | Report actual state; never mark issue complete or close unrelated issues. |
 | Multi-PR `-m` with one eligible PR and one intentionally held PR | Merge only the eligible PR after its gates; retain held PR and incomplete issue open. State dependency order and each disposition in the prompt. |
 | Task-specific user constraint | Honor it over generic flag defaults; choose a fitting workflow without needless orchestration. |
-| Existing feature/resource PR | Refresh and reuse/update it when appropriate; distinguish merge from close-as-superseded. |
+| Existing feature/resource PR | Inspect read-only and instruct the later implementation session to reuse/update it when appropriate; distinguish merge from close-as-superseded. |
 | zstatus/zwatch | Existing one-shot/ongoing observation behavior remains independent of planning. |
 | `zkicadactions` plan request | Plan template filled with UNKNOWN where unestablished; separate authorities; no dispatch. |
 | `zkicadactions` green identity receipt | Identity PASS only; connectivity, DRC, electrical, assembly and manufacturing reported NOT_EVALUATED; adoption left to the owner. |
