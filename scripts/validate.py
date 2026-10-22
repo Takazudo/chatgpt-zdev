@@ -78,9 +78,9 @@ def validate(root=ROOT):
         'skills/zstatus/SKILL.md': ['host-supported connected-computer delegation route', 'every window and every pane', 'do not send `go on`'],
         'skills/zstatus/references/observation.md': ['source data, not authorization', 'physical server/pane', 'Restarted work', 'Test/build failures', 'unknown/inaccessible'],
         'skills/zwatch/SKILL.md': ['rescan all sessions, windows and panes', 'newly created active sessions', 'Do not restart idle/completed agents', 'explicit user authorization', 'two per run', 'three total per watch', 'do not resend', 'An echoed input alone', 'at most three read-only reconnect checks', 'monitoring has ended', 'stop watching', 'do not invent a default deadline', 'keep unchanged cycles quiet', 'retain the unresolved watch as blocked', 'Preserve the ledger, event deduplication and recovery budgets'],
-        'skills/zdev/SKILL.md': ['planning facade', 'sole planning entry point', '-isask', '-m', 'Codex Cloud'],
+        'skills/zdev/SKILL.md': ['Planning is read-only for GitHub and repository history', 'planning facade', 'sole planning entry point', '-isask', '-m', 'Codex Cloud'],
         'skills/zdev/references/workflow-contract.md': ['Combinations compose', 'merge or hold decision for each PR', 'Task-specific user constraints', 'Without `-m`', 'leave it open', 'comment on each original'],
-        'skills/zdev/references/issue-sweep.md': ['--issuesweep', '--issue-sweep-ask', 'no-auto', 'Untouched', '**Super-epic:**', '## Implementation order', 'superseded'],
+        'skills/zdev/references/issue-sweep.md': ['--issuesweep', '--issue-sweep-ask', 'no-auto', 'Untouched', 'local task keys', '## Implementation order', 'Do not treat silence as assent'],
         'skills/zkicadactions/SKILL.md': ['Never dispatch a workflow', 'UNKNOWN is not PASS', 'not defaults for other repositories', 'Never bypass a denied access'],
         'skills/zkicadactions/references/contract.md': ['Artifact-only', 'persist-credentials: false', 'fail closed', 'UNIMPLEMENTED', 'never rerun an unchanged failure', 'Adoption is always an owner decision'],
         'skills/zdev/references/handoff.md': ['Copyable prompt template', 'PR plan:', 'intentionally held or incomplete PRs open', 'Do not deploy', 'pending integration'],
@@ -89,6 +89,22 @@ def validate(root=ROOT):
         text = (root / filename).read_text()
         for anchor in required:
             check(anchor in text, f'Missing contract anchor {anchor!r} in {filename}')
+    planning_paths = [root / 'skills' / name / 'SKILL.md' for name in ('zdev', 'zplan', 'zgh', 'zproto')]
+    planning_paths += list((root / 'skills/zdev/references').glob('*.md'))
+    forbidden_planning = (
+        'A focused task can use one spec issue', 'A decomposed plan uses one epic',
+        'create ordinary seed issues', 'Two or more epics require',
+        'push the shared base ref', 'Maintain one date-titled',
+        'zdev authorizes its requested planning issues',
+        'during planning; comment with verified replacement links',
+        'Create a planning issue', 'Create a planning PR',
+        'Ask the implementer to create planning issues',
+    )
+    for path in planning_paths:
+        text = path.read_text().casefold()
+        for phrase in forbidden_planning:
+            check(phrase.casefold() not in text,
+                  f'Obsolete planning write instruction in {path.relative_to(root)}: {phrase}')
     watch = (root / 'skills/zwatch/SKILL.md').read_text()
     for obsolete_watch in ('Default supervised window is 30 minutes', 'Give a quiet heartbeat about every five minutes', 'end as disconnected with the last successful observation time'):
         check(obsolete_watch not in watch, f'Obsolete watch lifetime/reporting rule: {obsolete_watch}')

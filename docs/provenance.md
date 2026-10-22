@@ -9,10 +9,10 @@ Reviewed 2026-10-11 for the direct Codex handoff rewrite.
 
 ## Deliberate adaptations
 
-- Default handoff is a self-contained Codex Cloud prompt grounded in durable issues; real artifacts are supplied when available.
+- Default handoff is a self-contained Codex Cloud prompt grounded in current source and existing issue evidence, without planning writes; real artifacts are supplied when available.
 - zdev is the sole planning facade; it does not start implementation.
 - Codex implementation targets the repository default branch unless the accepted task specifies a different target.
-- Super-epics go directly to Codex with their issue hierarchy and available artifacts.
-- Issue execution-mode markers inform the downstream Codex workflow without requiring a particular orchestration tool.
+- Larger plans go directly to Codex with named task groups, dependency order and available artifacts; no planning issues or epics are created.
+- Handoff task execution-mode markers inform the downstream Codex workflow without requiring a particular orchestration tool.
 - `-m` cannot bypass incomplete acceptance, missing verification, review, approvals, or CI. It is per-PR and permits intentional holds and partial integration.
 - Existing global/personal skills and the installed plugin cache are not edited by this source release.
