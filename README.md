@@ -13,7 +13,7 @@ Planning returns only the prompt and necessary artifacts: no issue/epic/PR creat
 
 All flag combinations carry their effective meaning into the final prompt. The following lifecycle applies only in the separate user-started implementation session. Without `-m`, the implementation PR stays open, original issues get a PR link and honest status comment, and delivery issues stay open pending integration. With `-m`, Codex may merge after required review, approvals and current-head checks pass, then close only fully satisfied in-scope issues. `-m` never authorizes deployment or publication.
 
-The handoff contains actual repository/issue/PR URLs, accepted scope, dependency order, artifacts, verification evidence and lifecycle instructions. The implementation session need not install this plugin or read the source Chat. A ZIP supplements the complete readable prompt when real prototype source/assets/fixtures exist. Missing ZIP bytes are requested only when an exact input is indispensable.
+The handoff contains actual repository/issue/PR URLs, accepted scope, dependency order, artifacts, verification evidence and lifecycle instructions. The implementation session need not install this plugin or read the source Chat. Session-created deliverable files and the ZIP are saved under a session folder in Dropbox `codex-artifacts/` when the connector permits; failures and pending confirmations are reported. A ZIP supplements the complete readable prompt when real prototype source/assets/fixtures exist. Missing ZIP bytes are requested only when an exact input is indispensable.
 
 `zstatus` and `zwatch` remain independent connected-computer observation skills.
 
@@ -24,7 +24,7 @@ The handoff contains actual repository/issue/PR URLs, accepted scope, dependency
 ```bash
 python3 scripts/validate.py
 python3 -m unittest discover -s scripts -p 'test_*.py'
-python3 scripts/package.py --output /tmp/zudo-dev-flow-0.6.1.zip
+python3 scripts/package.py --output /tmp/zudo-dev-flow-0.6.2.zip
 ```
 
 See [acceptance cases](docs/acceptance-cases.md), [provenance](docs/provenance.md), and [release steps](docs/releasing.md). A source PR does not update the installed account plugin.

@@ -1,3 +1,7 @@
+## 0.6.2
+
+- Save zdev session deliverables and prototype rounds to a session-specific Dropbox folder, with explicit upload status and fallback.
+
 # v0.6.1
 
 - Planning returns a self-contained prompt and necessary artifacts, with no GitHub or repository-history writes, including delegated helpers.

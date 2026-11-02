@@ -5,7 +5,7 @@ description: "Iterate on UI and interaction prototypes in ordinary Chat for zdev
 
 # zproto
 
-Read [the workflow contract](../zdev/references/workflow-contract.md).
+Read [the workflow contract](../zdev/references/workflow-contract.md) and [the artifact storage rules](../zdev/references/artifact-storage.md). Save each round’s created deliverable files as they are produced.
 
 1. Do a light source review for stack, tokens, components, content, and constraints. Write a shared brief with target interactions, responsive states, realistic worst-case content, and accessibility needs.
 2. Prefer a private ChatGPT Sites preview when available. Otherwise deliver a standalone HTML/CSS/JS prototype that the user can open. Do not require a Work session merely to host a prototype. Public publication needs the user's intent.

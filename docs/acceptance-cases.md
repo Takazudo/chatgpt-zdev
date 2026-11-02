@@ -27,3 +27,6 @@ Static checks protect the contracts; representative host conversations are still
 | `zkicadactions` asked to upload a nonpublic candidate or auto-adopt routing | Held as unimplemented with its acceptance criteria; no upload or push. |
 
 `validate.py` checks inventory, manifests, links and handoff anchors. Unit tests exercise flag combinations, alias routing and lifecycle template instructions. Neither static check proves live model behavior or account installation.
+
+| Session creates deliverable files | Save each under one unique Dropbox `codex-artifacts/` session folder as produced, including prototype rounds and final ZIP; report actual upload status. |
+| Dropbox unavailable or upload requires confirmation | Report the blocker or pending confirmation and provide available download fallback; never claim an upload succeeded. |
