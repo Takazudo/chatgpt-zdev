@@ -1,10 +1,12 @@
-"""Regression checks for the direct planning-to-Codex contract."""
+"""Regression checks for planning boundaries and standalone execution prompts."""
 import json
+import re
 import shutil
 import tempfile
 import unittest
 from pathlib import Path
-from validate import ROOT, validate, validate_codex_prompt
+from validate import (ROOT, handoff_variants, validate, validate_codex_prompt,
+                      validate_execution_prompt)
 
 
 class ValidationTests(unittest.TestCase):
@@ -14,8 +16,24 @@ class ValidationTests(unittest.TestCase):
         self.root = Path(self.temp.name) / 'plugin'
         shutil.copytree(ROOT, self.root, ignore=shutil.ignore_patterns('.git', '__pycache__', 'dist'))
 
+    def mutate_and_reject(self, filename, old, new, error):
+        path = self.root / filename
+        original = path.read_text()
+        self.assertIn(old, original)
+        path.write_text(original.replace(old, new, 1))
+        try:
+            with self.assertRaisesRegex(ValueError, error):
+                validate(self.root)
+        finally:
+            path.write_text(original)
+
+    def prompt_template(self):
+        text = (self.root / 'skills/zdev/references/handoff.md').read_text()
+        return re.findall(r'```text\n(.*?)```', text, re.S)[0]
+
     def test_valid_source_and_inventory(self):
-        self.assertEqual(validate(self.root)['version'], '0.6.2')
+        expected_version = json.loads((ROOT / 'plugin.json').read_text())['version']
+        self.assertEqual(validate(self.root)['version'], expected_version)
         self.assertFalse((self.root / 'skills/zdev2').exists())
         self.assertFalse((self.root / 'skills/zdev1').exists())
 
@@ -42,101 +60,159 @@ class ValidationTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'Broken/escaping link'):
             validate(self.root)
 
-    def test_zdev_is_sole_planning_entry_point(self):
-        self.assertFalse((self.root / 'skills/zdev1').exists())
-        self.assertFalse((self.root / 'skills/zdev2').exists())
+    def test_planner_flags_stay_in_producer_instructions(self):
         facade = (self.root / 'skills/zdev/SKILL.md').read_text()
         self.assertIn('sole planning entry point', facade)
         for flag in ('-m', '-pr', '-is', '-isask'):
             self.assertIn(flag, facade)
-
-    def test_flag_combinations_and_issue_lifecycle(self):
         contract = (self.root / 'skills/zdev/references/workflow-contract.md').read_text()
-        for phrase in ('`-isask` wins', '`-isask -m -pr`', 'merge or hold decision for each PR', 'Intentionally held and incomplete PRs remain open', 'Task-specific user constraints override generic flag defaults', 'comment on each original in-scope issue', 'keep delivery issues open pending integration', 'never authorizes deployment'):
-            with self.subTest(phrase=phrase):
-                self.assertIn(phrase, contract)
+        for phrase in ('`-isask` wins', '`-isask -m -pr`', 'merge or hold decision for each PR',
+                       'Intentionally held and incomplete PRs remain open',
+                       'Task-specific user constraints override generic flag defaults',
+                       'replace all flags with their plain-language scope and actions'):
+            self.assertIn(phrase, contract)
 
-    def test_handoff_instructions_cover_both_merge_modes_and_partial_multi_pr(self):
-        handoff = (self.root / 'skills/zdev/references/handoff.md').read_text()
-        for phrase in ('PR plan:', 'each actual or planned PR, target, merge/hold decision', 'Without -m:', 'With -m:', 'intentionally held or incomplete PRs open', 'Do not deploy', 'Do not report a check as passed unless observed', 'do not create a duplicate'):
-            with self.subTest(phrase=phrase):
-                self.assertIn(phrase, handoff)
-
-    def test_planning_boundaries_and_standalone_management(self):
-        for filename in ('skills/zdev/SKILL.md', 'skills/zplan/SKILL.md',
-                         'skills/zgh/SKILL.md', 'skills/zdev/references/workflow-contract.md',
-                         'skills/zdev/references/handoff.md'):
+    def test_planning_read_only_and_helper_boundaries_are_required(self):
+        for name in ('zdev', 'zplan', 'zgh'):
+            with self.subTest(skill=name):
+                self.mutate_and_reject(f'skills/{name}/SKILL.md',
+                                       'GitHub and repository history are read-only',
+                                       'GitHub writes are permitted', 'Missing contract anchor')
+        for filename, phrase in (
+                ('skills/zdev/SKILL.md', 'This includes delegated helpers'),
+                ('skills/zdev/references/workflow-contract.md', 'every helper it delegates perform read-only GitHub research'),
+                ('skills/zdev/references/handoff.md', 'delegated helpers perform read-only GitHub research')):
             with self.subTest(filename=filename):
-                text = (self.root / filename).read_text()
-                self.assertIn('Planning is read-only for GitHub and repository history', text)
-                self.assertIn('do not commit, push, close, or merge', text)
-                self.assertIn('This applies to delegated helpers too', text)
-                self.assertIn('Never ask a downstream implementer to create planning issues', text)
+                self.mutate_and_reject(filename, phrase, 'REMOVED', 'Missing contract anchor')
         github = (self.root / 'skills/zgh/SKILL.md').read_text()
         self.assertIn('explicit standalone user request', github)
         self.assertIn('Do not reinterpret delegated planning as standalone authorization', github)
 
-    def test_reintroduced_planning_writes_are_rejected(self):
+    def test_planning_must_not_initiate_write_approval_requests(self):
+        self.mutate_and_reject('skills/zdev/SKILL.md',
+                              'Do not initiate GitHub-write approval requests here',
+                              'Ask for GitHub write approval', 'Missing contract anchor')
+
+    def test_reintroduced_planning_writes_and_cross_stage_bans_are_rejected(self):
         cases = {
             'skills/zplan/SKILL.md': 'A focused task can use one spec issue.',
             'skills/zdev/references/issue-sweep.md': 'Two or more epics require one super-epic.',
             'skills/zgh/SKILL.md': 'Create a planning PR after triage approval.',
-            'skills/zdev/references/handoff.md': 'Ask the implementer to create planning issues.',
+            'skills/zdev/references/handoff.md': 'Never ask a downstream implementer to create planning issues.',
         }
         for filename, instruction in cases.items():
             with self.subTest(filename=filename):
                 path = self.root / filename
                 original = path.read_text()
                 path.write_text(original + '\n' + instruction + '\n')
-                with self.assertRaisesRegex(ValueError, 'Obsolete planning write instruction'):
-                    validate(self.root)
-                path.write_text(original)
+                try:
+                    with self.assertRaisesRegex(ValueError, 'Obsolete planning write instruction'):
+                        validate(self.root)
+                finally:
+                    path.write_text(original)
 
-    def test_sweep_is_decisions_only_even_after_approval(self):
+    def test_sweep_scope_approval_does_not_authorize_planning_writes(self):
         sweep = (self.root / 'skills/zdev/references/issue-sweep.md').read_text()
         for phrase in ('Approval accepts planning scope only', 'Do not treat silence as assent',
-                       'local task keys', 'without creating seed issues',
-                       'Do not bootstrap refs', 'Do not close the issue',
-                       'Do not create replacement planning issues', 'Artifacts: none required'):
+                       'local task keys', 'without creating seed issues', 'Do not bootstrap refs',
+                       'Do not close the issue', 'create only missing records', 'Artifacts: none required'):
             self.assertIn(phrase, sweep)
 
-    def test_no_automatic_planning_writes_regressions(self):
-        paths = list((self.root / 'skills').rglob('*.md'))
-        paths += [self.root / 'README.md', self.root / 'docs/acceptance-cases.md']
-        obsolete = ('creates or updates durable issues when authorized',
-                    'A focused task can use one spec issue',
-                    'A decomposed plan uses one epic',
-                    'after issue creation', 'Read back published issue bodies',
-                    'create ordinary seed issues', 'Only after this checkpoint apply',
-                    'Two or more epics require', 'push the shared base ref',
-                    'Maintain one date-titled', 'zdev authorizes its requested planning issues',
-                    'during planning; comment with verified replacement links')
-        for path in paths:
-            for phrase in obsolete:
-                with self.subTest(path=path.relative_to(self.root), phrase=phrase):
-                    self.assertNotIn(phrase, path.read_text())
+    def test_prompt_contains_plan_and_tracking_without_plugin_dependencies(self):
+        template = self.prompt_template()
+        for phrase in ('Accepted scope:', 'Acceptance criteria:', 'Non-goals:',
+                       'Tasks and dependency order:', 'Verification already observed:',
+                       'Artifacts:', 'This task authorizes creating, updating and closing'):
+            self.assertIn(phrase, template)
+        validate_execution_prompt(template)
 
-    def test_handoff_embeds_plan_without_publication_prerequisite(self):
-        handoff = (self.root / 'skills/zdev/references/handoff.md').read_text()
-        for phrase in ('separate user-started Codex Cloud implementation session',
-                       'Do not create planning issues or epics',
-                       'Accepted scope:', 'Acceptance criteria:', 'Non-goals:',
-                       'Dependency order:', 'Verification already observed:',
-                       'Artifacts: none required'):
-            self.assertIn(phrase, handoff)
-        self.assertNotIn('planning issue URLs', handoff)
+    def test_both_merge_branches_are_standalone(self):
+        variants = handoff_variants(self.prompt_template())
+        self.assertEqual(set(variants), {False, True})
+        for authorized, prompt in variants.items():
+            with self.subTest(merge=authorized):
+                validate_execution_prompt(prompt)
+                self.assertNotIn('<If merge', prompt)
+                self.assertIn('Before implementing, establish durable GitHub tracking', prompt)
+                self.assertIn('Use those issues as the development notebook', prompt)
+        self.assertIn('Keep delivery issues open pending integration; do not merge', variants[False])
+        self.assertNotIn('Close completed children first', variants[False])
+        self.assertIn('Close completed children first', variants[True])
+        self.assertNotIn('Leave implementation PRs open.', variants[True])
 
-    def test_codex_prompt_rejects_private_skills(self):
-        for invocation in ('Use zdev2', 'Use zgh', 'Run x-wt-teams', 'Run /prc', 'Install plugin://example'):
+    def test_missing_merge_branch_is_rejected(self):
+        self.mutate_and_reject('skills/zdev/references/handoff.md',
+                              '<If merge is not authorized:', '<When ready:',
+                              'Missing merge-permission branch')
+
+    def test_tracker_first_and_duplicate_prevention_regressions_are_rejected(self):
+        for old, new in (
+                ('Before implementing, establish durable GitHub tracking', 'After implementing, consider tracking'),
+                ('search for other matching open records before creating missing ones', 'always create new records'),
+                ('For one focused task, use one tracker', 'For one focused task, omit tracking'),
+                ('create or reuse a parent epic plus linked sub-issues', 'use an unlinked local checklist')):
+            with self.subTest(removed=old):
+                self.mutate_and_reject('skills/zdev/references/handoff.md', old, new,
+                                       'Missing implementation contract')
+
+    def test_notebook_and_verified_evidence_regressions_are_rejected(self):
+        for phrase in ('Use those issues as the development notebook throughout the work',
+                       'At meaningful milestones and before pausing or handing off',
+                       'test commands and observed results with relevant revisions',
+                       'PR/commit links, blockers and the next action',
+                       'after an uncertain response, inspect for an existing result before retrying'):
+            with self.subTest(removed=phrase):
+                self.mutate_and_reject('skills/zdev/references/handoff.md', phrase, 'REMOVED',
+                                       'Missing implementation contract')
+
+    def test_completion_and_merge_gates_are_required(self):
+        for phrase in ('Keep delivery issues open pending integration; do not merge',
+                       'merge only after its accepted work, review, required approvals and current-head required checks pass under repository policy',
+                       'Confirm integration into the intended target',
+                       'close only issues whose own criteria are fully satisfied',
+                       'Close completed children first',
+                       'close their parent only when every accepted requirement and required child is complete'):
+            with self.subTest(removed=phrase):
+                self.mutate_and_reject('skills/zdev/references/handoff.md', phrase, 'REMOVED',
+                                       'Missing implementation contract')
+
+    def test_execution_prompt_rejects_private_skills_and_app_links(self):
+        for invocation in ('Use zdev2', 'Use `zgh`', 'Run x-wt-teams', 'Run /prc',
+                           'Follow the big-plan skill', 'Install plugin://example',
+                           'Use [$zudo-dev-flow](app://plugins_example)'):
             with self.subTest(invocation=invocation):
-                with self.assertRaisesRegex(ValueError, 'Nonportable skill'):
-                    validate_codex_prompt(invocation + ' to finish the PR.')
+                with self.assertRaisesRegex(ValueError, 'Nonportable'):
+                    validate_execution_prompt(invocation + ' to finish the PR.')
+        self.assertIs(validate_codex_prompt, validate_execution_prompt)
+
+    def test_execution_prompt_rejects_flags_stage_leakage_and_blanket_issue_bans(self):
+        for text, error in (
+                ('Planning flags: `-m -is`.', 'Raw planning flag'),
+                ('Use --merge when ready.', 'Raw planning flag'),
+                ('The planning Chat made no GitHub writes.', 'Planning-session reference'),
+                ('In the ChatGPT planning session, issues were read-only.', 'Planning-session reference'),
+                ('Do not create planning issues or epics.', 'Blanket issue-creation ban'),
+                ('Never create new GitHub issues.', 'Blanket issue-creation ban')):
+            with self.subTest(text=text):
+                with self.assertRaisesRegex(ValueError, error):
+                    validate_execution_prompt(text)
+
+    def test_factual_paths_shell_flags_and_duplicate_limits_remain_valid(self):
+        for text in (
+                'Implement https://github.com/Takazudo/chatgpt-zdev and edit skills/big-plan/SKILL.md.',
+                'Inspect `skills/zdev/SKILL.md` and run `python3 -m unittest discover -s scripts`.',
+                'Run `git commit -m "Record change"` and `gh pr merge --merge` after authorized checks.',
+                'Run python3 -m unittest discover -s scripts',
+                'Run ./scripts/check -m',
+                'Run checks:\n```sh\ncustom-check --filter changed\n```',
+                'Do not create duplicate issues or close unrelated issues.'):
+            with self.subTest(text=text):
+                validate_execution_prompt(text)
 
     def test_watch_safety_contract_survives(self):
-        path = self.root / 'skills/zwatch/SKILL.md'
-        path.write_text(path.read_text().replace('rescan all sessions, windows and panes', 'REMOVED'))
-        with self.assertRaisesRegex(ValueError, 'Missing contract anchor'):
-            validate(self.root)
+        self.mutate_and_reject('skills/zwatch/SKILL.md',
+                              'rescan all sessions, windows and panes', 'REMOVED',
+                              'Missing contract anchor')
 
 
 if __name__ == '__main__':
