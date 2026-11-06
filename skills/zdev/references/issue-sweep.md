@@ -1,6 +1,6 @@
 # Issue sweep in zdev
 
-This Chat planning stage returns a complete prompt plus necessary artifacts. GitHub research is read-only: do not create issues, epics, dashboards, labels, comments, branches or PRs; do not update, close, commit, push or merge. Delegated helpers inherit this boundary. Never defer planning issue creation to the implementer.
+This Chat planning stage returns a complete prompt plus necessary artifacts. GitHub research is read-only: do not create issues, epics, dashboards, labels, comments, branches or PRs; do not update, close, commit, push or merge. Delegated helpers inherit this boundary. Do not initiate GitHub-write approval requests here. Prepare concrete tracking content and require the separate implementing agent to establish or reuse a tracker/epic and sub-issues before implementation, following [implementation tracking](implementation-tracking.md).
 
 ## Flags and intake
 
@@ -35,7 +35,7 @@ Approval accepts planning scope only. Record dispositions, dates, reasons and an
 
 1. For verification-only topics, perform only available non-mutating checks and record evidence. Do not close the issue. If verification is unavailable, record the limitation.
 2. Group tiny topics into a batch; give substantial independent topics their own task groups. Each task has a stable local key, accepted scope, source URLs when they exist, constraints, acceptance criteria, tests and dependencies. Do not invent issue numbers.
-3. Include `## Implementation order` and integration checkpoints for larger batches. Use local task keys for dependency edges, check the graph is acyclic, and serialize shared-file/resource conflicts. No mandatory epic or super-epic topology.
+3. Include `## Implementation order` and integration checkpoints for larger batches. Use local task keys for dependency edges, check the graph is acyclic, and serialize shared-file/resource conflicts. Select one tracker for a focused batch or a parent epic and sub-issues for independently completable tasks; avoid unnecessary extra hierarchy.
 4. Review coverage against every accepted source requirement and prototype correction. Preserve Added/Removed/Superseded decisions. If one topic cannot be planned, report that precise gap while completing independent accepted topics.
 5. Inspect existing branches and PRs read-only to avoid duplicate work. Describe a fitting implementation branch/PR strategy in the prompt, with actual versus planned states clearly distinguished. Do not bootstrap refs, push resources or open a resource PR during planning.
 
@@ -43,8 +43,8 @@ Approval accepts planning scope only. Record dispositions, dates, reasons and an
 
 Existing issues remain unchanged throughout planning. Summarize handled, postponed, untouched, verified and blocked topics in Chat, with existing URLs, evidence needed, dates and reasons. Preserve open entries from an existing human-check dashboard when refreshing the summary; an absent dashboard is not a blocker. If no candidates remain, say so and return that disposition without manufacturing tasks or artifacts.
 
-The separate user-started implementation session follows the handoff's authorized lifecycle for existing in-scope issues. Without `-m`, implementation PRs and delivery issues stay open pending integration. With `-m`, merge remains conditional on complete acceptance, review, required approvals and current-head checks; close only genuinely satisfied in-scope issues after integration. Do not create replacement planning issues in that session.
+The separate user-started Codex or Claude Code implementation session first establishes or reuses tracking for the accepted batch. Use selected existing delivery issues as children where appropriate and create only missing records. Keep issue notes with decisions, progress, evidence, PR links, blockers and next actions. Without merge authorization, PRs and delivery issues remain open pending integration. With merge authorization, require full acceptance, review, approvals and current-head checks; close completed children after confirmed integration, then the parent only when all accepted work is done. Do not close originals merely because a new tracker references them.
 
 ## Finalization
 
-Deliver one complete copyable batch prompt, containing all accepted scope, decisions, constraints, task dependency order, tests, evidence and unresolved limitations. Existing GitHub links supplement the specification; they never replace its accepted requirements. Include actual resource files in a validated ZIP only when needed; otherwise state `Artifacts: none required`. Carry the effective sweep flag and conditional `-m` intent into the prompt only. Never start implementation inside the planning sweep.
+Deliver one complete copyable batch prompt, containing all accepted scope, decisions, constraints, task dependency order, tests, evidence and unresolved limitations. Existing GitHub links supplement the specification; they never replace its accepted requirements. Include actual resource files in a validated ZIP only when needed; otherwise state `Artifacts: none required`. Translate the effective sweep scope, accepted UI decisions and conditional merge intent into plain-language execution instructions. Keep raw flags, plugin names, private skill calls and planning-session permission text out of the prompt. Never start implementation inside the planning sweep.

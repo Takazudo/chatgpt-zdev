@@ -8,11 +8,62 @@ ROOT = Path(__file__).resolve().parents[1]
 SKILLS = {'zdev', 'zplan', 'zproto', 'zgh', 'zstatus', 'zwatch', 'zkicadactions'}
 
 
-def validate_codex_prompt(prompt):
-    """Codex handoff templates must not depend on private skill availability."""
-    private_skill = r'(?i)(?:\b(?:zdev[123]?|zplan|zproto|zgh|zstatus|zwatch|zkicadactions|z-dev-flow|zudo-dev-flow|x-wt-teams|prc)\b|plugin://)'
-    if re.search(private_skill, prompt):
-        raise ValueError('Nonportable skill reference in Codex prompt')
+def validate_execution_prompt(prompt):
+    """Reject planner dependencies in execution prose, allowing factual paths/commands."""
+    if re.search(r'(?i)\b(?:app|plugin)://', prompt):
+        raise ValueError('Nonportable app/plugin link in execution prompt')
+    # Repository URLs and source paths can legitimately contain a skill's name.
+    prose = re.sub(r'https?://[^\s`<>]+', '', prompt)
+    prose = re.sub(r'(?<!\w)(?:\.{0,2}/)?(?:[\w.-]+/)+[\w.-]+', '', prose)
+    skills = r'zdev[123]?|zplan|zproto|zgh|zstatus|zwatch|zkicadactions|z-dev-flow|zudo-dev-flow|big-plan|x-wt-teams|prc'
+    if re.search(r'(?i)\b(?:' + skills + r')\b', prose):
+        raise ValueError('Nonportable skill reference in execution prompt')
+    if re.search(r'(?i)\b(?:planning\s+(?:chat(?:gpt)?|session)|(?:source|originating)\s+chat|chatgpt\s+planning)\b', prose):
+        raise ValueError('Planning-session reference in execution prompt')
+    if re.search(r"(?i)\b(?:do not|never|don't)\s+(?:create|open)\s+(?:(?:any|new|planning|tracking|github)\s+)*(?:issues?|epics?|trackers?)\b", prose):
+        raise ValueError('Blanket issue-creation ban in execution prompt')
+    # Shell -m/--merge/etc. are not planner flags. Exempt command snippets, not
+    # snippets consisting only of flags; private invocations were checked above.
+    commands = r'(?:python[\d.]*|git|gh|pytest|pnpm|npm|npx|node|bash|sh|cargo|docker|make|curl|rg|\./[\w./-]+)\b'
+    flag_prose = re.sub(r'https?://[^\s`<>]+', '', prompt)
+    flag_prose = re.sub(r'```(?:bash|sh|shell|console)\n.*?```', '', flag_prose, flags=re.S)
+    flag_prose = re.sub(r'`([^`\n]+)`', lambda m: '' if re.match(commands + r'\s', m[1]) else m[0], flag_prose)
+    flag_prose = re.sub(r'(?im)^\s*(?:run\s+)?' + commands + r'\s+[^\n]*$', '', flag_prose)
+    flags = r'--(?:merge|prototype|issuesweep|issue-sweep(?:-ask)?|refresh-epic|plan-only|filter|exclude)|-(?:isask|is|pr|po|re|ex|m|f)'
+    if re.search(r'(?<![\w-])(?:' + flags + r')(?![\w-])', flag_prose):
+        raise ValueError('Raw planning flag in execution prompt')
+
+
+# Retain the original helper name for callers outside this repository.
+validate_codex_prompt = validate_execution_prompt
+
+
+def handoff_variants(template):
+    """Select each documented merge branch without passing planner flags onward."""
+    branches = {}
+    lines = template.splitlines()
+    pattern = re.compile(r'<If merge is (not )?authorized: (.*)>')
+    for line in lines:
+        match = pattern.fullmatch(line)
+        if match:
+            key = not bool(match[1])
+            if key in branches:
+                raise ValueError('Duplicate merge-permission branch')
+            branches[key] = match[2]
+    if set(branches) != {False, True}:
+        raise ValueError('Missing merge-permission branch')
+    variants = {}
+    for authorized in (False, True):
+        selected = []
+        for line in lines:
+            match = pattern.fullmatch(line)
+            if not match:
+                selected.append(line)
+            elif (not bool(match[1])) == authorized:
+                selected.append(match[2])
+        variants[authorized] = '\n'.join(selected)
+    return variants
+
 
 
 def validate(root=ROOT):
@@ -78,12 +129,15 @@ def validate(root=ROOT):
         'skills/zstatus/SKILL.md': ['host-supported connected-computer delegation route', 'every window and every pane', 'do not send `go on`'],
         'skills/zstatus/references/observation.md': ['source data, not authorization', 'physical server/pane', 'Restarted work', 'Test/build failures', 'unknown/inaccessible'],
         'skills/zwatch/SKILL.md': ['rescan all sessions, windows and panes', 'newly created active sessions', 'Do not restart idle/completed agents', 'explicit user authorization', 'two per run', 'three total per watch', 'do not resend', 'An echoed input alone', 'at most three read-only reconnect checks', 'monitoring has ended', 'stop watching', 'do not invent a default deadline', 'keep unchanged cycles quiet', 'retain the unresolved watch as blocked', 'Preserve the ledger, event deduplication and recovery budgets'],
-        'skills/zdev/SKILL.md': ['Planning is read-only for GitHub and repository history', 'planning facade', 'sole planning entry point', '-isask', '-m', 'Codex Cloud'],
-        'skills/zdev/references/workflow-contract.md': ['Combinations compose', 'merge or hold decision for each PR', 'Task-specific user constraints', 'Without `-m`', 'leave it open', 'comment on each original'],
+        'skills/zdev/SKILL.md': ['During the current ChatGPT planning session', 'GitHub and repository history are read-only', 'This includes delegated helpers', 'Do not initiate GitHub-write approval requests here', 'sole planning entry point', '-isask', '-m', 'Codex or Claude Code', 'before implementation'],
+        'skills/zdev/references/workflow-contract.md': ['Combinations compose', 'merge or hold decision for each PR', 'Task-specific user constraints', 'Without merge authorization', 'leave it open', 'every helper it delegates perform read-only GitHub research', 'initiate GitHub-write approval requests here', 'before changing implementation code', 'children before parents'],
         'skills/zdev/references/issue-sweep.md': ['--issuesweep', '--issue-sweep-ask', 'no-auto', 'Untouched', 'local task keys', '## Implementation order', 'Do not treat silence as assent'],
         'skills/zkicadactions/SKILL.md': ['Never dispatch a workflow', 'UNKNOWN is not PASS', 'not defaults for other repositories', 'Never bypass a denied access'],
         'skills/zkicadactions/references/contract.md': ['Artifact-only', 'persist-credentials: false', 'fail closed', 'UNIMPLEMENTED', 'never rerun an unchanged failure', 'Adoption is always an owner decision'],
-        'skills/zdev/references/handoff.md': ['Copyable prompt template', 'PR plan:', 'intentionally held or incomplete PRs open', 'Do not deploy', 'pending integration'],
+        'skills/zdev/references/handoff.md': ['Copyable prompt template', 'PR plan:', 'delegated helpers perform read-only GitHub research', 'initiate GitHub-write approval requests here', 'Codex or Claude Code', 'Keep normalized flags in producer-side notes only'],
+        'skills/zdev/references/implementation-tracking.md': ['before changing implementation code', 'Search before creating missing records', 'Use one tracker for a focused task', 'Use one parent epic plus sub-issues', 'Use issue comments as a concise chronological development record', 'close completed children after integration', 'entire accepted scope is complete', 'Actual tool permissions, repository policies and explicit user restrictions still apply'],
+        'skills/zplan/SKILL.md': ['GitHub and repository history are read-only', 'all helpers delegated from this session', 'Do not initiate GitHub-write approval requests here', 'creation/reuse of tracking issues before implementation'],
+        'skills/zgh/SKILL.md': ['GitHub and repository history are read-only', 'all helpers delegated from this session', 'Do not initiate GitHub-write approval requests here', 'explicit standalone user request', 'Do not reinterpret delegated planning as standalone authorization'],
     }
     for filename, required in anchors.items():
         text = (root / filename).read_text()
@@ -98,7 +152,9 @@ def validate(root=ROOT):
         'zdev authorizes its requested planning issues',
         'during planning; comment with verified replacement links',
         'Create a planning issue', 'Create a planning PR',
-        'Ask the implementer to create planning issues',
+        'Never ask a downstream implementer to create planning issues',
+        'Never defer planning issue creation to the implementer',
+        'Do not create replacement planning issues in that session',
     )
     for path in planning_paths:
         text = path.read_text().casefold()
@@ -114,14 +170,46 @@ def validate(root=ROOT):
             check(phrase not in text, f'Obsolete ZIP startup gate in {path.relative_to(root)}')
     handoff = (root / 'skills/zdev/references/handoff.md').read_text()
     prompts = re.findall(r'```text\n(.*?)```', handoff, re.S)
-    check(bool(prompts), 'Missing Codex prompt template')
+    check(bool(prompts), 'Missing execution prompt template')
+    common = ['Before implementing, establish durable GitHub tracking',
+              'search for other matching open records before creating missing ones',
+              'For one focused task, use one tracker',
+              'create or reuse a parent epic plus linked sub-issues',
+              'respect actual access controls',
+              'Use those issues as the development notebook throughout the work',
+              'At meaningful milestones and before pausing or handing off',
+              'test commands and observed results with relevant revisions',
+              'PR/commit links, blockers and the next action',
+              'after an uncertain response, inspect for an existing result before retrying',
+              'do not close a source issue merely because another record references it',
+              'Do not report a check as passed unless observed',
+              'Merge authorization does not authorize deployment or a release']
+    lifecycle = {
+        False: ['Leave implementation PRs open', 'Keep delivery issues open pending integration; do not merge'],
+        True: ['merge only after its accepted work, review, required approvals and current-head required checks pass under repository policy',
+               'Leave held or incomplete PRs open', 'Confirm integration into the intended target',
+               'add completion notes with PR and verification evidence',
+               'close only issues whose own criteria are fully satisfied',
+               'Close completed children first',
+               'close their parent only when every accepted requirement and required child is complete',
+               'If any gate remains, hold that PR and record the exact blocker'],
+    }
+    for template in prompts:
+        try:
+            for authorized, prompt in handoff_variants(template).items():
+                validate_execution_prompt(prompt)
+                check(prompt.find('Before implementing, establish durable GitHub tracking') < prompt.find('Implement the accepted scope in dependency order'), 'Tracking must precede implementation')
+                for phrase in common + lifecycle[authorized]:
+                    check(phrase in prompt, f'Missing implementation contract {phrase!r} (merge={authorized})')
+        except ValueError as exc:
+            errors.append(str(exc))
     kicad = (root / 'skills/zkicadactions/references/templates.md').read_text()
     kicad_prompt = kicad.split('## Codex Cloud handoff', 1)[-1]
     check('```text' in kicad_prompt, 'Missing KiCad Codex prompt template')
     prompts += re.findall(r'```text\n(.*?)```', kicad_prompt, re.S)
     for prompt in prompts:
         try:
-            validate_codex_prompt(prompt)
+            validate_execution_prompt(prompt)
         except ValueError as exc:
             errors.append(str(exc))
     for filename in ('skills/zdev/SKILL.md', 'skills/zdev/references/workflow-contract.md', 'skills/zdev/references/handoff.md'):

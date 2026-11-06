@@ -1,3 +1,17 @@
+## 0.6.4
+
+- Keep GitHub writes and their approval requests out of the ChatGPT planning session and its delegated helpers only.
+- Start the separate implementation session by creating or reusing one tracker, or an epic with linked sub-issues, before implementation.
+- Use issues for durable requirements, decisions, progress, verification, blockers and PR links; close completed children after required integration, then the fully completed parent.
+- Generate standalone prompts for Codex or Claude Code, locally or in the cloud. Expand planning flags into plain instructions and omit plugin names, app links and private skill dependencies.
+- Preserve existing tracking history, duplicate prevention, merge gates, plugin identity, sharing and default prompts.
+
+## 0.6.3 — 2026-11-07
+
+- Scope the GitHub write restriction to the ChatGPT planning session and its delegated helpers, avoiding unattended write-approval requests there.
+- Prepare issue content in the handoff and allow the separate implementation session to reuse, create or update in-scope issues and useful epics under its permissions and repository policy.
+- Remove downstream issue bans from the shared contract, handoff template, planning helpers and issue sweep; preserve merge gates, explicit user restrictions and duplicate prevention.
+
 ## 0.6.2
 
 - Save zdev session deliverables and prototype rounds to a session-specific Dropbox folder, with explicit upload status and fallback.
