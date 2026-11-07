@@ -1,5 +1,17 @@
 # Release and migration
 
+## v0.8.0 execution environments and topic ownership
+
+Defines `-cccp` (Claude Code Cloud Project), `-coc` (Codex Cloud), `-cowsl` and `-comac` (Codex local CLI on WSL and Mac), and `-ccwsl` and `-ccmac` (Claude Code local CLI on WSL and Mac). With no environment constraint, select from implementation and acceptance requirements, or explicitly keep the prompt portable when no host-specific requirement exists. One environment is a hard scope constraint; multiple environments form a deduplicated, unordered allowed set. Explicit prose constraints have the same effect. Never infer extra destinations from the current host.
+
+Review complete acceptance when filtering executable scope. A WSL-only plan excludes inseparable Mac-required tasks instead of implementing them with mandatory Mac acceptance deferred. Independent portable slices need their own complete criteria and leave their larger issues open. An empty compatible scope must be reported honestly. Existing CI gates do not expand the allowed set or replace real native, physical or human evidence; actual missing capabilities are separate blockers.
+
+Continuous development applies on every environment and repeats this filter for each new wave and discovered task. Project child-session instructions apply only when Project is selected. Local CLI children are subagents: prefer one coherent substantive topic per worker, reuse it for follow-ups and corrections, and split only for independent outcomes, ownership/capability boundaries or an unmanageable topic. The parent owns coordination, cross-topic decisions, integration, independent review and acceptance. Preserve repository commit/push rules and configured models/effort; Opus medium and Astra low are illustrative capability examples, not fixed identifiers or settings overrides. Use only actual host worker facilities, with sequential fallback when unavailable.
+
+Review the behavioral cases for no/one/multiple environments, duplicate flags, explicit prose constraints, Project as an unselected candidate, incompatible and independently portable tasks, physical verification blockers, local topic ownership and resume after a changed requirement. Check standalone prompts for all selected environments and portable output, both merge states and continuous/non-continuous operation. Confirm all six planner flags are translated into plain instructions rather than leaked. Static validation and package tests do not establish actual worker or native-verification behavior in another host.
+
+This release adds `skills/zdev/references/execution-environments.md` and retires no files. Preserve plugin identity, the seven-skill inventory, audience, default prompts and unrelated behavior. Synchronize both manifests, validate and package the source, merge the reviewed source update, then update the existing account plugin in place and read back its version and affected files. A source commit or package build alone does not update the installed plugin; backend readback also does not prove that an already-open chat has hot-reloaded its mounted skills.
+
 ## v0.7.0 Project teams and continuous development
 
 Adds two independent planning options: `-cccp` selects Claude Code Cloud Project manager/child execution, and `-a` requests a continuous issue-sweep/development loop. The spaced spelling `- cccp` normalizes to `-cccp`. Neither option grants merge authority; `-m` retains its conditional review, approval and current-head CI gates. Explicit interviews, UI acceptance, no-auto restrictions and external verification holds remain effective. The continuous mode removes a redundant bulk approval for already-requested routine fixes, not those boundaries.
@@ -50,7 +62,7 @@ Delete any remaining `zdev2` paths from the actual installed inventory as well. 
 ```bash
 python3 scripts/validate.py
 python3 -m unittest discover -s scripts -p 'test_*.py'
-python3 scripts/package.py --output /tmp/zudo-dev-flow-0.7.0.zip
+python3 scripts/package.py --output /tmp/zudo-dev-flow-0.8.0.zip
 ```
 
 Source PR merge and account-plugin update are separate operations.

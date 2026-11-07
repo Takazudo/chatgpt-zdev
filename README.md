@@ -8,19 +8,44 @@ A personal ChatGPT plugin for repository-grounded development planning in Chat, 
 - `zdev -pr ...` iterates UI prototypes in Chat until the user accepts a direction, then plans and packages real artifacts when available.
 - `zdev -is ...` sweeps the requested backlog with one bulk triage checkpoint. `-isask` interviews candidates, including postponed issues. If both appear, `-isask` wins.
 - `zdev -m -is for https://github.com/zudolab/zudo-text` sweeps issues, and tells the later implementation session to merge only after complete implementation and verification under repository policy.
-- `zdev -cccp ...` targets Claude Code Cloud's Project feature, with a capable manager session and bounded child-session work. The spaced spelling `- cccp` is normalized to `-cccp`.
-- `zdev -a ...` requests an issue/PR sweep and repeated planning/development until a fresh sweep finds no actionable in-scope work. Routine bug fixes need no extra bulk approval; user decisions and other blockers stay recorded.
+- `zdev -cccp ...` targets Claude Code Cloud's Project feature. Choose another environment or an allowed set using the flags below. The spaced spelling `- cccp` is normalized to `-cccp`.
+- `zdev -a ...` requests an issue/PR sweep and repeated planning/development in any supported environment until a fresh sweep finds no actionable in-scope work. Routine bug fixes need no extra bulk approval; user decisions and other blockers stay recorded.
 - `zdev -cccp -a -m for https://github.com/zudolab/zudo-text` combines a Project team, continuous development and conditional merge authorization. These three choices are independent: neither `-cccp` nor `-a` implies merge permission, and `-cccp` alone does not start a continuous sweep.
+- `zdev -cowsl -a -m ...` continuously handles work that can be implemented and fully accepted in Codex local CLI on WSL. It excludes inseparable Mac-required tasks and conditionally merges only eligible work.
+- `zdev -cccp -comac -a ...` allows Project or Codex local CLI on Mac. If mandatory Mac acceptance is required, select the Mac environment and its local subagents; the mere presence of Project in the candidate set does not add Project child-session instructions.
 
 The ChatGPT planning session and every delegated helper use GitHub read-only. They prepare the prompt, proposed tracking structure and necessary artifacts without creating or changing issues, epics, labels, comments, branches, commits or PRs, closing or merging anything, or initiating GitHub-write approval requests. Explicit standalone GitHub management requests are separate from this planning facade.
 
-## Continuous development and Project teams
+## Execution environments
 
-With `-a`, the brief supplies a repository-grounded first wave and a complete continuation procedure. The implementation session refreshes issues, PRs, recent merges and checks; plans the next ready batch; develops, reviews and verifies it; integrates only when authorized; then sweeps again. Newly found in-scope defects join the queue. A merged PR is a checkpoint, not the end of the requested session. Existing issue bodies are checked against comments and current source so already-landed fixes are not reimplemented.
+| Flag | Execution environment |
+| --- | --- |
+| `-cccp` | Claude Code Cloud using the Project feature |
+| `-coc` | Codex Cloud |
+| `-cowsl` | Codex local CLI on WSL |
+| `-comac` | Codex local CLI on Mac |
+| `-ccwsl` | Claude Code local CLI on WSL |
+| `-ccmac` | Claude Code local CLI on Mac |
+
+With no environment flag or explicit prose constraint, choose from the task's implementation and acceptance requirements. If real Mac confirmation is mandatory, choose an appropriate Mac environment. If there is no host-specific requirement, keep the prompt portable and explicitly tell the user: **This prompt can run in any supported environment.** Expand the actual environment names in the standalone prompt; do not assume that another session knows this flag table or that the planning host is the requested destination.
+
+One environment is a hard scope constraint. Include only work whose implementation and all required acceptance can finish there. A WSL-only plan excludes inseparable Mac-required work; do not start it and defer mandatory Mac acceptance. Record the original issue, unmet requirement and suitable environment, and continue compatible tasks. A useful portable slice can proceed only with its own complete acceptance criteria, while the larger original issue remains open.
+
+Multiple flags form a deduplicated, unordered allowed set. Choose only within it and prefer one sufficient environment; the flags neither select the first or last entry nor require all candidates to run. Use different allowed hosts for independent tasks only when necessary, with explicit boundaries. If no task fits, report the empty compatible executable scope. Honor equivalent constraints in prose and never widen the set because another host happens to be available.
+
+CI may satisfy legitimate repository gates, but it does not add an allowed execution environment or replace required native, physical or human evidence. An environment name is not proof that credentials, native tools or physical inputs are available. Record actual capability blockers separately from environment-excluded scope and unresolved decisions. See the shared [environment contract](skills/zdev/references/execution-environments.md).
+
+## Continuous development and worker ownership
+
+With `-a`, the brief supplies a repository-grounded first wave and a complete continuation procedure on all six environments, including a local CLI working sequentially. The implementation session refreshes issues, PRs, recent merges and checks; plans the next ready batch; develops, reviews and verifies it; integrates only when authorized; then sweeps again. Newly found in-scope defects join the queue after the same environment and acceptance filter is reapplied. A merged PR is a checkpoint, not the end of the requested session. Existing issue bodies are checked against comments and current source so already-landed fixes are not reimplemented.
 
 Keep genuine product/design decisions separate from access, platform, human-verification and CI/review blockers. Preserve `no-auto`, accepted UI and protected coordination. Continue independent work while a topic is held. An explicit `-isask` interview still wins, and `-pr` still requires UI acceptance; `-a` replaces only the ordinary bulk approval for already-requested routine fixes. Without `-m`, the loop leaves PRs and delivery issues open pending integration. Stop at a fresh sweep with no ready work, or a real external/session limit, and report the exact remaining state without claiming incomplete acceptance is delivered.
 
-With `-cccp`, the Project manager owns the queue, difficult decisions, review and integration. Children receive bounded tasks, ownership, dependencies and verification; follow the repository's worktree and push rules. Use the host's actual capabilities and preserve model choices. Durable issue checkpoints retain SHAs, task/worker/branch/PR mappings, results and next actions so the manager can resume without duplicate work.
+When Claude Code Cloud Project is the selected environment, its manager owns the queue, difficult decisions, review and integration, and children are Project child sessions. Apply that procedure only after selection, not because Project is one allowed candidate. Codex Cloud uses only the worker facilities actually exposed there.
+
+For a selected local CLI environment, child work means subagents. Prefer one coherent substantive topic per subagent, with a clear outcome, owned paths, dependencies and acceptance criteria. Let it investigate, plan, implement, self-review and run focused tests across the topic's related files or issues. Reuse the same subagent for follow-ups and corrections. Split only for independently completable outcomes, ownership or capability boundaries, or an unmanageably broad topic. The parent keeps the queue, cross-topic decisions, ownership coordination, integration, independent review and final acceptance. Serialize overlapping edits and follow the repository's worktree, commit and push rules. Without subagent support, the parent proceeds sequentially and the continuous loop still applies.
+
+Use capable workers at the user's selected or configured model and effort. Opus at medium effort and Astra at low effort are examples of the intended worker capability, where available; they are not fixed model identifiers or permission to override configured settings. Discover supported capabilities, preserve chosen model and effort, respect cost and concurrency limits, and avoid artificial fan-out. Durable issue checkpoints retain the allowed environments, selected host, excluded tasks, SHAs, topic/worker/branch/PR mappings, results and next actions so the parent can resume without duplicate work.
 
 ## Tracking during implementation
 
@@ -45,7 +70,7 @@ Session-created deliverable files and the ZIP are saved under a session folder i
 ```bash
 python3 scripts/validate.py
 python3 -m unittest discover -s scripts -p 'test_*.py'
-python3 scripts/package.py --output /tmp/zudo-dev-flow-0.7.0.zip
+python3 scripts/package.py --output /tmp/zudo-dev-flow-0.8.0.zip
 ```
 
 See [acceptance cases](docs/acceptance-cases.md), [provenance](docs/provenance.md), and [release steps](docs/releasing.md). A source PR does not update the installed account plugin.

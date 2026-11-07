@@ -1,3 +1,14 @@
+## 0.8.0 — 2026-11-08
+
+- Define six execution environments: `-cccp` for Claude Code Cloud Project, `-coc` for Codex Cloud, `-cowsl` and `-comac` for Codex local CLI on WSL and Mac, and `-ccwsl` and `-ccmac` for Claude Code local CLI on WSL and Mac.
+- Resolve no environment by task requirements, including mandatory Mac confirmation; explicitly keep unconstrained portable work runnable in any supported environment. Treat one environment as a hard scope constraint and multiple environments as a deduplicated, unordered allowed set.
+- Exclude tasks whose implementation or mandatory acceptance cannot finish within the allowed set. Preserve original issues and unmet requirements; permit independently useful portable slices only with complete acceptance criteria of their own. Keep environment exclusions distinct from decisions and actual capability or verification blockers.
+- Apply `-a` continuous sweeps and development on every environment, refiltering scope before each new wave and discovered task. Keep merge authority independent and retain all review, approval and current-head check gates.
+- Apply Project manager/child instructions only when Project is selected. For local CLI execution, children are subagents owning substantive topics across investigation, planning, implementation and focused verification, with follow-ups and corrections kept with the same worker.
+- Keep the parent responsible for coordination, difficult cross-topic decisions, integration and independent acceptance review. Preserve repository ownership rules, use real host capabilities, and retain sequential fallback when workers are unavailable.
+- Treat examples such as Opus medium and Astra low as capability guidance, not universal model identifiers or authority to change configured models or effort. Carry environment choices, exclusions and topic ownership into durable continuation checkpoints.
+- Preserve the seven-skill inventory, plugin identity, sharing, default prompts, planning read-only boundary, implementation tracking and unrelated observation/artifact behavior.
+
 ## 0.7.0 — 2026-11-07
 
 - Add `-cccp` for Claude Code Cloud Project manager/child-session execution; normalize the spaced spelling `- cccp` and preserve actual host capabilities, model choices and repository ownership rules.
