@@ -8,8 +8,19 @@ A personal ChatGPT plugin for repository-grounded development planning in Chat, 
 - `zdev -pr ...` iterates UI prototypes in Chat until the user accepts a direction, then plans and packages real artifacts when available.
 - `zdev -is ...` sweeps the requested backlog with one bulk triage checkpoint. `-isask` interviews candidates, including postponed issues. If both appear, `-isask` wins.
 - `zdev -m -is for https://github.com/zudolab/zudo-text` sweeps issues, and tells the later implementation session to merge only after complete implementation and verification under repository policy.
+- `zdev -cccp ...` targets Claude Code Cloud's Project feature, with a capable manager session and bounded child-session work. The spaced spelling `- cccp` is normalized to `-cccp`.
+- `zdev -a ...` requests an issue/PR sweep and repeated planning/development until a fresh sweep finds no actionable in-scope work. Routine bug fixes need no extra bulk approval; user decisions and other blockers stay recorded.
+- `zdev -cccp -a -m for https://github.com/zudolab/zudo-text` combines a Project team, continuous development and conditional merge authorization. These three choices are independent: neither `-cccp` nor `-a` implies merge permission, and `-cccp` alone does not start a continuous sweep.
 
 The ChatGPT planning session and every delegated helper use GitHub read-only. They prepare the prompt, proposed tracking structure and necessary artifacts without creating or changing issues, epics, labels, comments, branches, commits or PRs, closing or merging anything, or initiating GitHub-write approval requests. Explicit standalone GitHub management requests are separate from this planning facade.
+
+## Continuous development and Project teams
+
+With `-a`, the brief supplies a repository-grounded first wave and a complete continuation procedure. The implementation session refreshes issues, PRs, recent merges and checks; plans the next ready batch; develops, reviews and verifies it; integrates only when authorized; then sweeps again. Newly found in-scope defects join the queue. A merged PR is a checkpoint, not the end of the requested session. Existing issue bodies are checked against comments and current source so already-landed fixes are not reimplemented.
+
+Keep genuine product/design decisions separate from access, platform, human-verification and CI/review blockers. Preserve `no-auto`, accepted UI and protected coordination. Continue independent work while a topic is held. An explicit `-isask` interview still wins, and `-pr` still requires UI acceptance; `-a` replaces only the ordinary bulk approval for already-requested routine fixes. Without `-m`, the loop leaves PRs and delivery issues open pending integration. Stop at a fresh sweep with no ready work, or a real external/session limit, and report the exact remaining state without claiming incomplete acceptance is delivered.
+
+With `-cccp`, the Project manager owns the queue, difficult decisions, review and integration. Children receive bounded tasks, ownership, dependencies and verification; follow the repository's worktree and push rules. Use the host's actual capabilities and preserve model choices. Durable issue checkpoints retain SHAs, task/worker/branch/PR mappings, results and next actions so the manager can resume without duplicate work.
 
 ## Tracking during implementation
 
@@ -34,7 +45,7 @@ Session-created deliverable files and the ZIP are saved under a session folder i
 ```bash
 python3 scripts/validate.py
 python3 -m unittest discover -s scripts -p 'test_*.py'
-python3 scripts/package.py --output /tmp/zudo-dev-flow-0.6.4.zip
+python3 scripts/package.py --output /tmp/zudo-dev-flow-0.7.0.zip
 ```
 
 See [acceptance cases](docs/acceptance-cases.md), [provenance](docs/provenance.md), and [release steps](docs/releasing.md). A source PR does not update the installed account plugin.

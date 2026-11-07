@@ -17,6 +17,21 @@ Expected results distinguish the ChatGPT planning session from the separate impl
 | Generated prompt for Codex or Claude Code, local or cloud | Inline the complete execution procedure and preserve the specified environment. Include no plugin invocation, app link, raw planning flag or instruction about the planning Chat's permissions. |
 | `zdev -m -is for https://github.com/zudolab/zudo-text` | Bulk sweep checkpoint; prompt translates accepted task groups and conditional merge intent into plain actions. No deployment or release authority. |
 | `zdev -isask -is -pr -m` | Interview wins, accepted UI topics prototype after triage, and effective scope and lifecycle become plain instructions in the prompt. |
+| `zdev -cccp ...` or `zdev - cccp ...` | Target Claude Code Cloud Project manager/child execution; normalize the spaced spelling. Do not infer a sweep, continuous loop or merge permission. |
+| `zdev -a ...` | Inventory all open issues and PRs, reconcile comments/recent merges with source, present the first ready wave and a continuous-loop handoff without a redundant bulk approval. Do not infer a Project host or merge permission. |
+| `zdev -cccp -a -m ...` | Manager-led Project team repeats inspect/plan/develop/review/verify/conditionally integrate/resweep, with bounded child ownership and actual repository rules; every merge still needs its gates. |
+| `zdev -cccp -a ...` without merge authority | Continue independent ready tasks; retain implementation PRs and delivery issues open pending integration, without duplicating work or silently relying on unmerged changes. |
+| `zdev -a -is ...` | Continuous mode supplies routine in-scope acceptance; no extra bulk checkpoint. Preserve existing no-auto restrictions and other holds. |
+| `zdev -a -isask -pr ...` | Explicit interview wins; unaccepted candidates stay held and selected UI prototypes require acceptance. Continue only accepted independent work. |
+| Open issue whose proposed fix already landed | Inspect comments, source and merge evidence; plan remaining verification or a reproduced residual defect, not another copy of the landed implementation. |
+| New reproducible defect found during a continuous batch | Search/reuse tracking, add it to the accepted repository-scoped queue with evidence and criteria, then replan; unrelated features and new product direction remain outside automatic scope. |
+| First batch or PR completes under continuous mode | Checkpoint and refresh the backlog, comments and checks; select the next ready batch rather than finishing the session. |
+| Product decision plus independent ready bug | Record question/options/recommendation and affected work; fix the independent bug while the decision stays open. |
+| Native/live/access/human verification missing | Record an external verification blocker and exact next action separately from product decisions; do not treat it as passing acceptance or close its delivery issue. |
+| Project child sessions unavailable or repository reserves pushes for the manager | Report actual capability limits, preserve the chosen host, continue independent manager-owned work; follow verified ownership and never invent child commands or delegate forbidden pushes. |
+| Continuous manager resumes after compaction | Recover durable queue, SHAs and task/issue/branch/PR/child mappings; inspect live worker and remote state before new work to avoid duplicate workers or mutations. |
+| Fresh sweep has no ready tasks but unresolved holds | Report completed work and decisions/blockers precisely, preserve incomplete PRs/issues/parents, and give a continuation point. Do not claim the software is bug-free or all acceptance is delivered. |
+| Hard session limit or repeated unchanged failure | Checkpoint unfinished work and move to independent tasks where possible; no fixed-cycle success claim, busy polling or blind unchanged retries. |
 | `zdev -pr` | Explicit UI acceptance before plan; readable decisions and validated artifact ZIP when real files exist. |
 | Standalone explicit GitHub management request | zgh may perform the requested operation; planning delegation never supplies that authority. |
 | `-re` or newly reported sweep problem | Refresh only the handoff summary or add a local task during planning; tracking for accepted work is established later by the implementation agent. |

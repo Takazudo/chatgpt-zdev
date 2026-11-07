@@ -1,5 +1,13 @@
 # Release and migration
 
+## v0.7.0 Project teams and continuous development
+
+Adds two independent planning options: `-cccp` selects Claude Code Cloud Project manager/child execution, and `-a` requests a continuous issue-sweep/development loop. The spaced spelling `- cccp` normalizes to `-cccp`. Neither option grants merge authority; `-m` retains its conditional review, approval and current-head CI gates. Explicit interviews, UI acceptance, no-auto restrictions and external verification holds remain effective. The continuous mode removes a redundant bulk approval for already-requested routine fixes, not those boundaries.
+
+Review the first-wave plan, continuing queue, new-defect scope, decision/blocker separation, manager/child ownership, fresh-sweep end condition and checkpoint/resume behavior. Test flag leakage, both merge branches, ordinary no-flag behavior, flag combinations and stale/landed-issue handling. Static package validation does not establish actual child-session behavior in another host.
+
+This release adds two reference files and retires none. Preserve plugin identity, the seven-skill inventory, audience, default prompts and unrelated behavior. Synchronize both manifests, validate and package the source, then update the existing account plugin in place and read back the new release and affected source. A source commit or package build alone does not update the installed plugin.
+
 ## v0.6.4 implementation tracking and standalone prompts
 
 The ChatGPT planning session and all delegated helpers remain read-only for GitHub and never initiate GitHub-write approval requests. The separate implementation prompt requires tracking before code changes: reuse or create a tracker for a focused task, or an epic and linked sub-issues for a larger plan. Issues hold the accepted specification and development notes throughout the work. Close completed children after required integration, then their parent when the full accepted scope is complete.
@@ -42,7 +50,7 @@ Delete any remaining `zdev2` paths from the actual installed inventory as well. 
 ```bash
 python3 scripts/validate.py
 python3 -m unittest discover -s scripts -p 'test_*.py'
-python3 scripts/package.py --output /tmp/zudo-dev-flow-0.6.4.zip
+python3 scripts/package.py --output /tmp/zudo-dev-flow-0.7.0.zip
 ```
 
 Source PR merge and account-plugin update are separate operations.

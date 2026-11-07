@@ -63,7 +63,7 @@ class ValidationTests(unittest.TestCase):
     def test_planner_flags_stay_in_producer_instructions(self):
         facade = (self.root / 'skills/zdev/SKILL.md').read_text()
         self.assertIn('sole planning entry point', facade)
-        for flag in ('-m', '-pr', '-is', '-isask'):
+        for flag in ('-m', '-pr', '-is', '-isask', '-cccp', '-a'):
             self.assertIn(flag, facade)
         contract = (self.root / 'skills/zdev/references/workflow-contract.md').read_text()
         for phrase in ('`-isask` wins', '`-isask -m -pr`', 'merge or hold decision for each PR',
@@ -189,6 +189,9 @@ class ValidationTests(unittest.TestCase):
         for text, error in (
                 ('Planning flags: `-m -is`.', 'Raw planning flag'),
                 ('Use --merge when ready.', 'Raw planning flag'),
+                ('Target flags: `-cccp -a`.', 'Raw planning flag'),
+                ('Use - cccp for the manager.', 'Raw planning flag'),
+                ('Continue with -a after the first PR.', 'Raw planning flag'),
                 ('The planning Chat made no GitHub writes.', 'Planning-session reference'),
                 ('In the ChatGPT planning session, issues were read-only.', 'Planning-session reference'),
                 ('Do not create planning issues or epics.', 'Blanket issue-creation ban'),
@@ -205,9 +208,60 @@ class ValidationTests(unittest.TestCase):
                 'Run python3 -m unittest discover -s scripts',
                 'Run ./scripts/check -m',
                 'Run checks:\n```sh\ncustom-check --filter changed\n```',
+                'Run `ls -a` to inspect the checkout.',
+                'Run `rg -a pattern fixture` to inspect test data.',
+                'Run `./scripts/check -cccp` when the repository defines that command.',
                 'Do not create duplicate issues or close unrelated issues.'):
             with self.subTest(text=text):
                 validate_execution_prompt(text)
+
+    def test_project_and_continuous_additions_compose_with_both_merge_branches(self):
+        additions = {}
+        for name in ('claude-code-cloud-project', 'continuous-development'):
+            text = (self.root / f'skills/zdev/references/{name}.md').read_text()
+            additions[name] = '\n\n'.join(re.findall(r'```text\n(.*?)```', text, re.S))
+            self.assertTrue(additions[name])
+        for merge, prompt in handoff_variants(self.prompt_template()).items():
+            for project in (False, True):
+                for continuous in (False, True):
+                    with self.subTest(merge=merge, project=project, continuous=continuous):
+                        composed = prompt
+                        if project:
+                            composed += '\n\n' + additions['claude-code-cloud-project']
+                        if continuous:
+                            composed += '\n\n' + additions['continuous-development']
+                        validate_execution_prompt(composed)
+                        self.assertEqual('Run this work in Claude Code Cloud using the Project feature.' in composed, project)
+                        self.assertEqual('Do not stop after the first batch or PR.' in composed, continuous)
+                        if not merge:
+                            self.assertIn('Keep delivery issues open pending integration; do not merge', composed)
+                        else:
+                            self.assertIn('current-head required checks pass under repository policy', composed)
+
+    def test_mode_specific_prompt_flags_cannot_leak_through_additions(self):
+        for name, flag in (('claude-code-cloud-project', '-cccp'),
+                           ('claude-code-cloud-project', '- cccp'),
+                           ('continuous-development', '-a')):
+            with self.subTest(mode=name, flag=flag):
+                self.mutate_and_reject(f'skills/zdev/references/{name}.md',
+                                      '```text\n', f'```text\nUse {flag} to start.\n',
+                                      'Raw planning flag')
+
+    def test_mode_permissions_and_continuity_guards_are_required(self):
+        cases = (
+            ('claude-code-cloud-project', 'This environment flag alone does not request a sweep, a continuous loop, a merge, a release or a deployment'),
+            ('claude-code-cloud-project', 'If the repository reserves pushes for the manager, children commit locally'),
+            ('continuous-development', 'An explicit `-isask` interview takes precedence'),
+            ('continuous-development', 'Preserve `no-auto`'),
+            ('continuous-development', 'Without it, leave PRs and delivery issues open'),
+            ('continuous-development', 'Before reporting completion, perform a fresh issue/PR and verification sweep'),
+            ('continuous-development', 'A blocked or interrupted sweep is not full delivery'),
+            ('continuous-development', 'On resume, read this checkpoint'),
+        )
+        for name, guard in cases:
+            with self.subTest(mode=name, guard=guard):
+                self.mutate_and_reject(f'skills/zdev/references/{name}.md', guard, 'REMOVED',
+                                       'Missing contract anchor')
 
     def test_watch_safety_contract_survives(self):
         self.mutate_and_reject('skills/zwatch/SKILL.md',
