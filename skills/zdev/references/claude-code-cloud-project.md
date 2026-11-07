@@ -1,6 +1,6 @@
 # Claude Code Cloud Project execution
 
-Use this reference when `-cccp` is explicit, including the harmless spaced spelling `- cccp`, or when the user explicitly chooses the same Project execution environment in prose. The destination is the user's Claude Code Cloud Project team platform, where a manager session can raise child sessions. It is not a claim that every Claude Code host provides the same orchestration API.
+Use this reference only when Claude Code Cloud Project is selected after applying [execution environments](execution-environments.md). An explicit `-cccp` (including `- cccp`) or prose constraint allows this environment; when it is one of several candidates, resolve the sufficient host first. Do not apply Project instructions when another allowed host is selected. The destination is the user's Claude Code Cloud Project team platform, where a manager session can raise child sessions. It is not a claim that every Claude Code host provides the same orchestration API.
 
 ## Plan the manager and child roles
 
@@ -9,7 +9,7 @@ Use this reference when `-cccp` is explicit, including the harmless spaced spell
 - Delegate bounded, independently completable investigations, implementations or reviews. Each child receives the repository and base revision, issue/task scope, owned paths or resources, dependencies, acceptance criteria, verification and return contract. Serialize overlapping edits and shared state through the manager; use isolated worktrees or the Project's supported isolation where appropriate.
 - Require children to return findings, changed paths, actual commit/PR references, commands and observed results, unresolved questions and next steps. A reported pass or completed session is evidence to inspect, not automatic acceptance. The manager reviews integration and current-head checks.
 - Discover the Project's actual child-session and communication capabilities before launching work. Use only supported operations. If unavailable, report the limitation and continue independent manager-owned work; do not claim delegation occurred or silently switch to another environment.
-- Reuse active or completed child work after reading its state. Do not start duplicate workers for a task merely because the manager resumed or its context compacted. Keep canonical task, issue, branch and child-session mappings in durable tracking.
+- Reuse active or completed child work after reading its state. Reuse the same child for follow-ups within its topic; split only for independent outcomes, ownership/capability boundaries or an unmanageable topic. Do not start duplicate workers for a task merely because the manager resumed or its context compacted. Keep canonical task, issue, branch and child-session mappings in durable tracking.
 
 This environment flag alone does not request a sweep, a continuous loop, a merge, a release or a deployment. When `-a` is also selected, combine this reference with [continuous development](continuous-development.md). Planning and its delegated research helpers remain read-only; the separate Project session receives the actual implementation permissions from the standalone prompt.
 

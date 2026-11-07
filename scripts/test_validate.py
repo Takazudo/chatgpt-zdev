@@ -5,8 +5,8 @@ import shutil
 import tempfile
 import unittest
 from pathlib import Path
-from validate import (ROOT, handoff_variants, validate, validate_codex_prompt,
-                      validate_execution_prompt)
+from validate import (ROOT, execution_additions, handoff_profiles, handoff_variants,
+                      validate, validate_codex_prompt, validate_execution_prompt)
 
 
 class ValidationTests(unittest.TestCase):
@@ -63,7 +63,8 @@ class ValidationTests(unittest.TestCase):
     def test_planner_flags_stay_in_producer_instructions(self):
         facade = (self.root / 'skills/zdev/SKILL.md').read_text()
         self.assertIn('sole planning entry point', facade)
-        for flag in ('-m', '-pr', '-is', '-isask', '-cccp', '-a'):
+        for flag in ('-m', '-pr', '-is', '-isask', '-cccp', '-coc', '-cowsl',
+                     '-comac', '-ccwsl', '-ccmac', '-a'):
             self.assertIn(flag, facade)
         contract = (self.root / 'skills/zdev/references/workflow-contract.md').read_text()
         for phrase in ('`-isask` wins', '`-isask -m -pr`', 'merge or hold decision for each PR',
@@ -190,6 +191,11 @@ class ValidationTests(unittest.TestCase):
                 ('Planning flags: `-m -is`.', 'Raw planning flag'),
                 ('Use --merge when ready.', 'Raw planning flag'),
                 ('Target flags: `-cccp -a`.', 'Raw planning flag'),
+                ('Execution target: -coc.', 'Raw planning flag'),
+                ('Allowed targets: `-cowsl -comac`.', 'Raw planning flag'),
+                ('Execution target: -comac.', 'Raw planning flag'),
+                ('Run with -ccwsl.', 'Raw planning flag'),
+                ('Target: `-ccmac`.', 'Raw planning flag'),
                 ('Use - cccp for the manager.', 'Raw planning flag'),
                 ('Continue with -a after the first PR.', 'Raw planning flag'),
                 ('The planning Chat made no GitHub writes.', 'Planning-session reference'),
@@ -211,37 +217,59 @@ class ValidationTests(unittest.TestCase):
                 'Run `ls -a` to inspect the checkout.',
                 'Run `rg -a pattern fixture` to inspect test data.',
                 'Run `./scripts/check -cccp` when the repository defines that command.',
+                'Run `./scripts/check -coc -cowsl -comac -ccwsl -ccmac` as documented in this repository.',
+                'Inspect https://github.com/example/project/tree/feature-coc for existing work.',
                 'Do not create duplicate issues or close unrelated issues.'):
             with self.subTest(text=text):
                 validate_execution_prompt(text)
 
-    def test_project_and_continuous_additions_compose_with_both_merge_branches(self):
-        additions = {}
-        for name in ('claude-code-cloud-project', 'continuous-development'):
-            text = (self.root / f'skills/zdev/references/{name}.md').read_text()
-            additions[name] = '\n\n'.join(re.findall(r'```text\n(.*?)```', text, re.S))
-            self.assertTrue(additions[name])
-        for merge, prompt in handoff_variants(self.prompt_template()).items():
-            for project in (False, True):
-                for continuous in (False, True):
-                    with self.subTest(merge=merge, project=project, continuous=continuous):
-                        composed = prompt
-                        if project:
-                            composed += '\n\n' + additions['claude-code-cloud-project']
-                        if continuous:
-                            composed += '\n\n' + additions['continuous-development']
-                        validate_execution_prompt(composed)
-                        self.assertEqual('Run this work in Claude Code Cloud using the Project feature.' in composed, project)
-                        self.assertEqual('Do not stop after the first batch or PR.' in composed, continuous)
-                        if not merge:
-                            self.assertIn('Keep delivery issues open pending integration; do not merge', composed)
-                        else:
-                            self.assertIn('current-head required checks pass under repository policy', composed)
+    def test_resolved_environment_profiles_compose_with_both_lifecycles(self):
+        additions = execution_additions(self.root)
+        profiles = list(handoff_profiles(self.prompt_template(), additions))
+        self.assertEqual(len(profiles), 28)
+        self.assertEqual({target for target, *_ in profiles},
+                         {'portable', 'cccp', 'coc', 'cowsl', 'comac', 'ccwsl', 'ccmac'})
+        for target, merge, continuous, composed in profiles:
+            with self.subTest(target=target, merge=merge, continuous=continuous):
+                validate_execution_prompt(composed)
+                self.assertIn('Do not start or assign an inseparable task', composed)
+                self.assertEqual('Run this work in Claude Code Cloud using the Project feature.' in composed, target == 'cccp')
+                self.assertEqual('Use local subagents when this CLI supports them.' in composed,
+                                 target in {'cowsl', 'comac', 'ccwsl', 'ccmac'})
+                self.assertEqual('Do not stop after the first batch or PR.' in composed, continuous)
+                if not merge:
+                    self.assertIn('Keep delivery issues open pending integration; do not merge', composed)
+                else:
+                    self.assertIn('current-head required checks pass under repository policy', composed)
+
+    def test_environment_mapping_cannot_drift(self):
+        self.mutate_and_reject('skills/zdev/references/execution-environments.md',
+                              '| `-comac` | Codex local CLI on Mac |',
+                              '| `-comac` | Codex Cloud |',
+                              'Execution environment flag mapping drift')
+
+    def test_environment_scope_and_topic_worker_guards_are_required(self):
+        for guard in (
+                'Do not start or assign an inseparable task whose required implementation or acceptance needs an environment outside the allowed set',
+                'CI may satisfy legitimate repository gates but does not expand the allowed environments',
+                'only when Claude Code Cloud Project is selected',
+                'preserve chosen models and effort unless the user explicitly changes them'):
+            with self.subTest(guard=guard):
+                self.mutate_and_reject('skills/zdev/references/execution-environments.md',
+                                       guard, 'REMOVED', 'Missing contract anchor')
+        additions = execution_additions(self.root)
+        local = additions['local']
+        for guard in ('one coherent substantive topic', 'follow-ups and corrections',
+                      'never per file or tiny step', 'independent review of the integrated result',
+                      "obey the repository's push policy", 'proceed sequentially in the parent'):
+            self.assertIn(guard, local)
 
     def test_mode_specific_prompt_flags_cannot_leak_through_additions(self):
         for name, flag in (('claude-code-cloud-project', '-cccp'),
                            ('claude-code-cloud-project', '- cccp'),
-                           ('continuous-development', '-a')):
+                           ('continuous-development', '-a'),
+                           *[('execution-environments', flag) for flag in
+                             ('-cccp', '-coc', '-cowsl', '-comac', '-ccwsl', '-ccmac')]):
             with self.subTest(mode=name, flag=flag):
                 self.mutate_and_reject(f'skills/zdev/references/{name}.md',
                                       '```text\n', f'```text\nUse {flag} to start.\n',
@@ -257,6 +285,8 @@ class ValidationTests(unittest.TestCase):
             ('continuous-development', 'Before reporting completion, perform a fresh issue/PR and verification sweep'),
             ('continuous-development', 'A blocked or interrupted sweep is not full delivery'),
             ('continuous-development', 'On resume, read this checkpoint'),
+            ('continuous-development', 'Before choosing each task and every new wave'),
+            ('continuous-development', 'stop its execution chain and checkpoint partial work'),
         )
         for name, guard in cases:
             with self.subTest(mode=name, guard=guard):
