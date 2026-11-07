@@ -17,6 +17,12 @@ Map stable planning task keys to actual issue URLs after creation. Add parent-to
 
 Use issue comments as a concise chronological development record. Update at meaningful milestones, changed decisions, failed or completed verification, blockers, and before a pause or handoff. Record what changed and why, relevant commit/PR links, commands and observed results with revisions, what remains and the next action. Keep the parent checklist and child status consistent. Avoid posting a transcript of routine tool output or claiming planned checks passed.
 
+## Keep continuous sessions resumable
+
+For continuous development, retain one canonical parent/single tracker and map the evolving queue to real task issues instead of creating a new epic every cycle. Add newly discovered in-scope defects only after searching for matching records. Keep a separate decision register and blocker register, with exact questions or missing access/platform/human evidence, recommendations where relevant, affected tasks and next actions. A verification hold is not a completed task or necessarily a product decision.
+
+At each meaningful batch boundary and before compaction, interruption or handoff, checkpoint the target and working SHAs, queue/dispositions, accepted decisions, task/issue/PR/branch/child-session mappings, actual checks and failures, integration state and precise next action. On resume, read this checkpoint and current remote/worker state before assigning work or retrying writes. Preserve existing findings and active children; do not recreate trackers, PRs or workers because context was lost. A queue with no ready tasks can still have open delivery issues and an incomplete parent.
+
 ## Close on verified completion
 
 Issue creation and a submitted PR are progress, not delivery. For implementation work, close a child or single tracker only after its acceptance criteria and required verification pass and its changes are confirmed integrated into the intended target. Without merge authorization, leave the PR and delivery issues open with honest status and links. With merge authorization, preserve all review, approval and current-head CI gates; close completed children after integration, then close the parent only when its entire accepted scope is complete.

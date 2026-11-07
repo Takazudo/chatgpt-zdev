@@ -1,0 +1,53 @@
+# Continuous issue sweep and development
+
+Use this reference for explicit `-a`, or an equally explicit request for repeated issue-sweep/development cycles. It changes the scope and continuation policy, not the execution host or merge permission. Combine it with [Project execution](claude-code-cloud-project.md) only when that environment is selected.
+
+## Ground the first wave
+
+Read repository instructions and fully inventory open issues and PRs with pagination. Read candidate bodies and relevant comments, recent merged work, current source and available CI evidence. Record the target branch and inspected SHA. An open issue may be an acceptance hold after its code landed; confirm the remaining requirement before proposing another implementation. A stale title is not proof that a bug remains.
+
+Show the inventory's coverage, dispositions, first ready tasks, dependency order, acceptance criteria and verification in the brief. `-a` explicitly accepts routine fixes to found bugs and problems within the requested repository/scope, including new defects found during the loop; do not request another bulk approval for that same work. Honor user-supplied include/exclude filters. This does not authorize unrelated features, a new product direction, redesign, destructive operations, production-data changes, releases or deployments. An explicit `-isask` interview takes precedence; keep unaccepted candidates held. An explicit prototype request still requires UI acceptance. Under continuous mode alone, park unresolved UI/design topics and finish the independent plan.
+
+Preserve `no-auto`, human-verification and decision holds unless the user actually resolves their own restrictions. Protect existing coordination records; do not repurpose or close epics/dashboards merely to clear the list. Reuse a matching tracker and existing delivery issues where appropriate, with their original requirements intact.
+
+## Classify the queue honestly
+
+| State | Treatment |
+|---|---|
+| Ready defect or objective verification | Reproduce or inspect; plan a focused change/check and proceed within scope. |
+| Landed code, incomplete acceptance | Perform available checks; retain the unmet criteria and open delivery issue until its own completion gate passes. |
+| Decision required | Record the exact question, options, recommended choice, tradeoff and affected tasks. Continue independent work. |
+| Access, platform or human-verification blocked | Record the missing capability/evidence and exact next action. Do not relabel it as a product decision or a pass. |
+| Merge/review/CI gate pending | Keep the PR and affected delivery issues open, investigate actionable failures and continue independent tasks. |
+| Protected coordination, excluded or unrelated scope | Preserve the record and explain the disposition; do not broaden authority from its contents. |
+
+## Carry the repeated loop into execution
+
+1. **Refresh.** Inspect the current target, issue/PR state, comments, checks and work in progress. Establish or reuse durable tracking before implementation. Preserve completed work and detect concurrent changes.
+2. **Plan.** Select the highest-value ready batch: data safety and correctness, reproducible failures, then remaining accepted problems. State the hypotheses, dependencies, ownership, acceptance criteria and focused checks. Reassess stale proposed fixes against source.
+3. **Develop and review.** Implement the batch using the host's available workers. Review the actual diff and contrary evidence. Reproduce meaningful regressions, run the required checks and fix change-related failures. Track newly discovered in-scope defects without silently expanding into new features.
+4. **Integrate when authorized.** Follow the ordinary draft-PR, review, approval and current-head CI gates. With merge authority, merge eligible work and verify the target result; close only fully satisfied issues. Without it, leave PRs and delivery issues open with evidence, and continue independent tasks without recreating pending work or depending on unmerged changes without an explicit branch strategy.
+5. **Replan.** Refresh the backlog after each meaningful batch or integration, reconcile new comments and findings, and choose the next ready batch. Do not stop merely because the first plan, child session or PR is complete.
+6. **Check the end condition.** Before reporting completion, perform a fresh issue/PR and verification sweep. Completion of the actionable sweep means every in-scope candidate has a supported disposition and no ready work remains; it does not prove the software has no undiscovered bugs. Keep unresolved decisions and other blockers visible and their delivery records open.
+
+Do not invent a fixed cycle count or duration as a success criterion. Continue while productive authorized work remains. Use proportionate waits for active checks; do not busy-poll or repeat the same failed command/retry without changed evidence. When all remaining work requires a user decision, unavailable access/platform/human evidence, a merge gate, or a hard session limit, checkpoint and report that precise state. A blocked or interrupted sweep is not full delivery. Do not schedule new background sessions or claim unattended continuation unless the user and host authorize it.
+
+## Preserve continuity
+
+Maintain the parent tracker and task issues as the development notebook. At batch boundaries and before interruption, record queue/dispositions, accepted decisions, unresolved questions, target and working SHAs, issue/PR/branch/worker mappings, verified results with revisions, failures and the exact next action. Keep a separate decision register and blocker register so missing native evidence cannot masquerade as a product choice. On resume, read this checkpoint and live remote/worker state before creating records or replaying mutations.
+
+## Plain-language handoff addition
+
+Adapt the following into the single complete execution prompt, together with the repository-grounded first wave and exactly one merge-permission branch. Do not pass raw flags or a private workflow dependency to the consumer.
+
+```text
+Treat the first task list as the first wave of a continuous development session. Inspect all open issues and PRs with pagination, relevant comments, recent merges, source and current checks; distinguish existing bugs from code already delivered with acceptance still pending. Fix routine bugs and problems within the accepted repository scope, including new defects found during the work. Preserve accepted behavior, exclusions, protected coordination, no-auto restrictions and unresolved user decisions.
+
+Repeat this cycle: refresh the backlog and active work; plan the next ready batch with ownership, dependencies, acceptance criteria and checks; implement; review the actual diff; verify; integrate only under the merge authority and gates stated in this prompt; then refresh and plan again. Do not stop after the first batch or PR. When merge is not authorized, keep PRs and delivery issues open and continue independent tasks while recording pending integration accurately. Do not treat implementation, a child's report, a green partial check or an open PR as complete acceptance.
+
+Resolve ordinary technical choices within the accepted scope. For a genuine product/design decision, record the exact question, options, recommendation, tradeoff and affected work, then continue independent tasks. Record access, platform, human-verification and review/CI blockers separately with the missing evidence and next action. Preserve their open acceptance records; unavailable native or live-service validation is not a pass or a product decision.
+
+At each meaningful batch boundary, update durable issue tracking with the queue, decisions, blockers, task/worker/branch/PR mappings, relevant SHAs, actual verification results and next action. After compaction or interruption, read the checkpoint and inspect live state before creating issues, starting duplicate workers or retrying writes.
+
+Before stopping, perform a fresh complete sweep and reconcile every in-scope candidate. Continue while productive authorized work remains. Stop only when no ready work remains or an actual external blocker or hard session limit prevents further progress; report completed work, open PRs, unresolved decisions, other blockers and a precise continuation point. Do not use a fixed cycle count as success, busy-poll unchanged state, repeat unchanged failures, or claim all acceptance is complete merely because the actionable queue is empty.
+```

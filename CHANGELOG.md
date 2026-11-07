@@ -1,3 +1,12 @@
+## 0.7.0 — 2026-11-07
+
+- Add `-cccp` for Claude Code Cloud Project manager/child-session execution; normalize the spaced spelling `- cccp` and preserve actual host capabilities, model choices and repository ownership rules.
+- Add `-a` for an autonomous issue/PR sweep plus repeated planning, implementation, review, verification and resweeping until no actionable in-scope work remains.
+- Ground the first wave in current issues, comments, source, PRs and recent merges; retain later batches as an evidence-driven queue rather than stopping after the first PR.
+- Separate unresolved product decisions from access, native/live/human verification and CI/review blockers; preserve no-auto restrictions, explicit interviews, UI acceptance and conditional merge gates.
+- Keep the environment, continuous-loop and merge flags independent. Retain planning read-only and translate the full workflow into one standalone prompt with durable issue/worker checkpoints.
+- Preserve the seven-skill inventory, plugin identity, sharing, default prompts, artifact-storage behavior and independent observation routes.
+
 ## 0.6.4
 
 - Keep GitHub writes and their approval requests out of the ChatGPT planning session and its delegated helpers only.

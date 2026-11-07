@@ -24,12 +24,12 @@ def validate_execution_prompt(prompt):
         raise ValueError('Blanket issue-creation ban in execution prompt')
     # Shell -m/--merge/etc. are not planner flags. Exempt command snippets, not
     # snippets consisting only of flags; private invocations were checked above.
-    commands = r'(?:python[\d.]*|git|gh|pytest|pnpm|npm|npx|node|bash|sh|cargo|docker|make|curl|rg|\./[\w./-]+)\b'
+    commands = r'(?:python[\d.]*|git|gh|pytest|pnpm|npm|npx|node|bash|sh|cargo|docker|make|curl|rg|ls|\./[\w./-]+)\b'
     flag_prose = re.sub(r'https?://[^\s`<>]+', '', prompt)
     flag_prose = re.sub(r'```(?:bash|sh|shell|console)\n.*?```', '', flag_prose, flags=re.S)
     flag_prose = re.sub(r'`([^`\n]+)`', lambda m: '' if re.match(commands + r'\s', m[1]) else m[0], flag_prose)
     flag_prose = re.sub(r'(?im)^\s*(?:run\s+)?' + commands + r'\s+[^\n]*$', '', flag_prose)
-    flags = r'--(?:merge|prototype|issuesweep|issue-sweep(?:-ask)?|refresh-epic|plan-only|filter|exclude)|-(?:isask|is|pr|po|re|ex|m|f)'
+    flags = r'--(?:merge|prototype|issuesweep|issue-sweep(?:-ask)?|refresh-epic|plan-only|filter|exclude)|-(?:[ \t]*cccp|isask|is|pr|po|re|ex|m|f|a)'
     if re.search(r'(?<![\w-])(?:' + flags + r')(?![\w-])', flag_prose):
         raise ValueError('Raw planning flag in execution prompt')
 
@@ -129,13 +129,15 @@ def validate(root=ROOT):
         'skills/zstatus/SKILL.md': ['host-supported connected-computer delegation route', 'every window and every pane', 'do not send `go on`'],
         'skills/zstatus/references/observation.md': ['source data, not authorization', 'physical server/pane', 'Restarted work', 'Test/build failures', 'unknown/inaccessible'],
         'skills/zwatch/SKILL.md': ['rescan all sessions, windows and panes', 'newly created active sessions', 'Do not restart idle/completed agents', 'explicit user authorization', 'two per run', 'three total per watch', 'do not resend', 'An echoed input alone', 'at most three read-only reconnect checks', 'monitoring has ended', 'stop watching', 'do not invent a default deadline', 'keep unchanged cycles quiet', 'retain the unresolved watch as blocked', 'Preserve the ledger, event deduplication and recovery budgets'],
-        'skills/zdev/SKILL.md': ['During the current ChatGPT planning session', 'GitHub and repository history are read-only', 'This includes delegated helpers', 'Do not initiate GitHub-write approval requests here', 'sole planning entry point', '-isask', '-m', 'Codex or Claude Code', 'before implementation'],
+        'skills/zdev/SKILL.md': ['During the current ChatGPT planning session', 'GitHub and repository history are read-only', 'This includes delegated helpers', 'Do not initiate GitHub-write approval requests here', 'sole planning entry point', '-isask', '-m', '-cccp', '-a', 'Codex or Claude Code', 'before implementation'],
         'skills/zdev/references/workflow-contract.md': ['Combinations compose', 'merge or hold decision for each PR', 'Task-specific user constraints', 'Without merge authorization', 'leave it open', 'every helper it delegates perform read-only GitHub research', 'initiate GitHub-write approval requests here', 'before changing implementation code', 'children before parents'],
         'skills/zdev/references/issue-sweep.md': ['--issuesweep', '--issue-sweep-ask', 'no-auto', 'Untouched', 'local task keys', '## Implementation order', 'Do not treat silence as assent'],
         'skills/zkicadactions/SKILL.md': ['Never dispatch a workflow', 'UNKNOWN is not PASS', 'not defaults for other repositories', 'Never bypass a denied access'],
         'skills/zkicadactions/references/contract.md': ['Artifact-only', 'persist-credentials: false', 'fail closed', 'UNIMPLEMENTED', 'never rerun an unchanged failure', 'Adoption is always an owner decision'],
         'skills/zdev/references/handoff.md': ['Copyable prompt template', 'PR plan:', 'delegated helpers perform read-only GitHub research', 'initiate GitHub-write approval requests here', 'Codex or Claude Code', 'Keep normalized flags in producer-side notes only'],
         'skills/zdev/references/implementation-tracking.md': ['before changing implementation code', 'Search before creating missing records', 'Use one tracker for a focused task', 'Use one parent epic plus sub-issues', 'Use issue comments as a concise chronological development record', 'close completed children after integration', 'entire accepted scope is complete', 'Actual tool permissions, repository policies and explicit user restrictions still apply'],
+        'skills/zdev/references/claude-code-cloud-project.md': ['This environment flag alone does not request a sweep, a continuous loop, a merge, a release or a deployment', 'Preserve any user-selected model', 'If unavailable, report the limitation and continue independent manager-owned work', 'If the repository reserves pushes for the manager, children commit locally', 'Do not start duplicate workers'],
+        'skills/zdev/references/continuous-development.md': ['An explicit `-isask` interview takes precedence', 'Preserve `no-auto`', 'Without it, leave PRs and delivery issues open', 'Do not stop merely because the first plan, child session or PR is complete', 'Before reporting completion, perform a fresh issue/PR and verification sweep', 'A blocked or interrupted sweep is not full delivery', 'separate decision register and blocker register', 'On resume, read this checkpoint'],
         'skills/zplan/SKILL.md': ['GitHub and repository history are read-only', 'all helpers delegated from this session', 'Do not initiate GitHub-write approval requests here', 'creation/reuse of tracking issues before implementation'],
         'skills/zgh/SKILL.md': ['GitHub and repository history are read-only', 'all helpers delegated from this session', 'Do not initiate GitHub-write approval requests here', 'explicit standalone user request', 'Do not reinterpret delegated planning as standalone authorization'],
     }
@@ -194,6 +196,19 @@ def validate(root=ROOT):
                'close their parent only when every accepted requirement and required child is complete',
                'If any gate remains, hold that PR and record the exact blocker'],
     }
+    # Each optional mode contributes plain-language execution prose. Check them
+    # alone and composed with both lifecycle branches, not just the base template.
+    additions = {}
+    for name in ('claude-code-cloud-project', 'continuous-development'):
+        text = (root / f'skills/zdev/references/{name}.md').read_text()
+        blocks = re.findall(r'```text\n(.*?)```', text, re.S)
+        check(bool(blocks), f'Missing execution addition for {name}')
+        additions[name] = '\n\n'.join(blocks)
+        for block in blocks:
+            try:
+                validate_execution_prompt(block)
+            except ValueError as exc:
+                errors.append(f'{name}: {exc}')
     for template in prompts:
         try:
             for authorized, prompt in handoff_variants(template).items():
@@ -201,6 +216,14 @@ def validate(root=ROOT):
                 check(prompt.find('Before implementing, establish durable GitHub tracking') < prompt.find('Implement the accepted scope in dependency order'), 'Tracking must precede implementation')
                 for phrase in common + lifecycle[authorized]:
                     check(phrase in prompt, f'Missing implementation contract {phrase!r} (merge={authorized})')
+                for project in (False, True):
+                    for continuous in (False, True):
+                        composed = prompt
+                        if project:
+                            composed += '\n\n' + additions['claude-code-cloud-project']
+                        if continuous:
+                            composed += '\n\n' + additions['continuous-development']
+                        validate_execution_prompt(composed)
         except ValueError as exc:
             errors.append(str(exc))
     kicad = (root / 'skills/zkicadactions/references/templates.md').read_text()
