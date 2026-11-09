@@ -53,7 +53,7 @@ The generated prompt directs the separate implementation agent to establish trac
 
 Use the issues as the development notebook: record meaningful findings, decisions, progress, checks with observed results and relevant revisions, PR links, blockers and next actions. The prompt authorizes the requested in-scope issue operations without an additional generic confirmation step; actual access controls and repository policy still apply. If an issue write is unavailable, preserve the proposed content, report the precise blocker and continue independent authorized work.
 
-All flag combinations become ordinary instructions in the final prompt. Without `-m`, leave the implementation PR and delivery issues open pending integration, with PR links and honest status notes. With `-m`, merge only after required review, approvals and current-head checks pass, then close completed children after verified integration. Close the parent only when its whole accepted scope is complete. Preserve incomplete original issues and unrelated work. `-m` never authorizes deployment or publication.
+All flag combinations become ordinary instructions in the final prompt. `-m`/`--merge` means the author wants the merge completed after development, not just a merge-ready PR. Merge after required review, approvals and current-head checks pass, even when the repository's existing automation updates published websites or services on merge. Inspect and disclose those effects; do not skip or reconfirm the merge solely for them. Report integration and automatic deployment results separately. Without `-m` or an equally explicit merge instruction, do not infer merge intent: leave the implementation PR and delivery issues open pending integration, with honest status notes. Close completed children after verified integration and the parent only when its whole accepted scope is complete. Preserve incomplete original issues, unrelated work, actual permissions and higher-priority safety requirements. Separate deployment commands, releases, manual plugin publication and deployment/security setting changes need their own authorization.
 
 ## Standalone handoff
 
@@ -70,7 +70,7 @@ Session-created deliverable files and the ZIP are saved under a session folder i
 ```bash
 python3 scripts/validate.py
 python3 -m unittest discover -s scripts -p 'test_*.py'
-python3 scripts/package.py --output /tmp/zudo-dev-flow-0.8.0.zip
+python3 scripts/package.py --output /tmp/zudo-dev-flow-0.8.1.zip
 ```
 
 See [acceptance cases](docs/acceptance-cases.md), [provenance](docs/provenance.md), and [release steps](docs/releasing.md). A source PR does not update the installed account plugin.

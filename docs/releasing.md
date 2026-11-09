@@ -1,5 +1,11 @@
 # Release and migration
 
+## v0.8.1 requested merges and automatic publication
+
+Clarifies that `-m`/`--merge` requests completion of the merge after development and its gates, including existing automated updates to published websites or services. The handoff discloses known production effects and requires separate merge/deployment status reporting; an expected automatic update alone is not a reason to hold or reconfirm the merge. No merge intent is inferred without the flag or an equally explicit prose instruction. Separate deployment commands, releases, manual plugin publication and settings changes remain separately authorized; concrete safety, permission, approval and task-specific restrictions remain effective.
+
+Review the behavior with and without merge intent, with automatic website/service updates, failed or unknown deployment results, separate manual publication, and real approval/access conflicts. Validate all resolved environment and continuous-mode handoff profiles. Static template checks do not prove live host behavior. Synchronize both manifests and build the source package. Source merge and account-plugin update remain separate, authorized operations; neither a local package nor a source PR proves the installed plugin changed. Preserve plugin identity, inventory, sharing, default prompts and unrelated behavior.
+
 ## v0.8.0 execution environments and topic ownership
 
 Defines `-cccp` (Claude Code Cloud Project), `-coc` (Codex Cloud), `-cowsl` and `-comac` (Codex local CLI on WSL and Mac), and `-ccwsl` and `-ccmac` (Claude Code local CLI on WSL and Mac). With no environment constraint, select from implementation and acceptance requirements, or explicitly keep the prompt portable when no host-specific requirement exists. One environment is a hard scope constraint; multiple environments form a deduplicated, unordered allowed set. Explicit prose constraints have the same effect. Never infer extra destinations from the current host.
@@ -62,7 +68,7 @@ Delete any remaining `zdev2` paths from the actual installed inventory as well. 
 ```bash
 python3 scripts/validate.py
 python3 -m unittest discover -s scripts -p 'test_*.py'
-python3 scripts/package.py --output /tmp/zudo-dev-flow-0.8.0.zip
+python3 scripts/package.py --output /tmp/zudo-dev-flow-0.8.1.zip
 ```
 
 Source PR merge and account-plugin update are separate operations.
