@@ -146,6 +146,49 @@ class ValidationTests(unittest.TestCase):
                               '<If merge is not authorized:', '<When ready:',
                               'Missing merge-permission branch')
 
+    def test_merge_intent_and_automatic_updates_stay_in_authorized_branch(self):
+        variants = handoff_variants(self.prompt_template())
+        for phrase in (
+                'You are instructed to complete the merge after development',
+                'This includes updates to published websites or services automatically triggered',
+                'do not skip the merge or ask for another generic merge/deployment approval solely because of those automatic updates'):
+            with self.subTest(instruction=phrase):
+                self.assertIn(phrase, variants[True])
+                self.assertNotIn(phrase, variants[False])
+        for prompt in variants.values():
+            self.assertIn('Separate deployment commands', prompt)
+            self.assertIn('Preserve higher-priority safety requirements, actual permissions', prompt)
+
+    def test_requested_merge_and_automatic_update_guards_are_required(self):
+        for phrase in (
+                'You are instructed to complete the merge after development, not merely prepare a merge-ready PR',
+                "This includes updates to published websites or services automatically triggered by the repository's existing merge workflow",
+                'disclose its known production effects before merging',
+                'do not skip the merge or ask for another generic merge/deployment approval solely because of those automatic updates',
+                'report available automatic deployment results separately without assuming deployment succeeded',
+                'Separate deployment commands, release creation, manual plugin publication and deployment/security setting changes require their own authorization',
+                'Preserve higher-priority safety requirements, actual permissions, access controls, required approvals and explicit task restrictions',
+                'If a concrete conflict or materially different side effect requires a decision or approval, report that exact blocker'):
+            with self.subTest(removed=phrase):
+                self.mutate_and_reject('skills/zdev/references/handoff.md', phrase,
+                                       'REMOVED', 'Missing implementation contract')
+
+    def test_obsolete_blanket_deployment_holds_are_rejected(self):
+        for filename, phrase in (
+                ('skills/zdev/references/workflow-contract.md', 'Merge authorization never grants deployment, release or plugin publication authority.'),
+                ('skills/zdev/references/handoff.md', 'Merge authorization does not authorize deployment or a release.'),
+                ('skills/zgh/SKILL.md', 'Neither stage implicitly authorizes deployment.'),
+                ('skills/zdev/SKILL.md', 'No deployment or release authority.')):
+            with self.subTest(filename=filename):
+                path = self.root / filename
+                original = path.read_text()
+                path.write_text(original + '\n' + phrase + '\n')
+                try:
+                    with self.assertRaisesRegex(ValueError, 'Obsolete blanket merge/deployment boundary'):
+                        validate(self.root)
+                finally:
+                    path.write_text(original)
+
     def test_tracker_first_and_duplicate_prevention_regressions_are_rejected(self):
         for old, new in (
                 ('Before implementing, establish durable GitHub tracking', 'After implementing, consider tracking'),
@@ -239,8 +282,13 @@ class ValidationTests(unittest.TestCase):
                 self.assertEqual('Do not stop after the first batch or PR.' in composed, continuous)
                 if not merge:
                     self.assertIn('Keep delivery issues open pending integration; do not merge', composed)
+                    self.assertNotIn('You are instructed to complete the merge after development', composed)
+                    self.assertNotIn('This includes updates to published websites or services automatically triggered', composed)
                 else:
                     self.assertIn('current-head required checks pass under repository policy', composed)
+                    self.assertIn('You are instructed to complete the merge after development', composed)
+                    self.assertIn('This includes updates to published websites or services automatically triggered', composed)
+                    self.assertIn('report available automatic deployment results separately without assuming deployment succeeded', composed)
 
     def test_environment_mapping_cannot_drift(self):
         self.mutate_and_reject('skills/zdev/references/execution-environments.md',

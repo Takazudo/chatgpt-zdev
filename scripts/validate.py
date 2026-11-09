@@ -210,6 +210,13 @@ def validate(root=ROOT):
         for phrase in forbidden_planning:
             check(phrase.casefold() not in text,
                   f'Obsolete planning write instruction in {path.relative_to(root)}: {phrase}')
+        for phrase in (
+                'Merge authorization never grants deployment',
+                'Merge authorization does not authorize deployment or a release',
+                'Neither stage implicitly authorizes deployment',
+                'No deployment or release authority'):
+            check(phrase.casefold() not in text,
+                  f'Obsolete blanket merge/deployment boundary in {path.relative_to(root)}: {phrase}')
     watch = (root / 'skills/zwatch/SKILL.md').read_text()
     for obsolete_watch in ('Default supervised window is 30 minutes', 'Give a quiet heartbeat about every five minutes', 'end as disconnected with the last successful observation time'):
         check(obsolete_watch not in watch, f'Obsolete watch lifetime/reporting rule: {obsolete_watch}')
@@ -232,10 +239,17 @@ def validate(root=ROOT):
               'after an uncertain response, inspect for an existing result before retrying',
               'do not close a source issue merely because another record references it',
               'Do not report a check as passed unless observed',
-              'Merge authorization does not authorize deployment or a release']
+              'Separate deployment commands, release creation, manual plugin publication and deployment/security setting changes require their own authorization',
+              'Preserve higher-priority safety requirements, actual permissions, access controls, required approvals and explicit task restrictions',
+              'If a concrete conflict or materially different side effect requires a decision or approval, report that exact blocker']
     lifecycle = {
         False: ['Leave implementation PRs open', 'Keep delivery issues open pending integration; do not merge'],
-        True: ['merge only after its accepted work, review, required approvals and current-head required checks pass under repository policy',
+        True: ['You are instructed to complete the merge after development, not merely prepare a merge-ready PR',
+               'merge only after its accepted work, review, required approvals and current-head required checks pass under repository policy',
+               "This includes updates to published websites or services automatically triggered by the repository's existing merge workflow",
+               'disclose its known production effects before merging',
+               'do not skip the merge or ask for another generic merge/deployment approval solely because of those automatic updates',
+               'report available automatic deployment results separately without assuming deployment succeeded',
                'Leave held or incomplete PRs open', 'Confirm integration into the intended target',
                'add completion notes with PR and verification evidence',
                'close only issues whose own criteria are fully satisfied',

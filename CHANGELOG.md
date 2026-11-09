@@ -1,3 +1,10 @@
+## 0.8.1 — 2026-11-09
+
+- Treat `-m`/`--merge` as the author's explicit request to complete the merge after development and required gates, not merely prepare a merge-ready PR.
+- Include existing automatic updates to published websites and services triggered by that merge; disclose the effects and report merge/deployment outcomes separately instead of adding a generic deployment hold.
+- Keep no-flag behavior non-merging unless the user gives an equally explicit prose instruction. Preserve review, current-head checks, task restrictions, actual permissions and higher-priority safety requirements; separate deployment, release and publication actions retain their own authorization.
+- Align the facade, shared contract, standalone handoff and helper references; add regression coverage and behavioral acceptance cases. Preserve plugin identity, seven skills and unrelated workflows.
+
 ## 0.8.0 — 2026-11-08
 
 - Define six execution environments: `-cccp` for Claude Code Cloud Project, `-coc` for Codex Cloud, `-cowsl` and `-comac` for Codex local CLI on WSL and Mac, and `-ccwsl` and `-ccmac` for Claude Code local CLI on WSL and Mac.

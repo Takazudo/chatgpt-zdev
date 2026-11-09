@@ -24,7 +24,7 @@ Classify remaining candidates:
 
 - **Handle:** executable scope or a verification task that can be checked.
 - **Decision required:** unresolved product/design choices; record the concrete question, options and recommendation. An explicitly selected prototype loop can resolve a design decision.
-- **Blocked — verification/access/platform:** unavailable device, authenticated service, human evidence or deployment authority; record exactly what is missing. This is not automatically a product decision.
+- **Blocked — verification/access/platform:** unavailable device, authenticated service, human evidence or authority for a separate deployment action; record exactly what is missing. This is not automatically a product decision. An existing automatic website/service update from a requested merge is not, by itself, a deployment-authority blocker.
 - **Skip — outside scope:** unsuitable or excluded work; record why.
 
 Under `-is` or `-a`, previously confirmed `no-auto` issues go directly into the postponed summary. Under `-isask`, read them and any existing dashboard history and reconsider them; coordination protection still wins. Mark prototype topics sparingly.
