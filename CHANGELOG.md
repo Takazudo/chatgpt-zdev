@@ -1,3 +1,10 @@
+## 0.9.0 — 2026-11-11
+
+- Add three zdev allowed-environment flags: `-grmac` for Grok CLI on Mac, `-grwsl` for Grok CLI on WSL, and `-grc` for Grok bot cloud (Codex Cloud-like).
+- Explicitly constrain Grok CLI to no computer-use interactions and favor smaller, routine, well-specified and verifiable work suited to its less capable model. Use optional subagents only if actually available; never claim unavailable GUI/visual verification.
+- Apply cloud tool/capability discovery to Grok bot, without inheriting Project or local CLI worker APIs. Extend the existing unordered environment set, acceptance filter, standalone prompt, docs and regression coverage to nine targets, preserving independent continuous/merge flags.
+- Update the two synchronized plugin manifests; source updates do not automatically update an installed account plugin.
+
 ## 0.8.1 — 2026-11-09
 
 - Treat `-m`/`--merge` as the author's explicit request to complete the merge after development and required gates, not merely prepare a merge-ready PR.

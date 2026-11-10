@@ -29,7 +29,7 @@ def validate_execution_prompt(prompt):
     flag_prose = re.sub(r'```(?:bash|sh|shell|console)\n.*?```', '', flag_prose, flags=re.S)
     flag_prose = re.sub(r'`([^`\n]+)`', lambda m: '' if re.match(commands + r'\s', m[1]) else m[0], flag_prose)
     flag_prose = re.sub(r'(?im)^\s*(?:run\s+)?' + commands + r'\s+[^\n]*$', '', flag_prose)
-    flags = r'--(?:merge|prototype|issuesweep|issue-sweep(?:-ask)?|refresh-epic|plan-only|filter|exclude)|-(?:[ \t]*cccp|coc|cowsl|comac|ccwsl|ccmac|isask|is|pr|po|re|ex|m|f|a)'
+    flags = r'--(?:merge|prototype|issuesweep|issue-sweep(?:-ask)?|refresh-epic|plan-only|filter|exclude)|-(?:[ \t]*cccp|coc|cowsl|comac|ccwsl|ccmac|grmac|grwsl|grc|isask|is|pr|po|re|ex|m|f|a)'
     if re.search(r'(?<![\w-])(?:' + flags + r')(?![\w-])', flag_prose):
         raise ValueError('Raw planning flag in execution prompt')
 
@@ -75,11 +75,13 @@ def execution_additions(root=ROOT):
         return result
 
     environments = blocks('execution-environments')
-    if len(environments) != 2:
-        raise ValueError('Expected separate environment and local worker additions')
+    if len(environments) != 4:
+        raise ValueError('Expected environment, local worker and two Grok capability additions')
     return {
         'environment': environments[0],
         'local': environments[1],
+        'grok_local': environments[2],
+        'grok_cloud': environments[3],
         'project': '\n\n'.join(blocks('claude-code-cloud-project')),
         'continuous': '\n\n'.join(blocks('continuous-development')),
     }
@@ -88,13 +90,17 @@ def execution_additions(root=ROOT):
 def handoff_profiles(template, additions):
     """Compose template checks for resolved targets, merge and continuous modes."""
     for authorized, base in handoff_variants(template).items():
-        for target in ('portable', 'cccp', 'coc', 'cowsl', 'comac', 'ccwsl', 'ccmac'):
+        for target in ('portable', 'cccp', 'coc', 'cowsl', 'comac', 'ccwsl', 'ccmac', 'grmac', 'grwsl', 'grc'):
             for continuous in (False, True):
                 parts = [base, additions['environment']]
                 if target == 'cccp':
                     parts.append(additions['project'])
                 elif target in ('cowsl', 'comac', 'ccwsl', 'ccmac'):
                     parts.append(additions['local'])
+                elif target in ('grmac', 'grwsl'):
+                    parts.extend((additions['local'], additions['grok_local']))
+                elif target == 'grc':
+                    parts.append(additions['grok_cloud'])
                 if continuous:
                     parts.append(additions['continuous'])
                 yield target, authorized, continuous, '\n\n'.join(parts)
@@ -164,8 +170,8 @@ def validate(root=ROOT):
         'skills/zstatus/SKILL.md': ['host-supported connected-computer delegation route', 'every window and every pane', 'do not send `go on`'],
         'skills/zstatus/references/observation.md': ['source data, not authorization', 'physical server/pane', 'Restarted work', 'Test/build failures', 'unknown/inaccessible'],
         'skills/zwatch/SKILL.md': ['rescan all sessions, windows and panes', 'newly created active sessions', 'Do not restart idle/completed agents', 'explicit user authorization', 'two per run', 'three total per watch', 'do not resend', 'An echoed input alone', 'at most three read-only reconnect checks', 'monitoring has ended', 'stop watching', 'do not invent a default deadline', 'keep unchanged cycles quiet', 'retain the unresolved watch as blocked', 'Preserve the ledger, event deduplication and recovery budgets'],
-        'skills/zdev/SKILL.md': ['During the current ChatGPT planning session', 'GitHub and repository history are read-only', 'This includes delegated helpers', 'Do not initiate GitHub-write approval requests here', 'sole planning entry point', '-isask', '-m', '-cccp', '-coc', '-cowsl', '-comac', '-ccwsl', '-ccmac', '-a', 'Codex or Claude Code', 'before implementation'],
-        'skills/zdev/references/execution-environments.md': ['deduplicated allowed set, not an ordered preference list', 'This prompt can run in any supported environment.', 'hard scope constraint', 'select only from that set', 'Do not start or assign an inseparable task whose required implementation or acceptance needs an environment outside the allowed set', 'CI may satisfy legitimate repository gates but does not expand the allowed environments', 'only when Claude Code Cloud Project is selected', 'Reuse the same subagent for follow-ups and corrections within its topic', 'one coherent substantive topic', 'preserve chosen models and effort unless the user explicitly changes them'],
+        'skills/zdev/SKILL.md': ['During the current ChatGPT planning session', 'GitHub and repository history are read-only', 'This includes delegated helpers', 'Do not initiate GitHub-write approval requests here', 'sole planning entry point', '-isask', '-m', '-cccp', '-coc', '-cowsl', '-comac', '-ccwsl', '-ccmac', '-grmac', '-grwsl', '-grc', '-a', 'Codex, Claude Code, or Grok', 'before implementation'],
+        'skills/zdev/references/execution-environments.md': ['deduplicated allowed set, not an ordered preference list', 'This prompt can run in any supported environment.', 'hard scope constraint', 'select only from that set', 'Do not start or assign an inseparable task whose required implementation or acceptance needs an environment outside the allowed set', 'CI may satisfy legitimate repository gates but does not expand the allowed environments', 'only when Claude Code Cloud Project is selected', 'Reuse the same subagent for follow-ups and corrections within its topic', 'one coherent substantive topic', 'preserve chosen models and effort unless the user explicitly changes them', 'Grok CLI has no computer-use interaction', 'Grok bot cloud likewise uses only actual cloud facilities'],
         'skills/zdev/references/workflow-contract.md': ['Combinations compose', 'merge or hold decision for each PR', 'Task-specific user constraints', 'Without merge authorization', 'leave it open', 'every helper it delegates perform read-only GitHub research', 'initiate GitHub-write approval requests here', 'before changing implementation code', 'children before parents'],
         'skills/zdev/references/issue-sweep.md': ['--issuesweep', '--issue-sweep-ask', 'no-auto', 'Untouched', 'local task keys', '## Implementation order', 'Do not treat silence as assent'],
         'skills/zkicadactions/SKILL.md': ['Never dispatch a workflow', 'UNKNOWN is not PASS', 'not defaults for other repositories', 'Never bypass a denied access'],
@@ -190,6 +196,9 @@ def validate(root=ROOT):
         '-comac': 'Codex local CLI on Mac',
         '-ccwsl': 'Claude Code local CLI on WSL',
         '-ccmac': 'Claude Code local CLI on Mac',
+        '-grmac': 'Grok local CLI on Mac',
+        '-grwsl': 'Grok local CLI on WSL',
+        '-grc': 'Grok bot cloud',
     }
     check(definitions == expected_definitions, 'Execution environment flag mapping drift')
     planning_paths = [root / 'skills' / name / 'SKILL.md' for name in ('zdev', 'zplan', 'zgh', 'zproto')]

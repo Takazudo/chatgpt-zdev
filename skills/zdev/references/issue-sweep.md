@@ -10,7 +10,7 @@ This Chat planning stage returns a complete prompt plus necessary artifacts. Git
 - `-f` / `--filter`: repeated or comma-separated include labels, AND semantics. `-ex` / `--exclude`: exclude any matching label. No implicit filter.
 - `-re` / `--refresh-epic`: refresh the human-check summary in the handoff only; preserve open entries and reasons from any existing dashboard. Do not create, update or supersede a GitHub dashboard.
 - `-pr` / `--prototype`: after triage, run zproto only for handled topics needing an unsettled UI decision.
-- `-po` / `--plan-only` is redundant: zdev is always plan-only. Do not forward planner-only flags to Codex or Claude Code. No auto flag bypasses an explicit interview or prototype feedback.
+- `-po` / `--plan-only` is redundant: zdev is always plan-only. Do not forward planner-only flags to Codex, Claude Code, or Grok. No auto flag bypasses an explicit interview or prototype feedback.
 
 Resolve the repository and intended parent (default branch unless specified); record its revision. Snapshot **all** open issues with pagination and exclude PRs from the issue count. Inventory open PRs separately and inspect recent merged work relevant to candidates. Apply filters to that complete snapshot. Read full candidate bodies, relevant comments and available attachments; validate stale technical assertions. Distinguish remaining bugs from code already merged with acceptance still pending. Capture new problem reports directly in the handoff using local task keys, without creating seed issues.
 
@@ -46,7 +46,7 @@ Approval accepts planning scope only. Record dispositions, dates, reasons and an
 
 Existing issues remain unchanged throughout planning. Summarize handled, postponed, untouched, verified and blocked topics in Chat, with existing URLs, evidence needed, dates and reasons. Preserve open entries from an existing human-check dashboard when refreshing the summary; an absent dashboard is not a blocker. If no candidates remain, say so and return that disposition without manufacturing tasks or artifacts.
 
-The separate user-started Codex or Claude Code implementation session first establishes or reuses tracking for the accepted batch. Use selected existing delivery issues as children where appropriate and create only missing records. Keep issue notes with decisions, progress, evidence, PR links, blockers and next actions. Without merge authorization, PRs and delivery issues remain open pending integration. With merge authorization, require full acceptance, review, approvals and current-head checks; close completed children after confirmed integration, then the parent only when all accepted work is done. Do not close originals merely because a new tracker references them.
+The separate user-started Codex, Claude Code, or Grok implementation session first establishes or reuses tracking for the accepted batch. Use selected existing delivery issues as children where appropriate and create only missing records. Keep issue notes with decisions, progress, evidence, PR links, blockers and next actions. Without merge authorization, PRs and delivery issues remain open pending integration. With merge authorization, require full acceptance, review, approvals and current-head checks; close completed children after confirmed integration, then the parent only when all accepted work is done. Do not close originals merely because a new tracker references them.
 
 ## Finalization
 

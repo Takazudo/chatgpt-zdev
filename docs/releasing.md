@@ -1,5 +1,11 @@
 # Release and migration
 
+## v0.9.0 Grok execution environments
+
+Add `-grmac` (Grok local CLI on Mac), `-grwsl` (Grok local CLI on WSL) and `-grc` (Grok bot cloud, Codex Cloud-like). All nine flags remain unordered allowed candidates with the same implementation/acceptance filter and independent `-a` / `-m` lifecycle. Grok CLI targets have no computer-use capability and use a less capable model suited to bounded, concrete daily tasks with explicit verification; do not invent subagent, GUI or visual acceptance facilities. Grok bot cloud uses only confirmed cloud capabilities, not Project or desktop APIs.
+
+Review all nine selected hosts and the portable profile under merge/non-merge and continuous/non-continuous execution; reject raw Grok planner flags in handoffs and preserve legitimate shell commands. Confirm the new copyable capability blocks apply only to the selected Grok host. Run source validation, regression tests, and packaging. Update both manifests consistently. A main-branch source update does not itself update the installed ChatGPT plugin; that remains a separate action.
+
 ## v0.8.1 requested merges and automatic publication
 
 Clarifies that `-m`/`--merge` requests completion of the merge after development and its gates, including existing automated updates to published websites or services. The handoff discloses known production effects and requires separate merge/deployment status reporting; an expected automatic update alone is not a reason to hold or reconfirm the merge. No merge intent is inferred without the flag or an equally explicit prose instruction. Separate deployment commands, releases, manual plugin publication and settings changes remain separately authorized; concrete safety, permission, approval and task-specific restrictions remain effective.
@@ -68,7 +74,7 @@ Delete any remaining `zdev2` paths from the actual installed inventory as well. 
 ```bash
 python3 scripts/validate.py
 python3 -m unittest discover -s scripts -p 'test_*.py'
-python3 scripts/package.py --output /tmp/zudo-dev-flow-0.8.1.zip
+python3 scripts/package.py --output /tmp/zudo-dev-flow-0.9.0.zip
 ```
 
 Source PR merge and account-plugin update are separate operations.

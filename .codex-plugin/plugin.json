@@ -1,8 +1,8 @@
 {
   "interface": {
     "displayName": "zudo-dev-flow",
-    "shortDescription": "Plan \u2192 Codex or Claude Code",
-    "longDescription": "Plan in Chat, optionally prototype UI or sweep issues, and hand off a standalone prompt and available artifacts to Codex or Claude Code, locally or in the cloud. The implementation agent establishes issue tracking and records development progress. Seven skills: zdev, zplan, zproto, zgh, zstatus, zwatch and zkicadactions. Connected-computer observation remains available.",
+    "shortDescription": "Plan \u2192 coding agents",
+    "longDescription": "Plan in Chat, optionally prototype UI or sweep issues, and hand off a standalone prompt and available artifacts to Codex, Claude Code, or Grok, locally or in the cloud. The implementation agent establishes issue tracking and records development progress. Seven skills: zdev, zplan, zproto, zgh, zstatus, zwatch and zkicadactions. Connected-computer observation remains available.",
     "developerName": "Takazudo",
     "category": "Productivity",
     "defaultPrompt": "Use zdev to help me plan and implement a development task.",
@@ -11,8 +11,8 @@
     "capabilities": []
   },
   "name": "z-dev-flow",
-  "version": "0.8.1",
-  "description": "Takazudo Chat planning and standalone Codex or Claude Code handoffs for local or cloud development, with connected-computer observation",
+  "version": "0.9.0",
+  "description": "Takazudo Chat planning and standalone Codex, Claude Code, or Grok handoffs for local or cloud development, with connected-computer observation",
   "author": {
     "name": "Takazudo"
   },

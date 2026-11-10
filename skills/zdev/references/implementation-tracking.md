@@ -1,6 +1,6 @@
 # Tracking in the implementation session
 
-This reference governs what the producer writes into the standalone execution prompt. It does not authorize GitHub writes from the ChatGPT planning session or its helpers. The user starts a separate Codex or Claude Code session, locally or in the cloud, with that prompt. Its first development step after repository/state inspection is to establish tracking, before changing implementation code.
+This reference governs what the producer writes into the standalone execution prompt. It does not authorize GitHub writes from the ChatGPT planning session or its helpers. The user starts a separate Codex, Claude Code, or Grok session, locally or in the cloud, with that prompt. Its first development step after repository/state inspection is to establish tracking, before changing implementation code.
 
 ## Choose and establish the records
 
