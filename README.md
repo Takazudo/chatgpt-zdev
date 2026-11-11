@@ -79,3 +79,41 @@ python3 scripts/package.py --output /tmp/zudo-dev-flow-0.9.0.zip
 ```
 
 See [acceptance cases](docs/acceptance-cases.md), [provenance](docs/provenance.md), and [release steps](docs/releasing.md). A source PR does not update the installed account plugin.
+
+## Prevent accidental secret commits
+
+This repository uses [Lefthook](https://lefthook.dev/) and
+[Gitleaks](https://github.com/gitleaks/gitleaks) to stop accidental secrets
+before they enter Git history. The pre-commit hook checks only staged changes
+with Gitleaks and rejects filenames commonly used for credentials even if
+they were force-added despite `.gitignore`.
+
+On macOS (run once for each clone):
+
+```bash
+brew install lefthook gitleaks
+lefthook install
+```
+
+On WSL/Linux, install both tools using their official install instructions,
+then run `lefthook install`. Make sure both `lefthook` and `gitleaks` are
+available on `PATH` **in the environment where you commit**. The hook fails
+closed if Gitleaks is missing. Changes to `lefthook.yml` take effect without
+reinstalling the hook.
+
+Useful commands:
+
+```bash
+python3 scripts/check_sensitive_paths.py --staged
+gitleaks git --staged --redact --no-banner .
+python3 -m unittest discover -s scripts -p 'test_*.py'
+```
+
+GitHub Actions also checks tracked sensitive paths and scans Git changes on
+pushes and pull requests, including cloud-created commits that do not run local
+hooks. Local Git hooks can be bypassed (for example with `--no-verify`) and
+CI checks are not mandatory unless the repository's branch protection or
+ruleset requires them. For maximum protection, require the secret-scan check
+before merging. Do not commit real secrets even temporarily: deleting them in
+a later commit does not remove them from Git history. If a real credential
+gets committed, revoke or rotate it.
