@@ -19,6 +19,9 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
 
+      - name: Test sensitive-path checker
+        run: python3 -m unittest discover -s scripts -p 'test_sensitive_paths.py'
+
       - name: Reject tracked private files
         run: python3 scripts/check_sensitive_paths.py --tracked
 
