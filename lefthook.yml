@@ -1,0 +1,12 @@
+# Install locally with `lefthook install`. Missing security tools fail the commit.
+pre-commit:
+  commands:
+    sensitive-paths:
+      run: python3 scripts/check_sensitive_paths.py --staged
+    gitleaks:
+      run: |
+        if ! command -v gitleaks >/dev/null 2>&1; then
+          echo "gitleaks is required for commits. Install it first (macOS: brew install gitleaks)." >&2
+          exit 1
+        fi
+        gitleaks git --staged --redact --no-banner .
