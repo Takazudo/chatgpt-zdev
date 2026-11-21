@@ -63,7 +63,7 @@ class ValidationTests(unittest.TestCase):
     def test_planner_flags_stay_in_producer_instructions(self):
         facade = (self.root / 'skills/zdev/SKILL.md').read_text()
         self.assertIn('sole planning entry point', facade)
-        for flag in ('-m', '-pr', '-is', '-isask', '-cccp', '-coc', '-cowsl',
+        for flag in ('-m', '-pr', '-is', '-isask', '-ccc', '-cccp', '-coc', '-cowsl',
                      '-comac', '-ccwsl', '-ccmac', '-grmac', '-grwsl', '-grc', '-a'):
             self.assertIn(flag, facade)
         contract = (self.root / 'skills/zdev/references/workflow-contract.md').read_text()
@@ -234,6 +234,7 @@ class ValidationTests(unittest.TestCase):
                 ('Planning flags: `-m -is`.', 'Raw planning flag'),
                 ('Use --merge when ready.', 'Raw planning flag'),
                 ('Target flags: `-cccp -a`.', 'Raw planning flag'),
+                ('Execution target: -ccc.', 'Raw planning flag'),
                 ('Execution target: -coc.', 'Raw planning flag'),
                 ('Allowed targets: `-cowsl -comac`.', 'Raw planning flag'),
                 ('Execution target: -comac.', 'Raw planning flag'),
@@ -263,6 +264,7 @@ class ValidationTests(unittest.TestCase):
                 'Run `ls -a` to inspect the checkout.',
                 'Run `rg -a pattern fixture` to inspect test data.',
                 'Run `./scripts/check -cccp` when the repository defines that command.',
+                'Run `./scripts/check -ccc` when the repository defines that command.',
                 'Run `./scripts/check -coc -cowsl -comac -ccwsl -ccmac` as documented in this repository.',
                 'Run `./scripts/check -grmac -grwsl -grc` when documented in this repository.',
                 'Inspect https://github.com/example/project/tree/feature-coc for existing work.',
@@ -273,9 +275,9 @@ class ValidationTests(unittest.TestCase):
     def test_resolved_environment_profiles_compose_with_both_lifecycles(self):
         additions = execution_additions(self.root)
         profiles = list(handoff_profiles(self.prompt_template(), additions))
-        self.assertEqual(len(profiles), 40)
+        self.assertEqual(len(profiles), 44)
         self.assertEqual({target for target, *_ in profiles},
-                         {'portable', 'cccp', 'coc', 'cowsl', 'comac', 'ccwsl', 'ccmac', 'grmac', 'grwsl', 'grc'})
+                         {'portable', 'ccc', 'cccp', 'coc', 'cowsl', 'comac', 'ccwsl', 'ccmac', 'grmac', 'grwsl', 'grc'})
         for target, merge, continuous, composed in profiles:
             with self.subTest(target=target, merge=merge, continuous=continuous):
                 validate_execution_prompt(composed)
@@ -328,7 +330,7 @@ class ValidationTests(unittest.TestCase):
                            ('claude-code-cloud-project', '- cccp'),
                            ('continuous-development', '-a'),
                            *[('execution-environments', flag) for flag in
-                             ('-cccp', '-coc', '-cowsl', '-comac', '-ccwsl', '-ccmac', '-grmac', '-grwsl', '-grc')]):
+                             ('-ccc', '-cccp', '-coc', '-cowsl', '-comac', '-ccwsl', '-ccmac', '-grmac', '-grwsl', '-grc')]):
             with self.subTest(mode=name, flag=flag):
                 self.mutate_and_reject(f'skills/zdev/references/{name}.md',
                                       '```text\n', f'```text\nUse {flag} to start.\n',

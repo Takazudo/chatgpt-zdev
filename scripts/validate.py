@@ -29,7 +29,7 @@ def validate_execution_prompt(prompt):
     flag_prose = re.sub(r'```(?:bash|sh|shell|console)\n.*?```', '', flag_prose, flags=re.S)
     flag_prose = re.sub(r'`([^`\n]+)`', lambda m: '' if re.match(commands + r'\s', m[1]) else m[0], flag_prose)
     flag_prose = re.sub(r'(?im)^\s*(?:run\s+)?' + commands + r'\s+[^\n]*$', '', flag_prose)
-    flags = r'--(?:merge|prototype|issuesweep|issue-sweep(?:-ask)?|refresh-epic|plan-only|filter|exclude)|-(?:[ \t]*cccp|coc|cowsl|comac|ccwsl|ccmac|grmac|grwsl|grc|isask|is|pr|po|re|ex|m|f|a)'
+    flags = r'--(?:merge|prototype|issuesweep|issue-sweep(?:-ask)?|refresh-epic|plan-only|filter|exclude)|-(?:[ \t]*cccp|ccc|coc|cowsl|comac|ccwsl|ccmac|grmac|grwsl|grc|isask|is|pr|po|re|ex|m|f|a)'
     if re.search(r'(?<![\w-])(?:' + flags + r')(?![\w-])', flag_prose):
         raise ValueError('Raw planning flag in execution prompt')
 
@@ -90,7 +90,7 @@ def execution_additions(root=ROOT):
 def handoff_profiles(template, additions):
     """Compose template checks for resolved targets, merge and continuous modes."""
     for authorized, base in handoff_variants(template).items():
-        for target in ('portable', 'cccp', 'coc', 'cowsl', 'comac', 'ccwsl', 'ccmac', 'grmac', 'grwsl', 'grc'):
+        for target in ('portable', 'ccc', 'cccp', 'coc', 'cowsl', 'comac', 'ccwsl', 'ccmac', 'grmac', 'grwsl', 'grc'):
             for continuous in (False, True):
                 parts = [base, additions['environment']]
                 if target == 'cccp':
@@ -172,7 +172,7 @@ def validate(root=ROOT):
         'skills/zwatch/SKILL.md': ['rescan all sessions, windows and panes', 'newly created active sessions', 'Do not restart idle/completed agents', 'explicit user authorization', 'two per run', 'three total per watch', 'do not resend', 'An echoed input alone', 'at most three read-only reconnect checks', 'monitoring has ended', 'stop watching', 'do not invent a default deadline', 'keep unchanged cycles quiet', 'retain the unresolved watch as blocked', 'Preserve the ledger, event deduplication and recovery budgets'],
         'skills/zdev/SKILL.md': ['During the current ChatGPT planning session', 'GitHub and repository history are read-only', 'This includes delegated helpers', 'Do not initiate GitHub-write approval requests here', 'sole planning entry point', '-isask', '-m', '-cccp', '-coc', '-cowsl', '-comac', '-ccwsl', '-ccmac', '-grmac', '-grwsl', '-grc', '-a', 'Codex, Claude Code, or Grok', 'before implementation'],
         'skills/zdev/references/execution-environments.md': ['deduplicated allowed set, not an ordered preference list', 'This prompt can run in any supported environment.', 'hard scope constraint', 'select only from that set', 'Do not start or assign an inseparable task whose required implementation or acceptance needs an environment outside the allowed set', 'CI may satisfy legitimate repository gates but does not expand the allowed environments', 'only when Claude Code Cloud Project is selected', 'Reuse the same subagent for follow-ups and corrections within its topic', 'one coherent substantive topic', 'preserve chosen models and effort unless the user explicitly changes them', 'Grok CLI has no computer-use interaction', 'Grok bot cloud likewise uses only actual cloud facilities'],
-        'skills/zdev/references/resource-cleanup.md': ['## Manifest and audit', '## Permission denial and parent-manager retry', 'Grok bot cloud manager', 'git worktree remove', 'git branch -d', 'Final checkout/status', 'Plain-language handoff addition'],
+        'skills/zdev/references/resource-cleanup.md': ['## Manifest and audit', '## Remote branch policy by execution environment', '## Local-only permission denial and parent-manager retry', 'Grok bot cloud manager', 'git worktree remove', 'git branch -d', 'Final checkout/status', 'Plain-language handoff addition'],
         'skills/zdev/references/workflow-contract.md': ['Combinations compose', 'merge or hold decision for each PR', 'Task-specific user constraints', 'Without merge authorization', 'leave it open', 'every helper it delegates perform read-only GitHub research', 'initiate GitHub-write approval requests here', 'before changing implementation code', 'children before parents'],
         'skills/zdev/references/issue-sweep.md': ['--issuesweep', '--issue-sweep-ask', 'no-auto', 'Untouched', 'local task keys', '## Implementation order', 'Do not treat silence as assent'],
         'skills/zkicadactions/SKILL.md': ['Never dispatch a workflow', 'UNKNOWN is not PASS', 'not defaults for other repositories', 'Never bypass a denied access'],
@@ -191,6 +191,7 @@ def validate(root=ROOT):
     environment_text = (root / 'skills/zdev/references/execution-environments.md').read_text()
     definitions = dict(re.findall(r'^\| `(-[a-z]+)` \| ([^|]+?) \|', environment_text, re.M))
     expected_definitions = {
+        '-ccc': 'Claude Code Cloud',
         '-cccp': 'Claude Code Cloud using the Project feature',
         '-coc': 'Codex Cloud',
         '-cowsl': 'Codex local CLI on WSL',
@@ -254,9 +255,12 @@ def validate(root=ROOT):
               'If a concrete conflict or materially different side effect requires a decision or approval, report that exact blocker',
               'At the terminal STOP, audit the exact GitHub and local resources touched by this work',
               'return it to the safe original parent/default branch',
-              'When a delegated worker cannot delete a remote branch',
+              'For cloud execution, retain remote branches intentionally. Do not attempt, delegate or retry remote branch deletion, request deletion permissions, or use delete-on-merge options.',
+              'Retaining remote branches is expected completion, not a warning, blocker or manual cleanup task.',
+              'For local CLI execution only,',
               'Cleanup audit',
               'Never silently discard user-owned, unexplained or uncommitted changes'
+    ]
     lifecycle = {
         False: ['Leave implementation PRs open', 'Keep delivery issues open pending integration; do not merge'],
         True: ['You are instructed to complete the merge after development, not merely prepare a merge-ready PR',

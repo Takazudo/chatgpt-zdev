@@ -8,14 +8,14 @@ A personal ChatGPT plugin for repository-grounded development planning in Chat, 
 - `zdev -pr ...` iterates UI prototypes in Chat until the user accepts a direction, then plans and packages real artifacts when available.
 - `zdev -is ...` sweeps the requested backlog with one bulk triage checkpoint. `-isask` interviews candidates, including postponed issues. If both appear, `-isask` wins.
 - `zdev -m -is for https://github.com/zudolab/zudo-text` sweeps issues, and tells the later implementation session to merge only after complete implementation and verification under repository policy.
-- `zdev -cccp ...` targets Claude Code Cloud's Project feature. Choose another environment or an allowed set using the flags below. The spaced spelling `- cccp` is normalized to `-cccp`.
+- `zdev -ccc ...` targets ordinary Claude Code Cloud; `zdev -cccp ...` targets its Project feature. Choose another environment or an allowed set using the flags below. The spaced spelling `- cccp` is normalized to `-cccp`.
 - `zdev -a ...` requests an issue/PR sweep and repeated planning/development in any supported environment until a fresh sweep finds no actionable in-scope work. Routine bug fixes need no extra bulk approval; user decisions and other blockers stay recorded.
 - `zdev -cccp -a -m for https://github.com/zudolab/zudo-text` combines a Project team, continuous development and conditional merge authorization. These three choices are independent: neither `-cccp` nor `-a` implies merge permission, and `-cccp` alone does not start a continuous sweep.
 - `zdev -cowsl -a -m ...` continuously handles work that can be implemented and fully accepted in Codex local CLI on WSL. It excludes inseparable Mac-required tasks and conditionally merges only eligible work.
 - `zdev -cccp -comac -a ...` allows Project or Codex local CLI on Mac. If mandatory Mac acceptance is required, select the Mac environment and its local subagents; the mere presence of Project in the candidate set does not add Project child-session instructions.
 - `zdev -grmac ...` or `zdev -grwsl ...` targets Grok local CLI on Mac or WSL. It is intended for smaller daily development tasks, has no computer-use capability, and must verify acceptance through actually available tools.
 - `zdev -grc ...` targets a Grok bot cloud environment comparable to Codex Cloud, with actual cloud tools and workers checked before use; it does not inherit Project or desktop features.
-- Every generated implementation prompt now requires a terminal resource audit. It protects pre-existing/unfinished diffs, restores a safe local checkout, disposes only of verified dead workflow-owned worktrees and merged branches, keeps unmerged PR branches, and reports cleanup failures. In delegated flows (for example Grok bot → Cursor), remote-branch deletion denied to a worker is handed to the parent for an independently authorized safety-checked retry.
+- Every generated implementation prompt requires a terminal resource audit. It protects pre-existing/unfinished diffs, restores a safe local checkout, disposes only of verified dead workflow-owned worktrees and merged local branches, and keeps unmerged PR branches. Selected cloud execution (`-ccc`, `-cccp`, `-coc`, `-grc`) intentionally retains remote branches without deletion attempts, delete-on-merge options, delegation or parent retries, including Grok bot → Cursor. Retention is expected completion, not a failure warning or manual cleanup task. Selected local CLI workflows keep safety-checked remote cleanup.
 
 The ChatGPT planning session and every delegated helper use GitHub read-only. They prepare the prompt, proposed tracking structure and necessary artifacts without creating or changing issues, epics, labels, comments, branches, commits or PRs, closing or merging anything, or initiating GitHub-write approval requests. Explicit standalone GitHub management requests are separate from this planning facade.
 
@@ -23,6 +23,7 @@ The ChatGPT planning session and every delegated helper use GitHub read-only. Th
 
 | Flag | Execution environment |
 | --- | --- |
+| `-ccc` | Claude Code Cloud |
 | `-cccp` | Claude Code Cloud using the Project feature |
 | `-coc` | Codex Cloud |
 | `-cowsl` | Codex local CLI on WSL |
@@ -55,7 +56,7 @@ Use capable workers at the user's selected or configured model and effort. Opus 
 
 ## Final resource cleanup
 
-The implementation agent audits each issue, PR, branch, worktree and diff it actually touched before its final report, and a continuous session reconciles resources at each completed wave. This is not a repo-wide aggressive cleanup: user changes, unmerged or held PR branches, protected integration refs and external worktrees are preserved. A local agent should not finish with an unintended task branch checked out or unexplained uncommitted changes. When it cannot restore a safe checkout or clear a resource, its final cleanup report names that exact state and blocker. See the [terminal cleanup contract](skills/zdev/references/resource-cleanup.md).
+The implementation agent audits each issue, PR, branch, worktree and diff it actually touched before its final report, and a continuous session reconciles resources at each completed wave. This is not a repo-wide aggressive cleanup: user changes, unmerged or held PR branches, protected integration refs and external worktrees are preserved. Cloud workflows retain remote branches even after merging and do not request deletion permissions or report retention as blocked cleanup. The selected execution host determines this rule; an unused cloud candidate does not change local CLI cleanup. A local agent should not finish with an unintended task branch checked out or unexplained uncommitted changes. When it cannot restore a safe checkout or complete an applicable cleanup action, its final report names that exact state and blocker. See the [terminal cleanup contract](skills/zdev/references/resource-cleanup.md).
 
 ## Tracking during implementation
 
