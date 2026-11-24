@@ -1,5 +1,11 @@
 # Release and migration
 
+## v0.9.5 Grok Bot topic sessions
+
+For multi-topic Grok bot cloud work, put the overall plan, decomposition, shared interfaces, dependency ordering, review and integration with Grok Bot, with one separately scoped dev session per coherent topic. Keep focused or tightly coupled acceptance units together; do not default to one broad child distributing all topics to its subagents. Carry the procedure into copyable prompts, continuing waves and resume mappings. Verify actual session facilities and report unsupported orchestration without inventing tools or silently changing topology.
+
+Review independent and dependent topics, focused/tightly coupled work, continuing/resumed work, absent session facilities and portable/other-host selection. Run the existing source validation, regression suite and package validation; these do not prove live Grok session execution. Update both manifests, save the source, then update the existing private account plugin in place and read back the version and affected files, preserving identity, inventory, audience and default prompts.
+
 ## v0.9.0 Grok execution environments
 
 Add `-grmac` (Grok local CLI on Mac), `-grwsl` (Grok local CLI on WSL) and `-grc` (Grok bot cloud, Codex Cloud-like). All nine flags remain unordered allowed candidates with the same implementation/acceptance filter and independent `-a` / `-m` lifecycle. Grok CLI targets have no computer-use capability and use a less capable model suited to bounded, concrete daily tasks with explicit verification; do not invent subagent, GUI or visual acceptance facilities. Grok bot cloud uses only confirmed cloud capabilities, not Project or desktop APIs.
@@ -74,7 +80,7 @@ Delete any remaining `zdev2` paths from the actual installed inventory as well. 
 ```bash
 python3 scripts/validate.py
 python3 -m unittest discover -s scripts -p 'test_*.py'
-python3 scripts/package.py --output /tmp/zudo-dev-flow-0.9.0.zip
+python3 scripts/package.py --output /tmp/zudo-dev-flow-0.9.5.zip
 ```
 
 Source PR merge and account-plugin update are separate operations.

@@ -1,3 +1,9 @@
+## 0.9.5 — 2026-11-24
+
+- Prefer Grok Bot coordinating a separate dev session per coherent topic for multi-topic cloud plans, keeping cross-topic reasoning, dependencies, review and integration with the stronger Bot coordinator.
+- Carry this ownership into the standalone prompt, continuous waves and resume mappings. Keep focused or tightly coupled work together, serialize dependencies and overlapping edits, and report actual session-capability limits instead of silently assigning a broad plan to one child and its subagents.
+- Preserve existing environment selection, model policy, issue tracking, authorization gates and cloud branch retention. Synchronize both plugin manifests and retain the seven-skill inventory.
+
 ## 0.9.0 — 2026-11-11
 
 - Add three zdev allowed-environment flags: `-grmac` for Grok CLI on Mac, `-grwsl` for Grok CLI on WSL, and `-grc` for Grok bot cloud (Codex Cloud-like).
