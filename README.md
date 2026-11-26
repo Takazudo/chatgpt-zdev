@@ -71,7 +71,7 @@ All flag combinations become ordinary instructions in the final prompt. `-m`/`--
 
 The handoff contains actual repository/issue/PR URLs, the complete accepted scope, dependency order, artifact references, verification evidence and lifecycle instructions. It uses no plugin names, app links, private skill invocations, raw planning flags or planning-Chat permission instructions. The implementing agent needs only the prompt, accessible repository and identified inputs; it does not need this plugin or the source Chat.
 
-Session-created deliverable files and the ZIP are saved under a session folder in Dropbox `codex-artifacts/` when the connector permits; failures and pending confirmations are reported. A ZIP supplements the complete readable prompt when real prototype source/assets/fixtures exist. Missing ZIP bytes are requested only when an exact input is indispensable.
+Prompt-only plans stay in Chat for copying: no duplicate prompt, brief or plan file, Dropbox folder, upload or Dropbox confirmation is needed. Artifact storage applies only when the plan has useful additional files, such as prototype source, assets, fixtures or screenshots; those files and a useful ZIP are saved under a Dropbox `codex-artifacts/` session folder when the connector permits. Report actual upload status and blockers, and keep the complete prompt in Chat without adding a redundant saved copy. An explicit user request to save the prompt overrides this default. Missing artifact bytes are requested only when an exact input is indispensable.
 
 `zstatus` and `zwatch` remain independent connected-computer observation skills.
 
@@ -82,7 +82,7 @@ Session-created deliverable files and the ZIP are saved under a session folder i
 ```bash
 python3 scripts/validate.py
 python3 -m unittest discover -s scripts -p 'test_*.py'
-python3 scripts/package.py --output /tmp/zudo-dev-flow-0.9.0.zip
+python3 scripts/package.py --output /tmp/zudo-dev-flow-0.9.6.zip
 ```
 
 See [acceptance cases](docs/acceptance-cases.md), [provenance](docs/provenance.md), and [release steps](docs/releasing.md). A source PR does not update the installed account plugin.

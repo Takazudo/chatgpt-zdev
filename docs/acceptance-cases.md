@@ -78,7 +78,9 @@ Expected results distinguish the ChatGPT planning session from the separate impl
 | Standalone explicit GitHub management request | zgh may perform the requested operation; planning delegation never supplies that authority. |
 | `-re` or newly reported sweep problem | Refresh only the handoff summary or add a local task during planning; tracking for accepted work is established later by the implementation agent. |
 | Planning helper asked to publish resources | Return actual required files in the artifact ZIP; no resource PR, branch push or commit during planning. |
-| No artifacts | State none required; give the complete standalone implementation prompt. |
+| Prompt-only plan, including an issue sweep or a lengthy prose plan | Give the complete copyable implementation prompt in Chat and state `Artifacts: none required`; no duplicate saved prompt/brief/decisions/plan file, Dropbox folder, upload or Dropbox confirmation. |
+| Prompt or planning prose wrapped in Markdown, text or a ZIP | Treat it as prompt-only content; the wrapper does not create an additional artifact or justify storage. |
+| User explicitly asks to save a prompt-only plan | Honor that specific request under the applicable storage and connector rules; do not apply the default no-save behavior against it. |
 | Indispensable exact asset unavailable | Name the dependent requirement and blocker; finish independent planning. |
 | No `-m` and no equally explicit merge instruction | Do not infer merge intent from development, autonomy, green checks or the environment. The implementation agent still creates/reuses tracking and records progress, but leaves the PR and delivery issues open pending integration with PR links and honest status. |
 | No flag, but user explicitly says to merge after development | Carry the equivalent prose instruction into the merge-authorized handoff with the same gates and automatic-update semantics. |
@@ -93,8 +95,9 @@ Expected results distinguish the ChatGPT planning session from the separate impl
 | Multi-PR `-m` with one eligible PR and one intentionally held PR | Merge only the eligible PR after its gates; retain the held PR, its incomplete issues and incomplete parent. State dependency order and each disposition in the prompt. |
 | Task-specific user constraint | Honor it over generic defaults; choose a fitting workflow without needless orchestration. |
 | Existing feature/resource PR | Inspect read-only and instruct the implementation session to reuse/update it when appropriate; distinguish merge from close-as-superseded. |
-| Session creates deliverable files | Save each under one unique Dropbox `codex-artifacts/` session folder as produced, including prototype rounds and final ZIP; report actual upload status. |
-| Dropbox unavailable or upload requires confirmation | Report the blocker or pending confirmation and provide available download fallback; never claim an upload succeeded. |
+| Session creates useful additional artifacts such as prototype source, assets, fixtures or screenshots | Save those files under one unique Dropbox `codex-artifacts/` session folder as produced, including prototype rounds and a useful final ZIP; report actual upload status. Keep the complete prompt in Chat without a redundant saved or bundled copy. |
+| Prototype discussion creates only accepted decisions and prompt text | Keep the decisions in Chat and the prompt; do not create `decisions.md` merely to invoke artifact storage. |
+| Additional artifacts exist, but Dropbox is unavailable or upload requires confirmation | Report the blocker or pending confirmation and provide available download fallback; never claim an upload succeeded. Continue independent planning. |
 | zstatus/zwatch | Existing one-shot/ongoing observation behavior remains independent of planning. |
 | `zkicadactions` plan request | Plan template filled with UNKNOWN where unestablished; separate authorities; no dispatch. |
 | `zkicadactions` green identity receipt | Identity PASS only; connectivity, DRC, electrical, assembly and manufacturing reported NOT_EVALUATED; adoption left to the owner. |

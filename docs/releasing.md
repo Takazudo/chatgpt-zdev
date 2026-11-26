@@ -1,5 +1,11 @@
 # Release and migration
 
+## v0.9.6 prompt-only handoffs stay in Chat
+
+Use artifact storage only for useful files beyond the complete copyable prompt. Prompt-only plans, issue sweeps and design discussions create no duplicate prompt/brief/decisions/plan files, ZIPs, Dropbox folders or Dropbox confirmation requests. Wrapping planning prose in a file does not change this rule. Keep the prompt in Chat even when real artifacts exist, and omit redundant prompt copies from uploads and bundles. Honor an explicit user request to save the prompt and retain the existing connector, access, conflict and fallback rules for actual uploads.
+
+Review prompt-only, long prose, wrapper-only, explicit-save and real-prototype cases, including unavailable Dropbox and pending upload confirmation. Run the existing source validation, regression suite and package validation. Synchronize both manifests, merge the source update, then update the existing account plugin in place and read back the version and changed files. Preserve identity, inventory, audience and default prompts; readback establishes the saved release, not an already-open chat's hot reload.
+
 ## v0.9.5 Grok Bot topic sessions
 
 For multi-topic Grok bot cloud work, put the overall plan, decomposition, shared interfaces, dependency ordering, review and integration with Grok Bot, with one separately scoped dev session per coherent topic. Keep focused or tightly coupled acceptance units together; do not default to one broad child distributing all topics to its subagents. Carry the procedure into copyable prompts, continuing waves and resume mappings. Verify actual session facilities and report unsupported orchestration without inventing tools or silently changing topology.
@@ -80,7 +86,7 @@ Delete any remaining `zdev2` paths from the actual installed inventory as well. 
 ```bash
 python3 scripts/validate.py
 python3 -m unittest discover -s scripts -p 'test_*.py'
-python3 scripts/package.py --output /tmp/zudo-dev-flow-0.9.5.zip
+python3 scripts/package.py --output /tmp/zudo-dev-flow-0.9.6.zip
 ```
 
 Source PR merge and account-plugin update are separate operations.

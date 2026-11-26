@@ -1,3 +1,9 @@
+## 0.9.6 — 2026-11-26
+
+- Keep prompt-only plans and issue-sweep handoffs in Chat for copying. Do not create or upload duplicate prompt, brief, decisions or plan files, empty Dropbox folders or prompt-only ZIPs, and do not request Dropbox confirmation for those plans.
+- Save only useful additional artifacts, including prototype source, assets, fixtures and screenshots, without adding a redundant saved prompt. Preserve real-artifact upload, permission, conflict, access and fallback rules; honor explicit requests to save a prompt.
+- Align the planning, prototype, sweep and handoff guidance, add behavioral acceptance cases, and bump both plugin manifests while preserving plugin identity and the seven-skill inventory.
+
 ## 0.9.5 — 2026-11-24
 
 - Prefer Grok Bot coordinating a separate dev session per coherent topic for multi-topic cloud plans, keeping cross-topic reasoning, dependencies, review and integration with the stronger Bot coordinator.
